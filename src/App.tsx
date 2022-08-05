@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Desktop from "./components/Desktop";
 import Mobile from "./components/Mobile";
+import "./scss/App.scss";
 
 function App() {
   const MOBILE_HEIGHT: number = 1000;
@@ -9,7 +10,6 @@ function App() {
   if (outerHeight <= MOBILE_HEIGHT && outerWidth <= MOBILE_WIDTH) {
     isMobile = true;
   }
-  alert(`${outerHeight}와 ${outerWidth}`);
   return <>{isMobile ? <Mobile /> : <Desktop />}</>;
 }
 
