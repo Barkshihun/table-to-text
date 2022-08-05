@@ -1,7 +1,9 @@
 function Output() {
   return (
     <>
-      <textarea cols={30} rows={10}></textarea>
+      <textarea cols={30} rows={10}>
+        아웃풋이다!!
+      </textarea>
     </>
   );
 }
