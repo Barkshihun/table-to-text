@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TableContents } from "./TableContents";
 
 function Table() {
-  const [rows, setRows] = useState(2);
+  const [rows, setRows] = useState(1);
   const [cols, setCols] = useState(2);
   const onRowPlus = () => setRows((currentRow) => ++currentRow);
   const onRowMinus = () => setRows((currentRow) => --currentRow);
