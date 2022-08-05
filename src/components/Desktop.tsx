@@ -6,15 +6,13 @@ import TableContents from "./TableContents";
 
 function Desktop() {
   const [rows, setRows] = useState(2);
-  const [cols, setCols] = useState(2);
+  const [cols, setCols] = useState(5);
   const onPlus = () => {};
   const onMinus = () => {};
   return (
     <main>
       <table>
-        <tbody>
-          {TableContents({ rows, cols }).map((item, index) => item)}
-        </tbody>
+        <TableContents rows={rows} cols={cols} />
       </table>
     </main>
   );
