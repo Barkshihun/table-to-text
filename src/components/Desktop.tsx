@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Output from "./Output";
+import Output from "./Tranform";
 import Table from "./Table";
 
 function Desktop() {

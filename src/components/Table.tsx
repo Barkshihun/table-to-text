@@ -2,7 +2,7 @@ import { useState } from "react";
 import "../scss/Table.scss";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import TableContents from "./TableContents";
+import { TableContents } from "./TableContents";
 
 function Table() {
   const [rows, setRows] = useState(2);
