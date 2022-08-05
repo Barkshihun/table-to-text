@@ -4,17 +4,15 @@ import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TableContents } from "./TableContents";
 
-let previousRows = 1;
+let previousRows = 2;
 let previousCols = 2;
 function Table() {
-  console.log("R", previousRows);
   const [rows, setRows] = useState(previousRows);
   const [cols, setCols] = useState(previousCols);
   const onRowPlus = () => setRows(++previousRows);
   const onRowMinus = () => setRows(--previousRows);
   const onColPlus = () => setCols(++previousCols);
   const onColMinus = () => setCols(--previousCols);
-  console.log("RPP", previousRows);
   return (
     <>
       <div>

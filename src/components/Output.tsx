@@ -6,6 +6,27 @@ function Output() {
     let temp: string[] = [];
     return temp.toString();
   };
+  const tableList = () => {
+    let tableList: string[][] = [];
+    let indexRow = 0;
+    let sameRowList = [];
+    for (let key in tempInputs) {
+      const row = parseInt(key.split(",")[0]);
+      const col = parseInt(key.split(",")[1]);
+      if (indexRow !== row) {
+        tableList.push(sameRowList);
+        sameRowList = [];
+
+        sameRowList.push(tempInputs[key]);
+        indexRow = row;
+        continue;
+      }
+      sameRowList.push(tempInputs[key]);
+    }
+    tableList.push(sameRowList);
+    return tableList;
+  };
+
   const [text, setText] = useState("변환에 실패하였습니다");
   useEffect(() => {}, []);
   // setText(a);
