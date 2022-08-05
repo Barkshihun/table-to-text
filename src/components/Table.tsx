@@ -7,12 +7,10 @@ import { TableContents } from "./TableContents";
 function Table() {
   const [rows, setRows] = useState(2);
   const [cols, setCols] = useState(2);
-  const [isTransform, setIsTransform] = useState(false);
   const onRowPlus = () => setRows((currentRow) => ++currentRow);
   const onRowMinus = () => setRows((currentRow) => --currentRow);
   const onColPlus = () => setCols((currentCol) => ++currentCol);
   const onColMinus = () => setCols((currentCol) => --currentCol);
-  const onTranform = () => setIsTransform(true);
   return (
     <>
       <div>

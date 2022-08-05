@@ -1,11 +1,12 @@
 import { useState } from "react";
-import Output from "./Tranform";
+import Output from "./Output";
 import Table from "./Table";
 
 function Desktop() {
   const [isTransform, setIsTransform] = useState(false);
-  const onTranform = () =>
+  const onTranform = () => {
     setIsTransform((currentIsTransForm) => !currentIsTransForm);
+  };
   return (
     <main>
       <button onClick={onTranform}>

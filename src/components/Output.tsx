@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cellValueList } from "./TableContents";
 
-function Output() {
+export default function Output() {
   const cellValueToText = (cellValueList: string[][]) => {
     let temp: string[] = [];
     for (let i = 0; i < cellValueList.length; i++) {
@@ -9,16 +9,18 @@ function Output() {
     }
     return temp.toString();
   };
-  cellValueToText(cellValueList);
-  const [text, setText] = useState(cellValueToText(cellValueList));
+  const a = cellValueToText(cellValueList);
+  const [text, setText] = useState("변환에 실패하였습니다");
+  useEffect(() => {
+    console.log("Out", cellValueList);
+    setText(cellValueToText(cellValueList));
+  }, []);
+  // setText(a);
   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
     setText(event.target.value);
-  console.log(cellValueList[1][1]);
   return (
     <>
       <textarea cols={30} rows={10} value={text} onChange={onChange}></textarea>
     </>
   );
 }
-
-export default Output;

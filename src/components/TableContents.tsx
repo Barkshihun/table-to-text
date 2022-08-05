@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // tr이 행, td가 열
 export let cellValueList: string[][] = [];
 export function TableContents({ rows, cols }: { rows: number; cols: number }) {
+  cellValueList = [];
+  console.log("T", cellValueList);
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.dataset.row && event.target.dataset.col) {
       const row: number = parseInt(event.target.dataset.row);
@@ -35,5 +37,6 @@ export function TableContents({ rows, cols }: { rows: number; cols: number }) {
     }
     trList.push(<tr key={`row${row}`}>{tdList.map((td) => td)}</tr>);
   }
+  console.log("T", cellValueList);
   return <tbody>{trList}</tbody>;
 }
