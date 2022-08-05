@@ -10,7 +10,9 @@ function TableContents({ rows, cols }: { rows: number; cols: number }) {
     for (let j = 0; j < cols; j++) {
       tdList.push(
         <td key={`${j}${i}`}>
-          내용{j} {i}
+          <div>
+            <input value={`내용${j} ${i}`}></input>
+          </div>
         </td>
       );
     }
