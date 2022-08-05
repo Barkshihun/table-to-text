@@ -6,11 +6,18 @@ function Output() {
     let temp: string[] = [];
     return temp.toString();
   };
-  const tableList = () => {
+  const getLongestText = () => {
+    let lengthList = [];
+    for (const key in tempInputs) {
+      lengthList.push(tempInputs[key].length);
+    }
+    return Math.max(...lengthList);
+  };
+  const getTableList = () => {
     let tableList: string[][] = [];
     let indexRow = 0;
     let sameRowList = [];
-    for (let key in tempInputs) {
+    for (const key in tempInputs) {
       const row = parseInt(key.split(",")[0]);
       const col = parseInt(key.split(",")[1]);
       if (indexRow !== row) {
@@ -26,6 +33,9 @@ function Output() {
     tableList.push(sameRowList);
     return tableList;
   };
+  const longestText = getLongestText();
+  const tableList = getTableList();
+  console.log(longestText, tableList);
 
   const [text, setText] = useState("변환에 실패하였습니다");
   useEffect(() => {}, []);
