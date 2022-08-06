@@ -6,13 +6,7 @@ function Output() {
     let temp: string[] = [];
     return temp.toString();
   };
-  const getLongestText = () => {
-    let lengthList = [];
-    for (const key in tempInputs) {
-      lengthList.push(tempInputs[key].length);
-    }
-    return Math.max(...lengthList);
-  };
+
   const getTableList = () => {
     let tableList: string[][] = [];
     let indexRow = 0;
@@ -33,9 +27,20 @@ function Output() {
     tableList.push(sameRowList);
     return tableList;
   };
-  const longestText = getLongestText();
+  const getLongestTextPerCol = (tableList: string[][]) => {
+    const longestTextPerCol = [];
+    for (let i = 0; i < tableList.length; i++) {
+      const colTextLength = [];
+      for (let j = 0; j < tableList[i].length; j++) {
+        colTextLength.push(tableList[i][j].length);
+      }
+      longestTextPerCol.push(Math.max(...colTextLength));
+    }
+    return longestTextPerCol;
+  };
   const tableList = getTableList();
-  console.log(longestText, tableList);
+  const longestTextPerCol = getLongestTextPerCol(tableList);
+  console.log(longestTextPerCol, tableList);
 
   const [text, setText] = useState("변환에 실패하였습니다");
   useEffect(() => {}, []);

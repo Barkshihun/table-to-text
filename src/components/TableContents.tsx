@@ -25,15 +25,16 @@ export function TableContents({ rows, cols }: { rows: number; cols: number }) {
     const tdList = [];
     for (let col = 0; col < cols; col++) {
       const inputName = `${row},${col}`;
-      const testValue = `내용 ${row} ${col}`;
-      tempInputs[inputName] = testValue;
+      tempInputs[inputName] = tempInputs[inputName]
+        ? tempInputs[inputName]
+        : "";
       tdList.push(
         <td key={`r${row}c${col}`}>
           <div>
             <input
               name={`${row},${col}`}
-              value={inputs[inputName] || testValue}
-              placeholder={"우"}
+              value={inputs[inputName] || ""}
+              placeholder={""}
               onChange={onChange}
               data-row={row}
               data-col={col}
