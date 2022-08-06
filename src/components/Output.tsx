@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { golbalRows, globalCols } from "./Table";
 import { globalInputs } from "./TableContents";
 
 function Output() {
@@ -6,50 +7,26 @@ function Output() {
   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     // setText(event.target.value);
   };
-  /*
-  if (!globalInputs) {
-    console.log("실패");
-  }
-  const tempInputsToText = (tempInputs: { [inputName: string]: string }) => {
+  const globalInputsToText = (globalInputs: {
+    [inputName: string]: string;
+  }) => {
     let temp: string[] = [];
     return temp.toString();
   };
-  // console.log("tempInputs", tempInputs);
-  const getTableList = () => {
-    let tableList: string[][] = [];
-    let indexRow = 0;
-    let sameColList = [];
-    for (const key in tempInputs) {
-      const row = parseInt(key.split(",")[0]);
-      const col = parseInt(key.split(",")[1]);
-      if (indexRow !== row) {
-        tableList.push(sameColList);
-        sameColList = [];
-
-        sameColList.push(tempInputs[key]);
-        indexRow = row;
-        continue;
+  // console.log("globalInputs", globalInputs);
+  const getLongestTextPerCol = (globalInputs: tableInputObj) => {
+    let longestTextPerCol: number[] = [];
+    for (const coord in globalInputs) {
+      const col = parseInt(coord.split(",")[1]);
+      const textLength = globalInputs[coord].length;
+      if (!longestTextPerCol[col] || longestTextPerCol[col] < textLength) {
+        longestTextPerCol[col] = textLength;
       }
-      sameColList.push(tempInputs[key]);
-    }
-    tableList.push(sameColList);
-    return tableList;
-  };
-  const getLongestTextPerCol = (tableList: string[][]) => {
-    const longestTextPerCol = [];
-    for (let i = 0; i < tableList.length; i++) {
-      const colTextLength = [];
-      for (let j = 0; j < tableList[i].length; j++) {
-        colTextLength.push(tableList[i][j].length);
-      }
-      longestTextPerCol.push(Math.max(...colTextLength));
     }
     return longestTextPerCol;
   };
-  const tableList = getTableList();
-  const longestTextPerCol = getLongestTextPerCol(tableList);
-  // console.log(longestTextPerCol, tableList);
-*/
+  const longestTextPerCol = getLongestTextPerCol(globalInputs);
+  console.log("longestTextPerCol", longestTextPerCol);
   return (
     <>
       <textarea cols={30} rows={10} value={text} onChange={onChange}></textarea>

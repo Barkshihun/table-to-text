@@ -5,8 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TableContents } from "./TableContents";
 import { createPortal } from "react-dom";
 
-let golbalRows = 2;
-let globalCols = 2;
+export let golbalRows = 2;
+export let globalCols = 2;
 
 function Table() {
   const [rows, setRows] = useState(golbalRows);
