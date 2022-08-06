@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
-import { tempInputs } from "./TableContents";
+import { globalInputs } from "./TableContents";
 
 function Output() {
   const [text, setText] = useState("변환에 실패하였습니다");
-  if (!tempInputs) {
+  const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // setText(event.target.value);
+  };
+  /*
+  if (!globalInputs) {
     console.log("실패");
   }
   const tempInputsToText = (tempInputs: { [inputName: string]: string }) => {
@@ -45,17 +49,10 @@ function Output() {
   const tableList = getTableList();
   const longestTextPerCol = getLongestTextPerCol(tableList);
   // console.log(longestTextPerCol, tableList);
-  const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    // setText(event.target.value);
-  };
+*/
   return (
     <>
-      <textarea
-        cols={30}
-        rows={10}
-        value={"OOO"}
-        onChange={onChange}
-      ></textarea>
+      <textarea cols={30} rows={10} value={text} onChange={onChange}></textarea>
     </>
   );
 }

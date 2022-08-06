@@ -3,34 +3,31 @@ import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // tr이 행, td가 열
-let modifiedValue: string;
-let modifiedName: string;
-export let tempInputs: { [inputName: string]: string } = {};
+export let globalInputs: { [inputName: string]: string } = {};
 export function TableContents({ rows, cols }: { rows: number; cols: number }) {
-  const [inputs, setInputs]: [
-    inputs: { [inputName: string]: string },
-    setInputs: React.Dispatch<React.SetStateAction<{}>>
-  ] = useState({ ...tempInputs });
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.dataset.row && event.target.dataset.col) {
-      const row: number = parseInt(event.target.dataset.row);
-      const col: number = parseInt(event.target.dataset.col);
-      modifiedValue = event.target.value;
-      modifiedName = event.target.name;
-      setInputs({ ...inputs, [modifiedName]: modifiedValue });
-    }
-  };
-  const setTempInputs = () => {
-    tempInputs = {};
+  const initInputs = () => {
+    let inputs: { [inputName: string]: string } = {};
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
         const inputName = `${row},${col}`;
-        tempInputs[inputName] = tempInputs[inputName]
-          ? tempInputs[inputName]
+        inputs[inputName] = globalInputs[inputName]
+          ? globalInputs[inputName]
           : "";
       }
     }
+    return inputs;
   };
+  const [inputs, setInputs]: [
+    inputs: { [inputName: string]: string },
+    setInputs: React.Dispatch<React.SetStateAction<{}>>
+  ] = useState({ ...initInputs() });
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const modifiedValue = event.target.value;
+    const modifiedName = event.target.name;
+    globalInputs[modifiedName] = modifiedValue;
+    setInputs({ ...inputs, [modifiedName]: modifiedValue });
+  };
+
   const trList = [];
   for (let row = 0; row < rows; row++) {
     const tdList = [];
@@ -53,11 +50,8 @@ export function TableContents({ rows, cols }: { rows: number; cols: number }) {
     }
     trList.push(<tr key={`row${row}`}>{tdList.map((td) => td)}</tr>);
   }
-  if (modifiedName && modifiedValue) {
-    tempInputs[modifiedName] = modifiedValue;
-  }
-  setTempInputs();
-  // console.log("inputs", inputs, "tempInputs", tempInputs);
+  globalInputs = inputs;
+  console.log("inputs", inputs, "globalInputs", globalInputs);
   return (
     <>
       <tbody>{trList}</tbody>

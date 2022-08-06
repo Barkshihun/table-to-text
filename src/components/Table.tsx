@@ -35,7 +35,6 @@ function Table() {
   const onRowMinus = () => controlMinus("rows");
   const onColPlus = () => controlPlus("cols");
   const onColMinus = () => controlMinus("cols");
-  console.log("rows", rows, "cols", cols);
   golbalRows = rows;
   globalCols = cols;
   return (
