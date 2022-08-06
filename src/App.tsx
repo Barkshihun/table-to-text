@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Desktop from "./components/Desktop";
-import Mobile from "./components/Mobile";
+import Desktop from "./screen/Desktop";
+import Mobile from "./screen/Mobile";
 import "./scss/App.scss";
 
 function App() {

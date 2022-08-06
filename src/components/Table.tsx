@@ -3,16 +3,41 @@ import "../scss/Table.scss";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TableContents } from "./TableContents";
+import { createPortal } from "react-dom";
 
-let previousRows = 2;
-let previousCols = 2;
+let golbalRows = 2;
+let globalCols = 2;
+
 function Table() {
-  const [rows, setRows] = useState(previousRows);
-  const [cols, setCols] = useState(previousCols);
-  const onRowPlus = () => setRows(++previousRows);
-  const onRowMinus = () => setRows(--previousRows);
-  const onColPlus = () => setCols(++previousCols);
-  const onColMinus = () => setCols(--previousCols);
+  const [rows, setRows] = useState(golbalRows);
+  const [cols, setCols] = useState(globalCols);
+  const controlPlus = (target: "rows" | "cols") => {
+    if (rows === 0) {
+      setRows(1);
+      setCols(1);
+      return;
+    }
+    target === "rows"
+      ? setRows((current) => ++current)
+      : setCols((current) => ++current);
+  };
+  const controlMinus = (target: "rows" | "cols") => {
+    if ((target === "rows" && rows <= 1) || (target === "cols" && cols <= 1)) {
+      setRows(0);
+      setCols(0);
+      return;
+    }
+    target === "rows"
+      ? setRows((current) => --current)
+      : setCols((current) => --current);
+  };
+  const onRowPlus = () => controlPlus("rows");
+  const onRowMinus = () => controlMinus("rows");
+  const onColPlus = () => controlPlus("cols");
+  const onColMinus = () => controlMinus("cols");
+  console.log("rows", rows, "cols", cols);
+  golbalRows = rows;
+  globalCols = cols;
   return (
     <>
       <div>

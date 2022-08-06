@@ -2,29 +2,33 @@ import { useState, useEffect } from "react";
 import { tempInputs } from "./TableContents";
 
 function Output() {
+  const [text, setText] = useState("변환에 실패하였습니다");
+  if (!tempInputs) {
+    console.log("실패");
+  }
   const tempInputsToText = (tempInputs: { [inputName: string]: string }) => {
     let temp: string[] = [];
     return temp.toString();
   };
-
+  // console.log("tempInputs", tempInputs);
   const getTableList = () => {
     let tableList: string[][] = [];
     let indexRow = 0;
-    let sameRowList = [];
+    let sameColList = [];
     for (const key in tempInputs) {
       const row = parseInt(key.split(",")[0]);
       const col = parseInt(key.split(",")[1]);
       if (indexRow !== row) {
-        tableList.push(sameRowList);
-        sameRowList = [];
+        tableList.push(sameColList);
+        sameColList = [];
 
-        sameRowList.push(tempInputs[key]);
+        sameColList.push(tempInputs[key]);
         indexRow = row;
         continue;
       }
-      sameRowList.push(tempInputs[key]);
+      sameColList.push(tempInputs[key]);
     }
-    tableList.push(sameRowList);
+    tableList.push(sameColList);
     return tableList;
   };
   const getLongestTextPerCol = (tableList: string[][]) => {
@@ -40,16 +44,18 @@ function Output() {
   };
   const tableList = getTableList();
   const longestTextPerCol = getLongestTextPerCol(tableList);
-  console.log(longestTextPerCol, tableList);
-
-  const [text, setText] = useState("변환에 실패하였습니다");
-  useEffect(() => {}, []);
-  // setText(a);
-  const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
-    setText(event.target.value);
+  // console.log(longestTextPerCol, tableList);
+  const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // setText(event.target.value);
+  };
   return (
     <>
-      <textarea cols={30} rows={10} value={text} onChange={onChange}></textarea>
+      <textarea
+        cols={30}
+        rows={10}
+        value={"OOO"}
+        onChange={onChange}
+      ></textarea>
     </>
   );
 }

@@ -17,7 +17,18 @@ export function TableContents({ rows, cols }: { rows: number; cols: number }) {
       const col: number = parseInt(event.target.dataset.col);
       modifiedValue = event.target.value;
       modifiedName = event.target.name;
-      setInputs({ ...inputs, [event.target.name]: modifiedValue });
+      setInputs({ ...inputs, [modifiedName]: modifiedValue });
+    }
+  };
+  const setTempInputs = () => {
+    tempInputs = {};
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const inputName = `${row},${col}`;
+        tempInputs[inputName] = tempInputs[inputName]
+          ? tempInputs[inputName]
+          : "";
+      }
     }
   };
   const trList = [];
@@ -25,16 +36,13 @@ export function TableContents({ rows, cols }: { rows: number; cols: number }) {
     const tdList = [];
     for (let col = 0; col < cols; col++) {
       const inputName = `${row},${col}`;
-      tempInputs[inputName] = tempInputs[inputName]
-        ? tempInputs[inputName]
-        : "";
       tdList.push(
         <td key={`r${row}c${col}`}>
           <div>
             <input
               name={`${row},${col}`}
               value={inputs[inputName] || ""}
-              placeholder={""}
+              placeholder={`r${row}c${col}`}
               onChange={onChange}
               data-row={row}
               data-col={col}
@@ -46,8 +54,10 @@ export function TableContents({ rows, cols }: { rows: number; cols: number }) {
     trList.push(<tr key={`row${row}`}>{tdList.map((td) => td)}</tr>);
   }
   if (modifiedName && modifiedValue) {
-    tempInputs = { ...tempInputs, [modifiedName]: modifiedValue };
+    tempInputs[modifiedName] = modifiedValue;
   }
+  setTempInputs();
+  // console.log("inputs", inputs, "tempInputs", tempInputs);
   return (
     <>
       <tbody>{trList}</tbody>
