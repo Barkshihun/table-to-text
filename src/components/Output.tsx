@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { golbalRows, globalCols } from "./Table";
-import { globalInputs } from "./TableContents";
+import { golbalRows, globalCols, globalInputs } from "./Table";
 // col이 가로 row가 세로
 function Output() {
   const [text, setText] = useState("변환에 실패하였습니다");
