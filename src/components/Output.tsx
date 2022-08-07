@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
-import { golbalRows, globalCols, globalInputs } from "./Table";
+import { rows, cols, globalTableList } from "./Table";
 // col이 가로 row가 세로
 function Output() {
-  const [text, setText] = useState("변환에 실패하였습니다");
-  console.log("❌globalInputs", globalInputs);
-  const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setText(event.target.value);
-  };
-  // console.log("globalInputs", globalInputs);
   const computeLength = (str: string) => {
     let textLength = 0;
     // 2
@@ -35,42 +29,24 @@ function Output() {
     }
     return textLength;
   };
-  const getLongestTextPerCol = (globalInputs: tableInputObj) => {
+  const getLongestTextPerCol = (globalTableList: string[][]) => {
     let longestTextPerCol: number[] = [];
-    for (const coord in globalInputs) {
-      const col = parseInt(coord.split(",")[1]);
-      const textLength = computeLength(globalInputs[coord]);
-      // console.log(
-      //   "globalInputs[coord]",
-      //   globalInputs[coord],
-      //   "computeLength(globalInputs[coord])",
-      //   computeLength(globalInputs[coord])
-      // );
-      if (!longestTextPerCol[col] || longestTextPerCol[col] < textLength) {
-        longestTextPerCol[col] = textLength;
+
+    for (let col = 0; col < cols; col++) {
+      let tempList = [];
+      for (let row = 0; row < rows; row++) {
+        tempList.push(computeLength(globalTableList[row][col]));
       }
+      longestTextPerCol.push(Math.max(...tempList));
     }
+
     return longestTextPerCol;
   };
-  const getTableList = (globalInputs: tableInputObj) => {
-    let tableList = new Array(golbalRows);
-    for (let i = 0; i < tableList.length; i++) {
-      tableList[i] = new Array(globalCols);
-    }
-    for (let coord in globalInputs) {
-      const row = parseInt(coord.split(",")[0]);
-      const col = parseInt(coord.split(",")[1]);
-      tableList[row][col] = globalInputs[coord];
-    }
-    return tableList;
-  };
-  const tableList = getTableList(globalInputs);
-  console.log("tableList", tableList);
-  const longestTextPerColList = getLongestTextPerCol(globalInputs);
-  const globalInputsToText = (tableList: string[][]) => {
+  const longestTextPerColList = getLongestTextPerCol(globalTableList);
+  const globalTableListToText = (tableList: string[][]) => {
     let textList: string[] = [];
-    for (let row = 0; row < golbalRows; row++) {
-      for (let col = 0; col < globalCols; col++) {
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
         let text = tableList[row][col];
         if (text) {
           const textLength = computeLength(text);
@@ -88,17 +64,13 @@ function Output() {
     textList.pop;
     return textList.join("");
   };
-  useEffect(() => {
-    setText(globalInputsToText(tableList));
-  }, []);
-  // console.log(
-  //   "longestTextPerColList",
-  //   longestTextPerColList,
-  //   "globalInputs",
-  //   globalInputs,
-  //   "globalInputsToText(globalInputs)",
-  //   globalInputsToText(tableList)
-  // );
+  const [text, setText] = useState(globalTableListToText(globalTableList));
+
+  const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setText(event.target.value);
+  };
+
+  // console.log("longestTextPerColList", longestTextPerColList);
   return (
     <>
       <textarea cols={30} rows={10} value={text} onChange={onChange}></textarea>

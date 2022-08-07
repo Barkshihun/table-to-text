@@ -29,6 +29,9 @@ td {
       width: 100px;
       height: 40px;
       text-align: center;
+      &::placeholder {
+        color: salmon;
+      }
     }
   }
 }

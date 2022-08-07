@@ -1,50 +1,66 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "../scss/Table.scss";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export let golbalRows = 2;
-export let globalCols = 2;
-export let globalInputs: tableInputObj = {};
+export let rows = 2;
+export let cols = 2;
+export let globalTableList: string[][] = [];
 function Table() {
-  const [rows, setRows] = useState(golbalRows);
-  const [cols, setCols] = useState(globalCols);
-  const makeInputObj = () => {
-    console.log("init");
-    let inputs: tableInputObj = {};
+  const makeTableList = () => {
+    let tableList = new Array(rows);
     for (let row = 0; row < rows; row++) {
+      tableList[row] = new Array(cols);
       for (let col = 0; col < cols; col++) {
-        const coord = `${row},${col}`;
-        inputs[coord] = globalInputs[coord] ? globalInputs[coord] : "";
+        if (globalTableList[row]) {
+          tableList[row][col] = globalTableList[row][col]
+            ? globalTableList[row][col]
+            : "";
+          continue;
+        }
+        tableList[row][col] = "";
       }
     }
-    return inputs;
+    return tableList;
   };
-  const [inputs, setInputs]: [
-    inputs: tableInputObj,
-    setInputs: React.Dispatch<React.SetStateAction<{}>>
-  ] = useState(makeInputObj());
+  const [tableList, setTableList] = useState(makeTableList());
+  // console.log("tableList", tableList);
   const controlPlus = (target: "rows" | "cols") => {
     if (rows === 0) {
-      setRows(1);
-      setCols(1);
+      rows = 1;
+      cols = 1;
+      setTableList(makeTableList());
       return;
     }
-    target === "rows"
-      ? setRows((current) => ++current)
-      : setCols((current) => ++current);
+    switch (target) {
+      case "rows":
+        rows++;
+        setTableList(makeTableList());
+        break;
+      case "cols":
+        cols++;
+        setTableList(makeTableList());
+        break;
+    }
   };
   const controlMinus = (target: "rows" | "cols") => {
     if ((target === "rows" && rows <= 1) || (target === "cols" && cols <= 1)) {
-      setRows(0);
-      setCols(0);
-      setInputs({});
-      globalInputs = {};
+      rows = 0;
+      cols = 0;
+      globalTableList = [];
+      setTableList([]);
       return;
     }
-    target === "rows"
-      ? setRows((current) => --current)
-      : setCols((current) => --current);
+    switch (target) {
+      case "rows":
+        rows--;
+        setTableList(makeTableList());
+        break;
+      case "cols":
+        cols--;
+        setTableList(makeTableList());
+        break;
+    }
   };
   const onRowPlus = () => controlPlus("rows");
   const onRowMinus = () => controlMinus("rows");
@@ -52,23 +68,24 @@ function Table() {
   const onColMinus = () => controlMinus("cols");
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const modifiedValue = event.target.value;
-    const modifiedName = event.target.name;
-    globalInputs[modifiedName] = modifiedValue;
-    setInputs({ ...inputs, [modifiedName]: modifiedValue });
+    if (event.target.dataset.row && event.target.dataset.col) {
+      const row = parseInt(event.target.dataset.row);
+      const col = parseInt(event.target.dataset.col);
+      globalTableList[row][col] = event.target.value;
+      setTableList([...globalTableList]);
+    }
   };
   const setTableContents = () => {
     const trList = [];
     for (let row = 0; row < rows; row++) {
       const tdList = [];
       for (let col = 0; col < cols; col++) {
-        const coord = `${row},${col}`;
         tdList.push(
           <td key={`r${row}c${col}`}>
             <div>
               <input
                 name={`${row},${col}`}
-                value={inputs[coord] || ""}
+                value={tableList[row][col]}
                 placeholder={`r${row}c${col}`}
                 onChange={onChange}
                 data-row={row}
@@ -82,28 +99,8 @@ function Table() {
     }
     return trList;
   };
-  let tempInputs: tableInputObj = {};
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      const coord = `${row},${col}`;
-      if (!inputs[coord]) {
-        tempInputs[coord] = "";
-      } else {
-        tempInputs[coord] = inputs[coord];
-      }
-    }
-  }
-  globalInputs = tempInputs;
-  golbalRows = rows;
-  globalCols = cols;
-  console.log(
-    "✔globalInputs",
-    globalInputs,
-    "golbalRows",
-    golbalRows,
-    "globalCols",
-    globalCols
-  );
+  globalTableList = tableList;
+  // console.log("globalTableList", globalTableList);
   return (
     <>
       <div>
