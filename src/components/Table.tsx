@@ -9,32 +9,6 @@ export let globalInputs: tableInputObj = {};
 function Table() {
   const [rows, setRows] = useState(3);
   const [cols, setCols] = useState(2);
-  const controlPlus = (target: "rows" | "cols") => {
-    if (rows === 0) {
-      setRows(1);
-      setCols(1);
-      return;
-    }
-    target === "rows"
-      ? setRows((current) => ++current)
-      : setCols((current) => ++current);
-  };
-  const controlMinus = (target: "rows" | "cols") => {
-    if ((target === "rows" && rows <= 1) || (target === "cols" && cols <= 1)) {
-      setRows(0);
-      setCols(0);
-      return;
-    }
-    target === "rows"
-      ? setRows((current) => --current)
-      : setCols((current) => --current);
-  };
-  const onRowPlus = () => controlPlus("rows");
-  const onRowMinus = () => controlMinus("rows");
-  const onColPlus = () => controlPlus("cols");
-  const onColMinus = () => controlMinus("cols");
-
-  //
   const initInputs = () => {
     let inputs: tableInputObj = {};
     for (let row = 0; row < rows; row++) {
@@ -49,6 +23,35 @@ function Table() {
     inputs: tableInputObj,
     setInputs: React.Dispatch<React.SetStateAction<{}>>
   ] = useState({ ...initInputs() });
+  const controlPlus = (target: "rows" | "cols") => {
+    if (rows === 0) {
+      setRows(1);
+      setCols(1);
+      return;
+    }
+    target === "rows"
+      ? setRows((current) => ++current)
+      : setCols((current) => ++current);
+  };
+  const controlMinus = (target: "rows" | "cols") => {
+    if ((target === "rows" && rows <= 1) || (target === "cols" && cols <= 1)) {
+      setRows(0);
+      setCols(0);
+      setInputs({});
+      globalInputs = {};
+      return;
+    }
+    target === "rows"
+      ? setRows((current) => --current)
+      : setCols((current) => --current);
+  };
+  const onRowPlus = () => controlPlus("rows");
+  const onRowMinus = () => controlMinus("rows");
+  const onColPlus = () => controlPlus("cols");
+  const onColMinus = () => controlMinus("cols");
+
+  //
+
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const modifiedValue = event.target.value;
     const modifiedName = event.target.name;
