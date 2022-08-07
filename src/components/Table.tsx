@@ -89,12 +89,12 @@ function Table() {
   return (
     <>
       <div>
-        <button onClick={onRowPlus}>ROW ➕</button>
-        <button onClick={onRowMinus}>ROW ➖</button>
+        <button onClick={onRowPlus}>세로 ➕</button>
+        <button onClick={onRowMinus}>세로 ➖</button>
       </div>
       <div>
-        <button onClick={onColPlus}>COLUMN ➕</button>
-        <button onClick={onColMinus}>COLUMN ➖</button>
+        <button onClick={onColPlus}>가로 ➕</button>
+        <button onClick={onColMinus}>가로 ➖</button>
       </div>
       <table>
         <tbody>{setTableContents()}</tbody>
