@@ -3,6 +3,7 @@ import { golbalRows, globalCols, globalInputs } from "./Table";
 // col이 가로 row가 세로
 function Output() {
   const [text, setText] = useState("변환에 실패하였습니다");
+  console.log("❌globalInputs", globalInputs);
   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(event.target.value);
   };
@@ -64,6 +65,7 @@ function Output() {
     return tableList;
   };
   const tableList = getTableList(globalInputs);
+  console.log("tableList", tableList);
   const longestTextPerColList = getLongestTextPerCol(globalInputs);
   const globalInputsToText = (tableList: string[][]) => {
     let textList: string[] = [];

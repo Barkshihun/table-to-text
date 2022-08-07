@@ -3,13 +3,14 @@ import "../scss/Table.scss";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export let golbalRows: number;
-export let globalCols: number;
+export let golbalRows = 2;
+export let globalCols = 2;
 export let globalInputs: tableInputObj = {};
 function Table() {
-  const [rows, setRows] = useState(3);
-  const [cols, setCols] = useState(2);
-  const initInputs = () => {
+  const [rows, setRows] = useState(golbalRows);
+  const [cols, setCols] = useState(globalCols);
+  const makeInputObj = () => {
+    console.log("init");
     let inputs: tableInputObj = {};
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
@@ -22,7 +23,7 @@ function Table() {
   const [inputs, setInputs]: [
     inputs: tableInputObj,
     setInputs: React.Dispatch<React.SetStateAction<{}>>
-  ] = useState({ ...initInputs() });
+  ] = useState(makeInputObj());
   const controlPlus = (target: "rows" | "cols") => {
     if (rows === 0) {
       setRows(1);
@@ -49,8 +50,6 @@ function Table() {
   const onRowMinus = () => controlMinus("rows");
   const onColPlus = () => controlPlus("cols");
   const onColMinus = () => controlMinus("cols");
-
-  //
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const modifiedValue = event.target.value;
@@ -83,9 +82,28 @@ function Table() {
     }
     return trList;
   };
-  globalInputs = inputs;
+  let tempInputs: tableInputObj = {};
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const coord = `${row},${col}`;
+      if (!inputs[coord]) {
+        tempInputs[coord] = "";
+      } else {
+        tempInputs[coord] = inputs[coord];
+      }
+    }
+  }
+  globalInputs = tempInputs;
   golbalRows = rows;
   globalCols = cols;
+  console.log(
+    "✔globalInputs",
+    globalInputs,
+    "golbalRows",
+    golbalRows,
+    "globalCols",
+    globalCols
+  );
   return (
     <>
       <div>
