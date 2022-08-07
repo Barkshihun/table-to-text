@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { rows, cols, globalTableList } from "./Table";
 // col이 가로 row가 세로
+const isVerticalLine = true;
+const isHorizontalLine = true;
+const isBorder = true;
 function Output() {
   const computeLength = (str: string) => {
     let textLength = 0;
@@ -43,6 +46,13 @@ function Output() {
     return longestTextPerCol;
   };
   const longestTextPerColList = getLongestTextPerCol(globalTableList);
+  const totalWidth =
+    longestTextPerColList.reduce(
+      (previousValue, currentValue) => previousValue + currentValue,
+      0
+    ) +
+    cols * 3;
+  console.log(totalWidth);
   const globalTableListToText = (tableList: string[][]) => {
     let textList: string[] = [];
     for (let row = 0; row < rows; row++) {
@@ -57,9 +67,13 @@ function Output() {
         } else {
           text = `${" ".repeat(longestTextPerColList[col])}`;
         }
-        textList.push(`${text} | `);
+        isVerticalLine
+          ? textList.push(`${text} | `)
+          : textList.push(`${text}   `);
       }
-      textList.push("\n");
+      isHorizontalLine
+        ? textList.push(`\n${"=".repeat(totalWidth)}\n`)
+        : textList.push("\n");
     }
     textList.pop;
     return textList.join("");
