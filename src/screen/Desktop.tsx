@@ -20,7 +20,6 @@ function Desktop() {
   const onHorizontalLine = () => {
     setHorizontalLine((currentBorder) => !currentBorder);
   };
-  console.log("렌더");
   return (
     <main>
       <button onClick={onBorder}>{isBorder ? "테두리 ✔" : "테두리 ❌"}</button>

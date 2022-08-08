@@ -69,7 +69,6 @@ function Output({
       0
     ) +
     cols * 3;
-  // console.log(totalWidth);
   const computeText = (row: number, col: number): string => {
     let text = globalTableList[row][col];
     if (text) {
@@ -83,8 +82,7 @@ function Output({
     }
     return text;
   };
-  const globalTableListToText = (tableList: string[][]) => {
-    console.log("변환 시작");
+  const globalTableListToText = () => {
     let textList: string[] = [];
     isBorder
       ? textList.push(`${HORIZONTAL_BORDER_CHAR.repeat(totalWidth + 1)}\n`)
@@ -96,27 +94,30 @@ function Output({
         if (isBorder && col === 0) {
           text = `${VERTICAL_BORDER_CHAR} ${text}`;
         }
-        if (isVerticalLine) {
-          if (col === cols - 1) {
-            isBorder
-              ? textList.push(`${text} ${VERTICAL_BORDER_CHAR}`)
-              : textList.push(`${text}   `);
+        if (col === cols - 1) {
+          if (isBorder) {
+            textList.push(`${text} ${VERTICAL_BORDER_CHAR}`);
             continue;
           }
+          textList.push(`${text}`);
+          continue;
+        }
+        if (isVerticalLine) {
           textList.push(`${text} ${VERTICAL_CHAR} `);
-        } else {
-          textList.push(`${text}   `);
+          continue;
+        }
+        textList.push(`${text}   `);
+      }
+      if (row === rows - 1) {
+        if (isBorder) {
+          textList.push(`\n${HORIZONTAL_BORDER_CHAR.repeat(totalWidth + 1)}`);
+          continue;
+        }
+        if (isHorizontalLine) {
+          continue;
         }
       }
       if (isHorizontalLine) {
-        if (row === rows - 1) {
-          isBorder
-            ? textList.push(
-                `\n${HORIZONTAL_BORDER_CHAR.repeat(totalWidth + 1)}`
-              )
-            : null;
-          continue;
-        }
         if (isBorder) {
           textList.push(
             `\n${VERTICAL_BORDER_CHAR}${HORIZONTAL_CHAR.repeat(
@@ -125,23 +126,21 @@ function Output({
           );
           continue;
         }
-        textList.push(`\n${HORIZONTAL_CHAR.repeat(totalWidth - 2)}`);
-      } else {
-        textList.push("\n");
+        textList.push(`\n${HORIZONTAL_CHAR.repeat(totalWidth - 2)}\n`);
+        continue;
       }
       textList.push("\n");
     }
-    console.log("변환 끝");
     return textList.join("");
   };
-  const [text, setText] = useState(globalTableListToText(globalTableList));
+  const [text, setText] = useState(globalTableListToText());
 
   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(event.target.value);
   };
-
-  // console.log("longestTextPerColList", longestTextPerColList);
-  console.log("연산 끝");
+  useEffect(() => {
+    setText(globalTableListToText());
+  }, [isVerticalLine, isHorizontalLine, isBorder]);
   return (
     <>
       <textarea cols={60} rows={15} value={text} onChange={onChange}></textarea>
