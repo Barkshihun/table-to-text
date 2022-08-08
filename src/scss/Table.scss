@@ -1,5 +1,11 @@
 @import "./reset";
 @import "./mixin";
+
+body,
+textarea,
+input {
+  font-family: "맑은 고딕", "NanumGothic" !important;
+}
 main {
   display: flex;
   justify-content: flex-start;

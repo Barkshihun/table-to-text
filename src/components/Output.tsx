@@ -71,6 +71,7 @@ function Output({ space }: { space: string }) {
   //
   const globalTableListToText = () => {
     let textList: string[] = [];
+    const endOfRowIndex = rows - 1;
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
         let text = computeText(row, col);
@@ -80,7 +81,9 @@ function Output({ space }: { space: string }) {
         }
         textList.push(`${text}${spaceInTable}`);
       }
-
+      if (row === endOfRowIndex) {
+        continue;
+      }
       textList.push("\n");
     }
     return textList.join("");

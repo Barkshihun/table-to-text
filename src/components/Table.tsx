@@ -1,7 +1,5 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import "../scss/Table.scss";
-import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export let rows = 2;
 export let cols = 2;
@@ -108,5 +106,4 @@ function Table() {
     </>
   );
 }
-
 export default Table;
