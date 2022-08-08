@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { rows, cols, globalTableList } from "./Table";
 const HORIZONTAL_CHAR = "-";
 const VERTICAL_CHAR = "|";
-const HORIZONTAL_BORDER_CHAR = "#";
+const HORIZONTAL_BORDER_CHAR = "#"; // ■
 const VERTICAL_BORDER_CHAR = "#";
 
 const thickChars: string[] = ["@", "\u25A0-\u25FF"];
@@ -16,25 +16,25 @@ function Output({
   isHorizontalLine: boolean;
   isBorder: boolean;
 }) {
+  // 정규표현식 시작
+  // +2로 계산
+  const regCJK = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ぁ-ゔ|ァ-ヴー|々〆〤|一-龥]/g;
+  const regThick = new RegExp(`[${thickChars.join("|")}]`, "g");
+  //1로 계산
+  const regEng = /[a-z|A-Z]/g;
+  const regElse = new RegExp(
+    `[^ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ぁ-ゔ|ァ-ヴー|々〆〤|一-龥|a-z|A-Z|${thickChars.join(
+      "|"
+    )}]`,
+    "g"
+  );
+  // 정규표현식 끝
   const computeLength = (str: string) => {
     let textLength = 0;
-    // 정규표현식 시작
-    // +2로 계산
-    const isCJK = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ぁ-ゔ|ァ-ヴー|々〆〤|一-龥]/g;
-    const isThick = new RegExp(`[${thickChars.join("|")}]`, "g");
-    //1로 계산
-    const isEng = /[a-z|A-Z]/g;
-    const isElse = new RegExp(
-      `[^ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ぁ-ゔ|ァ-ヴー|々〆〤|一-龥|a-z|A-Z|${thickChars.join(
-        "|"
-      )}]`,
-      "g"
-    );
-    // 정규표현식 끝
-    let cjkList = str.match(isCJK);
-    let thickList = str.match(isThick);
-    let engList = str.match(isEng);
-    let elseList = str.match(isElse);
+    let cjkList = str.match(regCJK);
+    let thickList = str.match(regThick);
+    let engList = str.match(regEng);
+    let elseList = str.match(regElse);
     if (cjkList) {
       textLength = textLength + cjkList.length * 2;
     }
@@ -63,12 +63,21 @@ function Output({
     return longestTextPerCol;
   };
   const longestTextPerColList = getLongestTextPerCol();
-  const totalWidth =
-    longestTextPerColList.reduce(
-      (previousValue, currentValue) => previousValue + currentValue,
-      0
-    ) +
-    cols * 3;
+  const computeWidth = (str: string): number => {
+    const isCJK = regCJK.test(str);
+    const isThick = regThick.test(str);
+    const tableWidth =
+      longestTextPerColList.reduce(
+        (previousValue, currentValue) => previousValue + currentValue,
+        0
+      ) +
+      cols * 3;
+    if (isCJK || isThick) {
+      return Math.round(tableWidth / 2);
+    } else {
+      return tableWidth;
+    }
+  };
   const computeText = (row: number, col: number): string => {
     let text = globalTableList[row][col];
     if (text) {
@@ -82,13 +91,16 @@ function Output({
     }
     return text;
   };
+  // 12
+  const horizontalLineWidth = computeWidth(HORIZONTAL_CHAR);
+  computeWidth("");
+  const borderLineWidth = computeWidth(HORIZONTAL_BORDER_CHAR);
   const globalTableListToText = () => {
     let textList: string[] = [];
-    isBorder
-      ? textList.push(`${HORIZONTAL_BORDER_CHAR.repeat(totalWidth + 1)}\n`)
-      : null;
+    if (isBorder) {
+      textList.push(`${HORIZONTAL_BORDER_CHAR.repeat(borderLineWidth + 1)}\n`);
+    }
     for (let row = 0; row < rows; row++) {
-      // isBorder ? textList.push(`${VERTICAL_BORDER_CHAR} `) : null;
       for (let col = 0; col < cols; col++) {
         let text = computeText(row, col);
         if (isBorder && col === 0) {
@@ -110,7 +122,9 @@ function Output({
       }
       if (row === rows - 1) {
         if (isBorder) {
-          textList.push(`\n${HORIZONTAL_BORDER_CHAR.repeat(totalWidth + 1)}`);
+          textList.push(
+            `\n${HORIZONTAL_BORDER_CHAR.repeat(borderLineWidth + 1)}`
+          );
           continue;
         }
         if (isHorizontalLine) {
@@ -121,12 +135,12 @@ function Output({
         if (isBorder) {
           textList.push(
             `\n${VERTICAL_BORDER_CHAR}${HORIZONTAL_CHAR.repeat(
-              totalWidth - 1
+              horizontalLineWidth - 1
             )}${VERTICAL_BORDER_CHAR}\n`
           );
           continue;
         }
-        textList.push(`\n${HORIZONTAL_CHAR.repeat(totalWidth - 2)}\n`);
+        textList.push(`\n${HORIZONTAL_CHAR.repeat(horizontalLineWidth - 2)}\n`);
         continue;
       }
       textList.push("\n");
