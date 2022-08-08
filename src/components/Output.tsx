@@ -1,19 +1,36 @@
 import { useState, useEffect } from "react";
 import { rows, cols, globalTableList } from "./Table";
-// col이 가로 row가 세로
-const isVerticalLine = true;
-const isHorizontalLine = true;
-const isBorder = true;
-function Output() {
+const HORIZONTAL_CHAR = "-";
+const VERTICAL_CHAR = "|";
+const HORIZONTAL_BORDER_CHAR = "#";
+const VERTICAL_BORDER_CHAR = "#";
+
+const thickChars: string[] = ["@", "\u25A0-\u25FF"];
+
+function Output({
+  isVerticalLine,
+  isHorizontalLine,
+  isBorder,
+}: {
+  isVerticalLine: boolean;
+  isHorizontalLine: boolean;
+  isBorder: boolean;
+}) {
   const computeLength = (str: string) => {
     let textLength = 0;
-    // 2
+    // 정규표현식 시작
+    // +2로 계산
     const isCJK = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ぁ-ゔ|ァ-ヴー|々〆〤|一-龥]/g;
-    const isThick = /[@]/g;
-    //1
+    const isThick = new RegExp(`[${thickChars.join("|")}]`, "g");
+    //1로 계산
     const isEng = /[a-z|A-Z]/g;
-    const isElse = /[^ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ぁ-ゔ|ァ-ヴー|々〆〤|一-龥|a-z|A-Z|@]/g;
-    //
+    const isElse = new RegExp(
+      `[^ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ぁ-ゔ|ァ-ヴー|々〆〤|一-龥|a-z|A-Z|${thickChars.join(
+        "|"
+      )}]`,
+      "g"
+    );
+    // 정규표현식 끝
     let cjkList = str.match(isCJK);
     let thickList = str.match(isThick);
     let engList = str.match(isEng);
@@ -32,7 +49,7 @@ function Output() {
     }
     return textLength;
   };
-  const getLongestTextPerCol = (globalTableList: string[][]) => {
+  const getLongestTextPerCol = () => {
     let longestTextPerCol: number[] = [];
 
     for (let col = 0; col < cols; col++) {
@@ -45,37 +62,72 @@ function Output() {
 
     return longestTextPerCol;
   };
-  const longestTextPerColList = getLongestTextPerCol(globalTableList);
+  const longestTextPerColList = getLongestTextPerCol();
   const totalWidth =
     longestTextPerColList.reduce(
       (previousValue, currentValue) => previousValue + currentValue,
       0
     ) +
-    cols * 3;
-  console.log(totalWidth);
-  const globalTableListToText = (tableList: string[][]) => {
-    let textList: string[] = [];
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        let text = tableList[row][col];
-        if (text) {
-          const textLength = computeLength(text);
-          if (textLength < longestTextPerColList[col]) {
-            const gap = longestTextPerColList[col] - computeLength(text);
-            text = `${text}${" ".repeat(gap)}`;
-          }
-        } else {
-          text = `${" ".repeat(longestTextPerColList[col])}`;
-        }
-        isVerticalLine
-          ? textList.push(`${text} | `)
-          : textList.push(`${text}   `);
+    cols * 3 -
+    2;
+  // console.log(totalWidth);
+  const computeText = (row: number, col: number): string => {
+    let text = globalTableList[row][col];
+    if (text) {
+      const textLength = computeLength(text);
+      if (textLength < longestTextPerColList[col]) {
+        const gap = longestTextPerColList[col] - computeLength(text);
+        text = `${text}${" ".repeat(gap)}`;
       }
-      isHorizontalLine
-        ? textList.push(`\n${"=".repeat(totalWidth)}\n`)
-        : textList.push("\n");
+    } else {
+      text = `${" ".repeat(longestTextPerColList[col])}`;
     }
-    textList.pop;
+    return text;
+  };
+  const globalTableListToText = (tableList: string[][]) => {
+    console.log("변환 시작");
+    let textList: string[] = [];
+    isBorder
+      ? textList.push(`${HORIZONTAL_BORDER_CHAR.repeat(totalWidth + 2)}\n`)
+      : null;
+    for (let row = 0; row < rows; row++) {
+      // isBorder ? textList.push(`${VERTICAL_BORDER_CHAR} `) : null;
+      for (let col = 0; col < cols; col++) {
+        let text = computeText(row, col);
+        if (isVerticalLine) {
+          if (col === cols - 1) {
+            isBorder
+              ? textList.push(`${text} ${VERTICAL_BORDER_CHAR}`)
+              : textList.push(`${text}   `);
+            continue;
+          }
+          textList.push(`${text} ${VERTICAL_CHAR} `);
+        } else {
+          textList.push(`${text}   `);
+        }
+      }
+      // isBorder ? textList.push(` ${HORIZONTAL_CHAR}`) : null;
+      if (isHorizontalLine) {
+        if (row === rows - 1) {
+          isBorder
+            ? textList.push(
+                `\n${HORIZONTAL_BORDER_CHAR.repeat(totalWidth + 2)}`
+              )
+            : null;
+
+          continue;
+        }
+        isBorder
+          ? textList.push(
+              `\n${HORIZONTAL_CHAR.repeat(totalWidth)}${VERTICAL_BORDER_CHAR}`
+            )
+          : textList.push(`\n${HORIZONTAL_CHAR.repeat(totalWidth)}`);
+      } else {
+        textList.push("\n");
+      }
+      textList.push("\n");
+    }
+    console.log("변환 끝");
     return textList.join("");
   };
   const [text, setText] = useState(globalTableListToText(globalTableList));
@@ -85,9 +137,10 @@ function Output() {
   };
 
   // console.log("longestTextPerColList", longestTextPerColList);
+  console.log("연산 끝");
   return (
     <>
-      <textarea cols={30} rows={10} value={text} onChange={onChange}></textarea>
+      <textarea cols={60} rows={15} value={text} onChange={onChange}></textarea>
     </>
   );
 }
