@@ -13,9 +13,7 @@ function Table() {
       tableList[row] = new Array(cols);
       for (let col = 0; col < cols; col++) {
         if (globalTableList[row]) {
-          tableList[row][col] = globalTableList[row][col]
-            ? globalTableList[row][col]
-            : "";
+          tableList[row][col] = globalTableList[row][col] ? globalTableList[row][col] : "";
           continue;
         }
         tableList[row][col] = "";
@@ -83,14 +81,7 @@ function Table() {
         tdList.push(
           <td key={`r${row}c${col}`}>
             <div>
-              <input
-                name={`${row},${col}`}
-                value={tableList[row][col]}
-                placeholder={`r${row}c${col}`}
-                onChange={onChange}
-                data-row={row}
-                data-col={col}
-              />
+              <input name={`${row},${col}`} value={tableList[row][col]} placeholder={`r${row}c${col}`} onChange={onChange} data-row={row} data-col={col} />
             </div>
           </td>
         );
@@ -111,7 +102,6 @@ function Table() {
         <button onClick={onColPlus}>가로 ➕</button>
         <button onClick={onColMinus}>가로 ➖</button>
       </div>
-      <h1>나는 대한민국이다</h1>
       <table>
         <tbody>{setTableContents()}</tbody>
       </table>
