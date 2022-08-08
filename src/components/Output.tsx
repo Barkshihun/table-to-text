@@ -2,11 +2,8 @@ import { useState, useEffect } from "react";
 import { rows, cols, globalTableList } from "./Table";
 import "../scss/Output.scss";
 
-const HORIZONTAL_CHAR = "-";
-const VERTICAL_CHAR = "|";
-
 const thickChars = ["@", "\u25A0-\u25FF"];
-function Output({ isVerticalLine, isHorizontalLine }: { isVerticalLine: boolean; isHorizontalLine: boolean }) {
+function Output({ space }: { space: string }) {
   // 정규표현식 시작
   // +20로 계산  +2
   const regCJK = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ぁ-ゔ|ァ-ヴー|々〆〤|一-龥]/g;
@@ -15,7 +12,7 @@ function Output({ isVerticalLine, isHorizontalLine }: { isVerticalLine: boolean;
   const regEng = /[a-z|A-Z]/g;
   const regElse = new RegExp(`[^ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ぁ-ゔ|ァ-ヴー|々〆〤|一-龥|a-z|A-Z|${thickChars.join("|")}]`, "g");
   // 정규표현식 끝
-
+  const spaceInTable = space === " " ? `${space.repeat(2)}` : `${space.repeat(1)}`;
   const computeLength = (str: string) => {
     let textLength = 0;
     const cjkList = str.match(regCJK);
@@ -55,41 +52,22 @@ function Output({ isVerticalLine, isHorizontalLine }: { isVerticalLine: boolean;
     if (text) {
       const textLength = computeLength(text);
       if (textLength < longestTextPerColList[col]) {
-        const gap = longestTextPerColList[col] - computeLength(text);
-        text = `${text}${" ".repeat(gap)}`;
+        let gap = longestTextPerColList[col] - computeLength(text);
+        if (space === "\u3000") {
+          gap = Math.round(gap / 2);
+        }
+        text = `${text}${space.repeat(gap)}`;
       }
     } else {
-      text = `${" ".repeat(longestTextPerColList[col])}`;
+      if (space === "\u3000") {
+        text = `${space.repeat(Math.round(longestTextPerColList[col] / 2))}`;
+      } else {
+        text = `${space.repeat(longestTextPerColList[col])}`;
+      }
     }
     return text;
   };
   //
-  const endOfRowIndex = rows - 1;
-  const endOfColIndex = cols - 1;
-  const getHorizontalLineWidth = () => {
-    let textList: string[] = [];
-    const row = 0;
-    for (let col = 0; col < cols; col++) {
-      let text = computeText(row, col);
-      if (col === 0) {
-        // col의 시작인가?
-        text = `${" ".repeat(2)}${text}`;
-      }
-      if (isVerticalLine) {
-        // 세로선이 있는가?
-        if (col === endOfColIndex) {
-          // col의 끝인가?
-          textList.push(`${text}${" ".repeat(2)}`);
-        } else {
-          textList.push(`${text}${" ".repeat(2)}${VERTICAL_CHAR}${" ".repeat(2)}`);
-        }
-        continue;
-      }
-      textList.push(`${text}${" ".repeat(2)}`);
-    }
-    return computeLength(textList.join(""));
-  };
-  const horizontalLineWidth = getHorizontalLineWidth();
   //
   const globalTableListToText = () => {
     let textList: string[] = [];
@@ -98,29 +76,11 @@ function Output({ isVerticalLine, isHorizontalLine }: { isVerticalLine: boolean;
         let text = computeText(row, col);
         if (col === 0) {
           // col의 시작인가?
-          text = `${" ".repeat(2)}${text}`;
+          text = `${spaceInTable}${text}`;
         }
-        if (isVerticalLine) {
-          // 세로선이 있는가?
-          if (col === endOfColIndex) {
-            // col의 끝인가?
-            textList.push(`${text}${" ".repeat(2)}`);
-          } else {
-            textList.push(`${text}${" ".repeat(2)}${VERTICAL_CHAR}${" ".repeat(2)}`);
-          }
-          continue;
-        }
-        textList.push(`${text}${" ".repeat(2)}`);
+        textList.push(`${text}${spaceInTable}`);
       }
-      if (row === endOfRowIndex && isHorizontalLine) {
-        // row의 마지막에서 가로선이 있다면 그리지 말고 넘겨라
-        continue;
-      }
-      if (isHorizontalLine) {
-        // 가로선을 그려야 하는가?
-        textList.push(`\n${HORIZONTAL_CHAR.repeat(horizontalLineWidth)}\n`);
-        continue;
-      }
+
       textList.push("\n");
     }
     return textList.join("");
@@ -132,7 +92,7 @@ function Output({ isVerticalLine, isHorizontalLine }: { isVerticalLine: boolean;
   };
   useEffect(() => {
     setText(globalTableListToText());
-  }, [isVerticalLine, isHorizontalLine]);
+  }, [space]);
   return (
     <>
       <textarea cols={60} rows={15} value={text} onChange={onChange}></textarea>

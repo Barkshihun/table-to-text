@@ -7,23 +7,29 @@ function Desktop() {
   const [isTable, setIsTable] = useState(true);
   const [isVerticalLine, setVerticalLine] = useState(true);
   const [isHorizontalLine, setHorizontalLine] = useState(true);
+  const [space, setSpace] = useState(" ");
   const onTranform = () => {
     setIsTable((currentIsTable) => !currentIsTable);
   };
-  const onVerticalLine = () => {
-    setVerticalLine((currentBorder) => !currentBorder);
-  };
-  const onHorizontalLine = () => {
-    setHorizontalLine((currentBorder) => !currentBorder);
+  const onChangeSpaceClick = () => {
+    setSpace((currentSpace) => {
+      switch (currentSpace) {
+        case " ":
+          return "\u3000";
+        case "\u3000":
+          return " ";
+        default:
+          return " ";
+      }
+    });
   };
   return (
     <main>
-      <button onClick={onVerticalLine}>{isVerticalLine ? "세로선 ✔" : "세로선 ❌"}</button>
-      <button onClick={onHorizontalLine}>{isHorizontalLine ? "가로선 ✔" : "가로선 ❌"}</button>
+      <button onClick={onChangeSpaceClick}>{space === " " ? "반각 띄어쓰기" : "전각 띄어쓰기"}</button>
       <button onClick={onTranform} className={"transform-btn"}>
         {isTable ? "텍스트로 변환" : "표로 가기"}
       </button>
-      {isTable ? <Table /> : <Output isVerticalLine={isVerticalLine} isHorizontalLine={isHorizontalLine} />}
+      {isTable ? <Table /> : <Output space={space} />}
     </main>
   );
 }
