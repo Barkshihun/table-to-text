@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { rows, cols, globalTableList } from "./Table";
+import "../scss/Output.scss";
+
 const HORIZONTAL_CHAR = "-";
 const VERTICAL_CHAR = "|";
 const HORIZONTAL_BORDER_CHAR = "#"; // ■
 const VERTICAL_BORDER_CHAR = "#";
 
 const thickChars: string[] = ["@", "\u25A0-\u25FF"];
-
 function Output({
   isVerticalLine,
   isHorizontalLine,
@@ -29,6 +30,7 @@ function Output({
     "g"
   );
   // 정규표현식 끝
+
   const computeLength = (str: string) => {
     let textLength = 0;
     let cjkList = str.match(regCJK);

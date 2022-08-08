@@ -111,6 +111,7 @@ function Table() {
         <button onClick={onColPlus}>가로 ➕</button>
         <button onClick={onColMinus}>가로 ➖</button>
       </div>
+      <h1>나는 대한민국이다</h1>
       <table>
         <tbody>{setTableContents()}</tbody>
       </table>

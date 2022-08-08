@@ -9,7 +9,6 @@ main {
   flex-direction: column;
   margin-top: 50px;
 }
-
 table {
   border-collapse: collapse;
   font-size: 30px;
@@ -30,7 +29,7 @@ td {
       height: 40px;
       text-align: center;
       &::placeholder {
-        color: salmon;
+        color: blue;
       }
     }
   }
