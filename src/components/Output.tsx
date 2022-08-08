@@ -68,8 +68,7 @@ function Output({
       (previousValue, currentValue) => previousValue + currentValue,
       0
     ) +
-    cols * 3 -
-    2;
+    cols * 3;
   // console.log(totalWidth);
   const computeText = (row: number, col: number): string => {
     let text = globalTableList[row][col];
@@ -88,12 +87,15 @@ function Output({
     console.log("변환 시작");
     let textList: string[] = [];
     isBorder
-      ? textList.push(`${HORIZONTAL_BORDER_CHAR.repeat(totalWidth + 2)}\n`)
+      ? textList.push(`${HORIZONTAL_BORDER_CHAR.repeat(totalWidth + 1)}\n`)
       : null;
     for (let row = 0; row < rows; row++) {
       // isBorder ? textList.push(`${VERTICAL_BORDER_CHAR} `) : null;
       for (let col = 0; col < cols; col++) {
         let text = computeText(row, col);
+        if (isBorder && col === 0) {
+          text = `${VERTICAL_BORDER_CHAR} ${text}`;
+        }
         if (isVerticalLine) {
           if (col === cols - 1) {
             isBorder
@@ -106,22 +108,24 @@ function Output({
           textList.push(`${text}   `);
         }
       }
-      // isBorder ? textList.push(` ${HORIZONTAL_CHAR}`) : null;
       if (isHorizontalLine) {
         if (row === rows - 1) {
           isBorder
             ? textList.push(
-                `\n${HORIZONTAL_BORDER_CHAR.repeat(totalWidth + 2)}`
+                `\n${HORIZONTAL_BORDER_CHAR.repeat(totalWidth + 1)}`
               )
             : null;
-
           continue;
         }
-        isBorder
-          ? textList.push(
-              `\n${HORIZONTAL_CHAR.repeat(totalWidth)}${VERTICAL_BORDER_CHAR}`
-            )
-          : textList.push(`\n${HORIZONTAL_CHAR.repeat(totalWidth)}`);
+        if (isBorder) {
+          textList.push(
+            `\n${VERTICAL_BORDER_CHAR}${HORIZONTAL_CHAR.repeat(
+              totalWidth - 1
+            )}${VERTICAL_BORDER_CHAR}\n`
+          );
+          continue;
+        }
+        textList.push(`\n${HORIZONTAL_CHAR.repeat(totalWidth - 2)}`);
       } else {
         textList.push("\n");
       }
