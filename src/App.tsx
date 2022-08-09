@@ -116,9 +116,11 @@ function App() {
     return (
       <>
         <div className="table-container">
-          <table>
-            <tbody>{setTableContents()}</tbody>
-          </table>
+          <div className="table-container__table">
+            <table>
+              <tbody>{setTableContents()}</tbody>
+            </table>
+          </div>
 
           <div className="row-btns">
             <button onClick={onRowPlus}>

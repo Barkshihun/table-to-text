@@ -32,8 +32,11 @@ td {
 .table-container {
   position: relative;
   display: flex;
-  // justify-content: center;
-  width: 300px;
+  width: 100%;
+  .table-container__table {
+    width: 90%;
+    overflow: auto;
+  }
   table {
     margin-left: 50px;
     margin-right: 50px;
@@ -41,7 +44,7 @@ td {
 }
 .row-btns {
   display: flex;
-  width: 100%;
+  width: 200px;
   justify-content: center;
   top: -35px;
   position: absolute;
