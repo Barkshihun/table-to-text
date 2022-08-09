@@ -111,7 +111,9 @@ function Output() {
   }, [space]);
   return (
     <>
-      <button onClick={onChangeSpaceClick}>{space === " " ? "반각 띄어쓰기" : "전각 띄어쓰기"}</button>
+      <button onClick={onChangeSpaceClick} className="transform-btn">
+        {space === " " ? "반각 띄어쓰기" : "전각 띄어쓰기"}
+      </button>
       <textarea cols={60} rows={15} value={text} onChange={onChange}></textarea>
     </>
   );

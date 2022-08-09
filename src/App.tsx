@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Output from "./components/Output";
 import Table from "./components/Table";
+import "./scss/App.scss";
 
 function App() {
   const [isTable, setIsTable] = useState(true);

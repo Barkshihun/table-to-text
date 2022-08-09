@@ -1,3 +1,5 @@
+import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import "../scss/Table.scss";
 
@@ -11,10 +13,10 @@ function Table() {
       tableList[row] = new Array(cols);
       for (let col = 0; col < cols; col++) {
         if (globalTableList[row]) {
-          tableList[row][col] = globalTableList[row][col] ? globalTableList[row][col] : "";
-          continue;
+          tableList[row][col] = globalTableList[row][col] ? globalTableList[row][col] : `${row}`;
+        } else {
+          tableList[row][col] = `${row}`;
         }
-        tableList[row][col] = "";
       }
     }
     return tableList;
@@ -117,18 +119,26 @@ function Table() {
   // console.log("globalTableList", globalTableList);
   return (
     <>
-      <div className=".table-container">
+      <div className="table-container">
         <table>
           <tbody>{setTableContents()}</tbody>
         </table>
-      </div>
-      <div className="row-btns">
-        <button onClick={onRowPlus}>➕</button>
-        <button onClick={onRowMinus}>➖</button>
-      </div>
-      <div className="col-btns">
-        <button onClick={onColPlus}>➕</button>
-        <button onClick={onColMinus}>➖</button>
+        <div className="row-btns">
+          <button onClick={onRowPlus}>
+            <FontAwesomeIcon icon={faPlus} />
+          </button>
+          <button onClick={onRowMinus}>
+            <FontAwesomeIcon icon={faMinus} />
+          </button>
+        </div>
+        <div className="col-btns">
+          <button onClick={onColPlus}>
+            <FontAwesomeIcon icon={faPlus} />
+          </button>
+          <button onClick={onColMinus}>
+            <FontAwesomeIcon icon={faMinus} />
+          </button>
+        </div>
       </div>
     </>
   );
