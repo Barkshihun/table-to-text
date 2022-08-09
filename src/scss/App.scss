@@ -1,22 +1,41 @@
 @import "./Output.scss";
 @import "./Table.scss";
 
+#root {
+  width: 100%;
+}
+header {
+  width: 100%;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  button {
+    font-size: 20px;
+    width: 30%;
+    word-break: keep-all;
+  }
+}
 body,
 textarea,
 input {
   font-family: "맑은 고딕", "NanumGothic", sans-serif;
 }
-main {
+body {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+}
+main {
+  display: flex;
+  justify-content: flex-start;
+  // align-items: center;
   height: 100vh;
   flex-direction: column;
-  margin-top: 50px;
 }
 
 .transform-btn {
-  font-family: "Do Hyeon", sans-serif;
+  font-family: "Jua", sans-serif;
 }
 .btn-margin {
   margin-bottom: 10px;

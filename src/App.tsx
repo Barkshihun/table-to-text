@@ -7,11 +7,8 @@ let rows = 2;
 let cols = 2;
 let globalTableList: string[][] = [];
 const thickChars = ["@", "\u25A0-\u25FF"];
-const INIT_WIDTH = 500;
-let tableWidth = INIT_WIDTH + cols * 100;
 function App() {
   const [isTable, setIsTable] = useState(true);
-  const [width, setWidth] = useState(INIT_WIDTH + cols * 100);
 
   // Table
   function Table() {
@@ -35,7 +32,6 @@ function App() {
       if (rows === 0) {
         rows = 1;
         cols = 1;
-        setWidth(INIT_WIDTH + cols * 100);
         setTableList(makeTableList());
         return;
       }
@@ -46,8 +42,6 @@ function App() {
           break;
         case "cols":
           cols++;
-          setWidth(INIT_WIDTH + cols * 100);
-          console.log("width", width);
           setTableList(makeTableList());
           break;
       }
@@ -57,7 +51,6 @@ function App() {
         rows = 0;
         cols = 0;
         globalTableList = [];
-        setWidth(INIT_WIDTH + cols * 100);
         setTableList([]);
         return;
       }
@@ -68,8 +61,6 @@ function App() {
           break;
         case "cols":
           cols--;
-          setWidth(INIT_WIDTH + cols * 100);
-          console.log("width", width);
           setTableList(makeTableList());
           break;
       }
@@ -136,6 +127,7 @@ function App() {
           <table>
             <tbody>{setTableContents()}</tbody>
           </table>
+
           <div className="row-btns">
             <button onClick={onRowPlus}>
               <FontAwesomeIcon icon={faPlus} />
@@ -276,7 +268,7 @@ function App() {
     };
     const onCopy = (event: any) => {
       navigator.clipboard.writeText(text);
-      console.log("복사완료");
+      alert("복사완료");
     };
     useEffect(() => {
       setText(globalTableListToText());
@@ -299,24 +291,20 @@ function App() {
   const onTranform = () => {
     setIsTable((currentIsTable) => {
       if (currentIsTable) {
-        tableWidth = width;
-        setWidth(INIT_WIDTH);
       } else {
-        setWidth(tableWidth);
       }
       return !currentIsTable;
     });
   };
-  useEffect(() => {
-    console.log("바뀜", width);
-  }, [width]);
   return (
-    <main style={{ width: `${width}px` }}>
-      <button onClick={onTranform} className={"transform-btn btn-margin"}>
-        {isTable ? "텍스트로 변환" : "표로 가기"}
-      </button>
-      {isTable ? <Table /> : <Output />}
-    </main>
+    <>
+      <header>
+        <button onClick={onTranform} className={"transform-btn btn-margin"}>
+          {isTable ? "텍스트로 변환" : "표로 가기"}
+        </button>
+      </header>
+      <main>{isTable ? <Table /> : <Output />}</main>
+    </>
   );
 }
 
