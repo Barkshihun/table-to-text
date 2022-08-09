@@ -1,10 +1,11 @@
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 import "./scss/App.scss";
 
-let rows = 2;
-let cols = 2;
+let cols = 3;
+let rows = 4;
 let globalTableList: string[][] = [];
 const thickChars = ["@", "\u25A0-\u25FF"];
 function App() {
@@ -18,9 +19,9 @@ function App() {
         tableList[row] = new Array(cols);
         for (let col = 0; col < cols; col++) {
           if (globalTableList[row]) {
-            tableList[row][col] = globalTableList[row][col] ? globalTableList[row][col] : `${row}`;
+            tableList[row][col] = globalTableList[row][col] ? globalTableList[row][col] : ``;
           } else {
-            tableList[row][col] = `${row}`;
+            tableList[row][col] = ``;
           }
         }
       }
@@ -116,7 +117,22 @@ function App() {
     return (
       <>
         <div className="table-container">
-          <div className="table-container__table">
+          <div className="table-container__btn-row">
+            <div className="table-container__size">
+              <span>
+                {cols}x{rows}
+              </span>
+            </div>
+            <div className="table-container__col-btns">
+              <button onClick={onColPlus}>
+                <FontAwesomeIcon icon={faPlus} />
+              </button>
+              <button onClick={onColMinus}>
+                <FontAwesomeIcon icon={faMinus} />
+              </button>
+            </div>
+          </div>
+          <div className="table-container__table-row">
             <div className="table-container__row-btns">
               <button onClick={onRowPlus}>
                 <FontAwesomeIcon icon={faPlus} />
@@ -125,22 +141,6 @@ function App() {
                 <FontAwesomeIcon icon={faMinus} />
               </button>
             </div>
-            <div className="table-container__samerow">
-              <div className="table-container__size">
-                <span>
-                  {cols}x{rows}
-                </span>
-              </div>
-              <div className="table-container__col-btns">
-                <button onClick={onColPlus}>
-                  <FontAwesomeIcon icon={faPlus} />
-                </button>
-                <button onClick={onColMinus}>
-                  <FontAwesomeIcon icon={faMinus} />
-                </button>
-              </div>
-            </div>
-
             <div className="table-container__table-wrapper">
               <table>
                 <tbody>{setTableContents()}</tbody>
@@ -271,7 +271,13 @@ function App() {
     };
     const onCopy = (event: any) => {
       navigator.clipboard.writeText(text);
-      alert("복사완료");
+      Swal.fire({
+        title: "복사 성공",
+        timer: 1000,
+        position: "top",
+        showConfirmButton: false,
+        icon: "success",
+      });
     };
     useEffect(() => {
       setText(globalTableListToText());
@@ -280,12 +286,10 @@ function App() {
     return (
       <div className="output-container">
         <div className="output-container__btn-container">
-          <button onClick={onCopy} className="btn-margin">
-            COPY
-          </button>
-          <input type="button" value={changeSpaceBtnText} onClick={onChangeSpaceClick} className="transform-btn space-change-btn" />
+          <input type="button" onClick={onCopy} className="btn-margin" value={"COPY"} />
+          <input type="button" value={changeSpaceBtnText} onClick={onChangeSpaceClick} />
         </div>
-        <textarea cols={getHorizontalWidth()} rows={rows + 1} value={text} onChange={onChange}></textarea>
+        <textarea cols={getHorizontalWidth()} rows={rows + 1} value={text} onChange={onChange} style={{ height: `${rows + 3}em` }}></textarea>
       </div>
     );
   }

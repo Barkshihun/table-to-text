@@ -1,15 +1,28 @@
+@import "./mixin";
+
 .output-container {
   display: flex;
-  align-items: flex-start;
-  margin-left: 30px;
+  width: 100%;
+  justify-content: center;
   .output-container__btn-container {
+    @include mobile {
+      width: 120px;
+    }
+    @include desktop {
+      width: 150px;
+    }
     display: flex;
     height: 100%;
     flex-direction: column;
     justify-content: flex-start;
     margin-right: 10px;
+    input {
+      text-align: center;
+    }
   }
 }
-.space-change-btn {
-  text-align: center;
+textarea {
+  @include mobile {
+    resize: none;
+  }
 }

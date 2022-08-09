@@ -1,76 +1,71 @@
-@import "./reset";
 @import "./mixin";
 
-$black: rgb(30, 30, 30);
-
 .table-container {
-  width: 100%;
-  height: 50%;
+  @include mobile {
+    width: 80%;
+  }
+  @include desktop {
+    width: 50%;
+  }
+  height: 100%;
   display: flex;
   justify-content: center;
-  .table-container__table {
-    position: relative;
-    // @include mobile {
-    //   width: 90%;
-    // }
-    // @include desktop {
-    //   width: 40%;
-    // }
+  position: relative;
+  display: flex;
+  justify-content: center;
+  .table-container__table-row {
+    margin-top: 20px;
+    margin-left: 30px;
     display: flex;
-    justify-content: center;
-    width: 40%;
+    width: 100%;
+    .table-container__row-btns {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-right: 20px;
+      button {
+        color: blue;
+        &:first-child {
+          border-bottom: unset;
+        }
+      }
+    }
     .table-container__table-wrapper {
       display: flex;
       justify-content: flex-start;
-      width: 100%;
+      width: 70%;
       height: 100%;
       overflow: auto;
       position: relative;
     }
-    .table-container__samerow {
-      position: absolute;
-      width: 100%;
-      height: 30px;
-      display: flex;
-      justify-content: space-between;
-      top: -35px;
-      .table-container__size {
-        font-family: "Jua", sans-serif;
-        top: -30px;
-        left: 12px;
-        width: 30%;
-        height: 100%;
-        background: white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .table-container__col-btns {
-        display: flex;
-        width: 200px;
-        top: -35px;
-        button {
-          color: red;
-          background-color: white;
-          &:first-child {
-            border-right: unset;
-          }
-        }
-      }
-    }
   }
-
-  .table-container__row-btns {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  .table-container__btn-row {
     position: absolute;
-    left: -40px;
-    button {
-      background-color: white;
-      color: blue;
-      &:first-child {
-        border-bottom: unset;
+    width: 50%;
+    display: flex;
+    top: -35px;
+    left: 40px;
+    .table-container__size {
+      font-family: "Jua", sans-serif;
+      top: -30px;
+      left: 12px;
+      width: 30%;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 20px;
+      border: 2px solid $black;
+      border-radius: 10px;
+    }
+    .table-container__col-btns {
+      display: flex;
+      top: -35px;
+      button {
+        color: red;
+        &:first-child {
+          border-right: unset;
+        }
       }
     }
   }
@@ -93,11 +88,19 @@ table {
       align-items: center;
       input {
         all: unset;
-        font-size: 15px;
+        font-size: 20px;
         text-align: center;
-        min-width: 100px;
+        min-width: 70px;
+        padding: 0px 10px;
         &::placeholder {
-          color: rgb(137, 137, 137);
+          @include mobile {
+            font-size: $mobile-font-size - 10px;
+          }
+          @include desktop {
+            font-size: $desktop-font-size - 10px;
+          }
+          font-style: italic;
+          color: rgb(200, 200, 200);
         }
       }
     }
