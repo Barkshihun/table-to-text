@@ -7,10 +7,11 @@ let rows = 2;
 let cols = 2;
 let globalTableList: string[][] = [];
 const thickChars = ["@", "\u25A0-\u25FF"];
-
+const INIT_WIDTH = 500;
+let tableWidth = INIT_WIDTH + cols * 100;
 function App() {
   const [isTable, setIsTable] = useState(true);
-  const [width, setWidth] = useState(500 + cols * 100);
+  const [width, setWidth] = useState(INIT_WIDTH + cols * 100);
 
   // Table
   function Table() {
@@ -34,7 +35,7 @@ function App() {
       if (rows === 0) {
         rows = 1;
         cols = 1;
-        setWidth(500 + cols * 100);
+        setWidth(INIT_WIDTH + cols * 100);
         setTableList(makeTableList());
         return;
       }
@@ -45,7 +46,7 @@ function App() {
           break;
         case "cols":
           cols++;
-          setWidth(500 + cols * 100);
+          setWidth(INIT_WIDTH + cols * 100);
           console.log("width", width);
           setTableList(makeTableList());
           break;
@@ -56,7 +57,7 @@ function App() {
         rows = 0;
         cols = 0;
         globalTableList = [];
-        setWidth(500 + cols * 100);
+        setWidth(INIT_WIDTH + cols * 100);
         setTableList([]);
         return;
       }
@@ -67,7 +68,7 @@ function App() {
           break;
         case "cols":
           cols--;
-          setWidth(500 + cols * 100);
+          setWidth(INIT_WIDTH + cols * 100);
           console.log("width", width);
           setTableList(makeTableList());
           break;
@@ -296,7 +297,15 @@ function App() {
   //
 
   const onTranform = () => {
-    setIsTable((currentIsTable) => !currentIsTable);
+    setIsTable((currentIsTable) => {
+      if (currentIsTable) {
+        tableWidth = width;
+        setWidth(INIT_WIDTH);
+      } else {
+        setWidth(tableWidth);
+      }
+      return !currentIsTable;
+    });
   };
   useEffect(() => {
     console.log("바뀜", width);
