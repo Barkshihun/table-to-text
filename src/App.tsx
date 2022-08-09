@@ -103,15 +103,7 @@ function App() {
           tdList.push(
             <td key={`r${row}c${col}`}>
               <div>
-                <input
-                  name={`${row},${col}`}
-                  value={tableList[row][col]}
-                  placeholder={`r${row}c${col}`}
-                  onChange={onChange}
-                  data-row={row}
-                  data-col={col}
-                  style={{ width: `${longestTextPerCol[col]}em` }}
-                />
+                <input name={`${row},${col}`} value={tableList[row][col]} placeholder={"입력"} onChange={onChange} data-row={row} data-col={col} style={{ width: `${longestTextPerCol[col]}em` }} />
               </div>
             </td>
           );

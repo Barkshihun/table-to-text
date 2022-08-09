@@ -1,3 +1,15 @@
 %border {
   border: 2px solid black;
 }
+$mobile: 415px;
+$desktop: 416px;
+@mixin mobile {
+  @media (max-width: $mobile) {
+    @content;
+  }
+}
+@mixin desktop {
+  @media (min-width: ($desktop)) {
+    @content;
+  }
+}
