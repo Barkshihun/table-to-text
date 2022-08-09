@@ -3,7 +3,20 @@ import { rows, cols, globalTableList } from "./Table";
 import "../scss/Output.scss";
 
 const thickChars = ["@", "\u25A0-\u25FF"];
-function Output({ space }: { space: string }) {
+function Output() {
+  const [space, setSpace] = useState(" ");
+  const onChangeSpaceClick = () => {
+    setSpace((currentSpace) => {
+      switch (currentSpace) {
+        case " ":
+          return "\u3000";
+        case "\u3000":
+          return " ";
+        default:
+          return " ";
+      }
+    });
+  };
   // 정규표현식 시작
   // +20로 계산  +2
   const regCJK = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ぁ-ゔ|ァ-ヴー|々〆〤|一-龥]/g;
@@ -98,6 +111,7 @@ function Output({ space }: { space: string }) {
   }, [space]);
   return (
     <>
+      <button onClick={onChangeSpaceClick}>{space === " " ? "반각 띄어쓰기" : "전각 띄어쓰기"}</button>
       <textarea cols={60} rows={15} value={text} onChange={onChange}></textarea>
     </>
   );

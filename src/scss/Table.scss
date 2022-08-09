@@ -18,7 +18,10 @@ main {
 table {
   border-collapse: collapse;
   font-size: 30px;
-  @extend %border;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  // @extend %border;
 }
 td {
   @extend %border;
@@ -44,14 +47,16 @@ td {
 .cell {
   @extend %border;
 }
-.col-btn {
-  color: red;
-  position: relative;
-  left: 10px;
-  bottom: 20px;
+.table-container {
+  display: flex;
 }
-.row-btn {
-  color: blue;
-  position: relative;
-  right: 20px;
+.row-btns {
+  display: flex;
+  justify-content: center;
+}
+.col-btns {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
 }

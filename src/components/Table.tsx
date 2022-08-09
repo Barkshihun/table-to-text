@@ -92,17 +92,19 @@ function Table() {
   // console.log("globalTableList", globalTableList);
   return (
     <>
-      <div>
-        <button onClick={onRowPlus}>세로 ➕</button>
-        <button onClick={onRowMinus}>세로 ➖</button>
+      <div className="table-container">
+        <table>
+          <tbody>{setTableContents()}</tbody>
+          <div className="row-btns">
+            <button onClick={onRowPlus}>➕</button>
+            <button onClick={onRowMinus}>➖</button>
+          </div>
+        </table>
+        <div className="col-btns">
+          <button onClick={onColPlus}>➕</button>
+          <button onClick={onColMinus}>➖</button>
+        </div>
       </div>
-      <div>
-        <button onClick={onColPlus}>가로 ➕</button>
-        <button onClick={onColMinus}>가로 ➖</button>
-      </div>
-      <table>
-        <tbody>{setTableContents()}</tbody>
-      </table>
     </>
   );
 }
