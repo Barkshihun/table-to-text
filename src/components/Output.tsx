@@ -5,18 +5,7 @@ import "../scss/Output.scss";
 const thickChars = ["@", "\u25A0-\u25FF"];
 function Output() {
   const [space, setSpace] = useState(" ");
-  const onChangeSpaceClick = () => {
-    setSpace((currentSpace) => {
-      switch (currentSpace) {
-        case " ":
-          return "\u3000";
-        case "\u3000":
-          return " ";
-        default:
-          return " ";
-      }
-    });
-  };
+
   // 정규표현식 시작
   // +20로 계산  +2
   const regCJK = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ぁ-ゔ|ァ-ヴー|々〆〤|一-龥]/g;
@@ -25,6 +14,7 @@ function Output() {
   const regEng = /[a-z|A-Z]/g;
   const regElse = new RegExp(`[^ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ぁ-ゔ|ァ-ヴー|々〆〤|一-龥|a-z|A-Z|${thickChars.join("|")}]`, "g");
   // 정규표현식 끝
+
   const spaceInTable = space === " " ? `${space.repeat(2)}` : `${space.repeat(1)}`;
   const computeLength = (str: string) => {
     let textLength = 0;
@@ -80,8 +70,6 @@ function Output() {
     }
     return text;
   };
-  //
-  //
   const globalTableListToText = () => {
     let textList: string[] = [];
     const endOfRowIndex = rows - 1;
@@ -106,16 +94,27 @@ function Output() {
   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(event.target.value);
   };
+  const onChangeSpaceClick = () => {
+    setSpace((currentSpace) => {
+      switch (currentSpace) {
+        case " ":
+          return "\u3000";
+        case "\u3000":
+          return " ";
+        default:
+          return " ";
+      }
+    });
+  };
   useEffect(() => {
     setText(globalTableListToText());
   }, [space]);
+  const changeSpaceBtnText = space === " " ? "반각 띄어쓰기\nU+0020\n| |" : "전각 띄어쓰기\nU+3000\n|　|";
   return (
-    <>
-      <button onClick={onChangeSpaceClick} className="transform-btn">
-        {space === " " ? "반각 띄어쓰기" : "전각 띄어쓰기"}
-      </button>
+    <div className="output-container">
+      <input type="button" value={changeSpaceBtnText} onClick={onChangeSpaceClick} className="transform-btn space-change-btn" />
       <textarea cols={60} rows={15} value={text} onChange={onChange}></textarea>
-    </>
+    </div>
   );
 }
 export default Output;
