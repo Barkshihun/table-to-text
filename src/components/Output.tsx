@@ -89,6 +89,18 @@ function Output() {
     }
     return textList.join("");
   };
+  const getHorizontalWidth = () => {
+    let textList: string[] = [];
+    const row = 0;
+    for (let col = 0; col < cols; col++) {
+      let text = computeText(row, col);
+      if (col === 0) {
+        text = `${" ".repeat(2)}${text}`;
+      }
+      textList.push(`${text}${" ".repeat(2)}`);
+    }
+    return computeLength(textList.join("")) + 4;
+  };
   const [text, setText] = useState(globalTableListToText());
 
   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -106,14 +118,23 @@ function Output() {
       }
     });
   };
+  const onCopy = (event: any) => {
+    navigator.clipboard.writeText(text);
+    console.log("복사완료");
+  };
   useEffect(() => {
     setText(globalTableListToText());
   }, [space]);
   const changeSpaceBtnText = space === " " ? "반각 띄어쓰기\nU+0020\n| |" : "전각 띄어쓰기\nU+3000\n|　|";
   return (
     <div className="output-container">
-      <input type="button" value={changeSpaceBtnText} onClick={onChangeSpaceClick} className="transform-btn space-change-btn" />
-      <textarea cols={60} rows={15} value={text} onChange={onChange}></textarea>
+      <div className="output-container__btn-container">
+        <button onClick={onCopy} className="btn-margin">
+          COPY
+        </button>
+        <input type="button" value={changeSpaceBtnText} onClick={onChangeSpaceClick} className="transform-btn space-change-btn" />
+      </div>
+      <textarea cols={getHorizontalWidth()} rows={rows + 1} value={text} onChange={onChange}></textarea>
     </div>
   );
 }

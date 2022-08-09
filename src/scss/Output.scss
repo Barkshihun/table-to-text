@@ -1,8 +1,15 @@
 .output-container {
   position: relative;
+  .output-container__btn-container {
+    position: absolute;
+    left: -100px;
+    display: flex;
+    flex-direction: column;
+  }
 }
 .space-change-btn {
-  position: absolute;
-  left: -100px;
   text-align: center;
+}
+textarea {
+  resize: none;
 }
