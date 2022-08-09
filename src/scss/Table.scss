@@ -1,20 +1,6 @@
 @import "./reset";
 @import "./mixin";
 
-body,
-textarea,
-input {
-  font-family: "맑은 고딕", "NanumGothic", sans-serif;
-}
-main {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  height: 100vh;
-  width: 100%;
-  flex-direction: column;
-  margin-top: 50px;
-}
 table {
   border-collapse: collapse;
   font-size: 30px;
