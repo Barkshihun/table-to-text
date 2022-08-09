@@ -20,7 +20,7 @@ function Table() {
     return tableList;
   };
   const [tableList, setTableList] = useState(makeTableList());
-  // console.log("tableList", tableList);
+  // 클릭 이벤트 시작
   const controlPlus = (target: "rows" | "cols") => {
     if (rows === 0) {
       rows = 1;
@@ -62,15 +62,32 @@ function Table() {
   const onRowMinus = () => controlMinus("rows");
   const onColPlus = () => controlPlus("cols");
   const onColMinus = () => controlMinus("cols");
+  const getLongestTextPerCol = () => {
+    let longestTextPerCol: number[] = [];
 
+    for (let col = 0; col < cols; col++) {
+      let tempList = [];
+      for (let row = 0; row < rows; row++) {
+        tempList.push(tableList[row][col].length);
+      }
+      longestTextPerCol.push(Math.max(...tempList));
+    }
+
+    return longestTextPerCol;
+  };
+  let longestTextPerCol = getLongestTextPerCol();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.dataset.row && event.target.dataset.col) {
       const row = parseInt(event.target.dataset.row);
       const col = parseInt(event.target.dataset.col);
       globalTableList[row][col] = event.target.value;
+      if (longestTextPerCol[col] < event.target.value.length) {
+        longestTextPerCol[col] = event.target.value.length;
+      }
       setTableList([...globalTableList]);
     }
   };
+  // 클릭 이벤트 끝
   const setTableContents = () => {
     const trList = [];
     for (let row = 0; row < rows; row++) {
@@ -79,7 +96,15 @@ function Table() {
         tdList.push(
           <td key={`r${row}c${col}`}>
             <div>
-              <input name={`${row},${col}`} value={tableList[row][col]} placeholder={`r${row}c${col}`} onChange={onChange} data-row={row} data-col={col} />
+              <input
+                name={`${row},${col}`}
+                value={tableList[row][col]}
+                placeholder={`r${row}c${col}`}
+                onChange={onChange}
+                data-row={row}
+                data-col={col}
+                style={{ width: `${longestTextPerCol[col]}em` }}
+              />
             </div>
           </td>
         );
@@ -92,18 +117,18 @@ function Table() {
   // console.log("globalTableList", globalTableList);
   return (
     <>
-      <div className="table-container">
+      <div className=".table-container">
         <table>
           <tbody>{setTableContents()}</tbody>
-          <div className="row-btns">
-            <button onClick={onRowPlus}>➕</button>
-            <button onClick={onRowMinus}>➖</button>
-          </div>
         </table>
-        <div className="col-btns">
-          <button onClick={onColPlus}>➕</button>
-          <button onClick={onColMinus}>➖</button>
-        </div>
+      </div>
+      <div className="row-btns">
+        <button onClick={onRowPlus}>➕</button>
+        <button onClick={onRowMinus}>➖</button>
+      </div>
+      <div className="col-btns">
+        <button onClick={onColPlus}>➕</button>
+        <button onClick={onColMinus}>➖</button>
       </div>
     </>
   );

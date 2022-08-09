@@ -46,7 +46,7 @@ function Output() {
     }
     return textLength;
   };
-  const getLongestTextPerCol = () => {
+  const getLongestComputedLengthPerCol = () => {
     let longestTextPerCol: number[] = [];
 
     for (let col = 0; col < cols; col++) {
@@ -59,7 +59,7 @@ function Output() {
 
     return longestTextPerCol;
   };
-  const longestTextPerColList = getLongestTextPerCol();
+  const longestTextPerColList = getLongestComputedLengthPerCol();
   const computeText = (row: number, col: number): string => {
     let text = globalTableList[row][col];
     if (text) {
