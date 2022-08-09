@@ -1,6 +1,6 @@
-@import "./Output.scss";
-@import "./Table.scss";
-@import "./mixin.scss";
+@import "./Output";
+@import "./Table";
+@import "./mixin";
 
 #root {
   width: 100%;
@@ -32,6 +32,7 @@ body {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  background: linear-gradient(#e66465, #9198e5);
 }
 main {
   display: flex;

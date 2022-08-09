@@ -117,29 +117,36 @@ function App() {
       <>
         <div className="table-container">
           <div className="table-container__table">
-            <table>
-              <tbody>{setTableContents()}</tbody>
-            </table>
+            <div className="table-container__row-btns">
+              <button onClick={onRowPlus}>
+                <FontAwesomeIcon icon={faPlus} />
+              </button>
+              <button onClick={onRowMinus}>
+                <FontAwesomeIcon icon={faMinus} />
+              </button>
+            </div>
+            <div className="table-container__samerow">
+              <div className="table-container__size">
+                <span>
+                  {cols}x{rows}
+                </span>
+              </div>
+              <div className="table-container__col-btns">
+                <button onClick={onColPlus}>
+                  <FontAwesomeIcon icon={faPlus} />
+                </button>
+                <button onClick={onColMinus}>
+                  <FontAwesomeIcon icon={faMinus} />
+                </button>
+              </div>
+            </div>
+
+            <div className="table-container__table-wrapper">
+              <table>
+                <tbody>{setTableContents()}</tbody>
+              </table>
+            </div>
           </div>
-          <div className="row-btns">
-            <button onClick={onRowPlus}>
-              <FontAwesomeIcon icon={faPlus} />
-            </button>
-            <button onClick={onRowMinus}>
-              <FontAwesomeIcon icon={faMinus} />
-            </button>
-          </div>
-          <div className="col-btns">
-            <button onClick={onColPlus}>
-              <FontAwesomeIcon icon={faPlus} />
-            </button>
-            <button onClick={onColMinus}>
-              <FontAwesomeIcon icon={faMinus} />
-            </button>
-          </div>
-          <span className="size">
-            {cols}x{rows}
-          </span>
         </div>
       </>
     );
