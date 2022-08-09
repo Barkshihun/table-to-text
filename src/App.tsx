@@ -121,7 +121,6 @@ function App() {
               <tbody>{setTableContents()}</tbody>
             </table>
           </div>
-
           <div className="row-btns">
             <button onClick={onRowPlus}>
               <FontAwesomeIcon icon={faPlus} />
@@ -138,6 +137,9 @@ function App() {
               <FontAwesomeIcon icon={faMinus} />
             </button>
           </div>
+          <span className="size">
+            {cols}x{rows}
+          </span>
         </div>
       </>
     );
