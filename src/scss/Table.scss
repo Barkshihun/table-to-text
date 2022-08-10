@@ -2,7 +2,7 @@
 
 .table-container {
   @include mobile {
-    width: 80%;
+    width: 90%;
   }
   @include desktop {
     width: 50%;
@@ -14,7 +14,12 @@
   display: flex;
   justify-content: center;
   .table-container__table-row {
-    margin-top: 20px;
+    @include mobile {
+      margin-top: 0px;
+    }
+    @include desktop {
+      margin-top: 20px;
+    }
     margin-left: 30px;
     display: flex;
     width: 100%;
@@ -34,8 +39,7 @@
       display: flex;
       justify-content: flex-start;
       width: 70%;
-      height: 100%;
-      overflow: auto;
+      // overflow: auto;
       position: relative;
     }
   }
@@ -74,13 +78,11 @@
 table {
   position: absolute;
   border-collapse: collapse;
-  font-size: 30px;
   border: 2px solid $black;
   background: white;
   margin-bottom: 50px;
   td {
     border: 1px solid $black;
-    height: 40px;
     div {
       height: 100%;
       display: flex;
@@ -88,13 +90,19 @@ table {
       align-items: center;
       input {
         all: unset;
-        font-size: 20px;
         text-align: center;
-        min-width: 70px;
-        padding: 0px 10px;
+        padding: 5px 0;
+        @include mobile {
+          min-width: 50px;
+          height: 20px;
+        }
+        @include desktop {
+          min-width: 90px;
+          height: 40px;
+        }
         &::placeholder {
           @include mobile {
-            font-size: $mobile-font-size - 10px;
+            font-size: $mobile-font-size - 5px;
           }
           @include desktop {
             font-size: $desktop-font-size - 10px;

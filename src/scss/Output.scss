@@ -2,11 +2,11 @@
 
 .output-container {
   display: flex;
-  width: 100%;
   justify-content: center;
+  width: 100%;
   .output-container__btn-container {
     @include mobile {
-      width: 120px;
+      width: 100px;
     }
     @include desktop {
       width: 150px;
