@@ -1,11 +1,15 @@
 @import "./mixin";
 
 .table-container {
-  @include mobile {
-    width: 90%;
-  }
+  flex-shrink: 1;
   @include desktop {
     width: 50%;
+  }
+  @include middle {
+    width: 90%;
+  }
+  @include mobile {
+    width: 90%;
   }
   height: 100%;
   display: flex;
@@ -13,14 +17,48 @@
   position: relative;
   display: flex;
   justify-content: center;
-  .table-container__table-row {
+  .table-container__btn-row {
+    position: absolute;
+    width: 50%;
+    display: flex;
     @include mobile {
-      margin-top: 0px;
+      left: 60px;
     }
     @include desktop {
-      margin-top: 20px;
+      left: 40px;
     }
-    margin-left: 30px;
+    .table-container__size {
+      font-family: "Jua", sans-serif;
+      top: -30px;
+      left: 12px;
+      width: 30%;
+      min-width: 65px;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 20px;
+      border: 2px solid $black;
+      border-radius: 10px;
+    }
+    .table-container__col-btns {
+      display: flex;
+      top: -35px;
+      button {
+        color: red;
+        &:first-child {
+          border-right: unset;
+        }
+      }
+    }
+  }
+  .table-container__table-row {
+    @include mobile {
+      margin-top: 40px;
+    }
+    @include desktop {
+      margin-top: 60px;
+    }
     display: flex;
     width: 100%;
     .table-container__row-btns {
@@ -43,36 +81,6 @@
       position: relative;
     }
   }
-  .table-container__btn-row {
-    position: absolute;
-    width: 50%;
-    display: flex;
-    top: -35px;
-    left: 40px;
-    .table-container__size {
-      font-family: "Jua", sans-serif;
-      top: -30px;
-      left: 12px;
-      width: 30%;
-      background: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-right: 20px;
-      border: 2px solid $black;
-      border-radius: 10px;
-    }
-    .table-container__col-btns {
-      display: flex;
-      top: -35px;
-      button {
-        color: red;
-        &:first-child {
-          border-right: unset;
-        }
-      }
-    }
-  }
 }
 
 table {
@@ -91,22 +99,19 @@ table {
       input {
         all: unset;
         text-align: center;
-        padding: 5px 0;
         @include mobile {
           min-width: 50px;
           height: 20px;
+          font-size: $mobile-font-size;
+          padding: 5px 10px;
         }
         @include desktop {
           min-width: 90px;
           height: 40px;
+          font-size: $desktop-font-size;
+          padding: 15px 25px;
         }
         &::placeholder {
-          @include mobile {
-            font-size: $mobile-font-size - 5px;
-          }
-          @include desktop {
-            font-size: $desktop-font-size - 10px;
-          }
           font-style: italic;
           color: rgb(200, 200, 200);
         }

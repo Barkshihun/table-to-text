@@ -37,9 +37,12 @@ header {
     word-break: keep-all;
     @include mobile {
       width: 50%;
+      font-size: $mobile-font-size + 10px;
     }
     @include desktop {
       width: 30%;
+      min-width: 340px;
+      font-size: $desktop-font-size + 10px;
     }
   }
 }

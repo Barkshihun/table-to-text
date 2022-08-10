@@ -1,6 +1,6 @@
 $black: rgb(30, 30, 30);
-$mobile: 500px;
-$desktop: 501px;
+$mobile: 550px;
+$desktop: $mobile + 1px;
 $desktop-font-size: 25px;
 $mobile-font-size: 13px;
 %border {
@@ -8,6 +8,11 @@ $mobile-font-size: 13px;
 }
 @mixin mobile {
   @media (max-width: $mobile) {
+    @content;
+  }
+}
+@mixin middle {
+  @media (min-width: $desktop) and (max-width: 945px) {
     @content;
   }
 }

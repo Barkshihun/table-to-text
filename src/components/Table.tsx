@@ -5,47 +5,37 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 let globalTableList: string[][] = [];
 function Table({ isTable }: { isTable: boolean }) {
-  const [rows, setRows] = useState(3);
-  const [cols, setCols] = useState(4);
-
-  const makeTableList = (): string[][] => {
-    console.log("makeTableList!!!!!!");
-    let tempTableList = new Array(rows);
+  const [cols, setCols] = useState(3);
+  const [rows, setRows] = useState(4);
+  const makeTableList = () => {
+    let tableList = new Array(rows);
     for (let row = 0; row < rows; row++) {
-      tempTableList[row] = new Array(cols);
+      tableList[row] = new Array(cols);
       for (let col = 0; col < cols; col++) {
         if (globalTableList[row]) {
-          tempTableList[row][col] = globalTableList[row][col] ? globalTableList[row][col] : `a`;
+          tableList[row][col] = globalTableList[row][col] ? globalTableList[row][col] : `a`;
         } else {
-          tempTableList[row][col] = `a`;
+          tableList[row][col] = `a`;
         }
       }
     }
-    // console.log("rows", rows, "cols", cols, "tableList", tableList);
-    return tempTableList;
+    return tableList;
   };
-  let emptyTableList = makeTableList();
-  console.log("makeTableList", makeTableList());
-  const [tableList, setTableList] = useState(emptyTableList);
+  const [tableList, setTableList] = useState(makeTableList());
+  globalTableList = tableList;
   // 클릭 이벤트 시작
-  console.log("tableList", tableList, "rows", rows, "cols", cols);
   const controlPlus = (target: "rows" | "cols") => {
     if (rows === 0) {
       setRows(1);
       setCols(1);
-      setTableList(makeTableList());
       return;
     }
     switch (target) {
       case "rows":
         setRows((prevRow) => ++prevRow);
-        setTableList(makeTableList());
         break;
       case "cols":
-        console.log("늘림 시작");
         setCols((prevCol) => ++prevCol);
-        console.log("늘림 끝");
-        setTableList(makeTableList());
         break;
     }
   };
@@ -54,17 +44,14 @@ function Table({ isTable }: { isTable: boolean }) {
       setRows(0);
       setCols(0);
       globalTableList = [];
-      setTableList([]);
       return;
     }
     switch (target) {
       case "rows":
         setRows((prevRow) => --prevRow);
-        setTableList(makeTableList());
         break;
       case "cols":
         setCols((prevCol) => --prevCol);
-        setTableList(makeTableList());
         break;
     }
   };
@@ -72,50 +59,28 @@ function Table({ isTable }: { isTable: boolean }) {
   const onRowMinus = () => controlMinus("rows");
   const onColPlus = () => controlPlus("cols");
   const onColMinus = () => controlMinus("cols");
-  const getLongestTextPerCol = () => {
-    let longestTextPerCol: number[] = [];
-
-    for (let col = 0; col < cols; col++) {
-      let tempList = [];
-      for (let row = 0; row < rows; row++) {
-        tempList.push(tableList[row][col].length);
-      }
-      longestTextPerCol.push(Math.max(...tempList));
-    }
-
-    return longestTextPerCol;
-  };
-  let longestTextPerCol = getLongestTextPerCol();
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.dataset.row && event.target.dataset.col) {
       const row = parseInt(event.target.dataset.row);
       const col = parseInt(event.target.dataset.col);
       globalTableList[row][col] = event.target.value;
-      if (longestTextPerCol[col] < event.target.value.length) {
-        longestTextPerCol[col] = event.target.value.length;
-      }
       setTableList([...globalTableList]);
     }
   };
   // 클릭 이벤트 끝
+
   const setTableContents = () => {
     const trList = [];
+    const rows = tableList.length;
+    const cols = tableList[0].length;
     for (let row = 0; row < rows; row++) {
       const tdList = [];
       for (let col = 0; col < cols; col++) {
+        const length = tableList[row][col].length;
         tdList.push(
           <td key={`r${row}c${col}`}>
             <div>
-              <input
-                type="text"
-                name={`${row},${col}`}
-                value={tableList[row][col]}
-                placeholder={"입력"}
-                onChange={onChange}
-                data-row={row}
-                data-col={col}
-                style={{ width: `${longestTextPerCol[col] + 2}em` }}
-              />
+              <input name={`${row},${col}`} value={tableList[row][col]} placeholder={"입력"} onChange={onChange} data-row={row} data-col={col} style={{ width: `${length + 1}em` }} />
             </div>
           </td>
         );
@@ -126,10 +91,8 @@ function Table({ isTable }: { isTable: boolean }) {
   };
   useEffect(() => {
     console.log("ROW COL 바뀜");
-    setTableList(emptyTableList);
-    return console.log("ROW COL 바뀜");
+    setTableList(makeTableList());
   }, [rows, cols]);
-  globalTableList = tableList;
   if (!isTable) {
     return <Output rows={rows} cols={cols} globalTableList={globalTableList} />;
   }
