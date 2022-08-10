@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Output from "./Output";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,21 +7,24 @@ let globalTableList: string[][] = [];
 function Table({ isTable }: { isTable: boolean }) {
   const [cols, setCols] = useState(3);
   const [rows, setRows] = useState(4);
-  const makeTableList = () => {
+  const makeTableList = (): string[][] => {
     let tableList = new Array(rows);
     for (let row = 0; row < rows; row++) {
       tableList[row] = new Array(cols);
       for (let col = 0; col < cols; col++) {
-        if (globalTableList[row]) {
-          tableList[row][col] = globalTableList[row][col] ? globalTableList[row][col] : `a`;
-        } else {
-          tableList[row][col] = `a`;
+        if (globalTableList) {
+          if (globalTableList[row]) {
+            tableList[row][col] = globalTableList[row][col] ? globalTableList[row][col] : ``;
+            continue;
+          }
         }
+        tableList[row][col] = ``;
       }
     }
     return tableList;
   };
   const [tableList, setTableList] = useState(makeTableList());
+  //   console.log(globalTableList, "tableList", tableList);
   globalTableList = tableList;
   // 클릭 이벤트 시작
   const controlPlus = (target: "rows" | "cols") => {
@@ -90,7 +93,6 @@ function Table({ isTable }: { isTable: boolean }) {
     return trList;
   };
   useEffect(() => {
-    console.log("ROW COL 바뀜");
     setTableList(makeTableList());
   }, [rows, cols]);
   if (!isTable) {

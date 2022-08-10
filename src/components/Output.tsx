@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
-const thickChars = ["@", "\u25A0-\u25FF"];
-
+let globalSpace = " ";
 function Output({ rows, cols, globalTableList }: { rows: number; cols: number; globalTableList: string[][] }) {
-  const [space, setSpace] = useState(" ");
+  const [space, setSpace] = useState(globalSpace);
 
   // 정규표현식 시작
   // +20로 계산  +2
+  const thickChars = ["@", "\u25A0-\u25FF"];
   const regCJK = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ぁ-ゔ|ァ-ヴー|々〆〤|一-龥]/g;
   const regThick = new RegExp(`[${thickChars.join("|")}]`, "g");
   // +10로 계산  +1
@@ -99,7 +99,7 @@ function Output({ rows, cols, globalTableList }: { rows: number; cols: number; g
       }
       textList.push(`${text}${" ".repeat(2)}`);
     }
-    return textList.join("").length + 4;
+    return textList.join("").length;
   };
   const [text, setText] = useState(globalTableListToText());
 
@@ -131,14 +131,15 @@ function Output({ rows, cols, globalTableList }: { rows: number; cols: number; g
   useEffect(() => {
     setText(globalTableListToText());
   }, [space]);
-  const changeSpaceBtnText = space === " " ? "반각 띄어쓰기\nU+0020\n| |" : "전각 띄어쓰기\nU+3000\n|　|";
+  const changeSpaceBtnText = space === " " ? "반각 띄어쓰기\nU+0020\n| |" : "전각 띄어쓰기\nU+3000\n|\u3000|";
+  globalSpace = space;
   return (
     <div className="output-container">
       <div className="output-container__btn-container">
         <input type="button" onClick={onCopy} className="btn-margin" value={"COPY"} />
         <input type="button" value={changeSpaceBtnText} onClick={onChangeSpaceClick} />
       </div>
-      <textarea cols={getHorizontalWidth()} rows={rows + 1} value={text} onChange={onChange} style={{ height: `${rows + 3}em` }}></textarea>
+      <textarea value={text} onChange={onChange} style={{ height: `${rows + 3}em`, width: `${getHorizontalWidth()}em` }}></textarea>
     </div>
   );
 }
