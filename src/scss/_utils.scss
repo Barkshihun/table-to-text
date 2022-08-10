@@ -3,9 +3,7 @@ $mobile: 550px;
 $desktop: $mobile + 1px;
 $desktop-font-size: 25px;
 $mobile-font-size: 13px;
-%border {
-  border: 2px solid $black;
-}
+
 @mixin mobile {
   @media (max-width: $mobile) {
     @content;

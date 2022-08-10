@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Table from "./components/Table";
 import "./scss/App.scss";
 

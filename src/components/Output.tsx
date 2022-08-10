@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import "../scss/Output.scss";
 
 let globalSpace = " ";
 function Output({ rows, cols, globalTableList }: { rows: number; cols: number; globalTableList: string[][] }) {

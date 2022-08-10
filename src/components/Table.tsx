@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from "react";
-import Output from "./Output";
+import { useState, useEffect } from "react";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Output from "./Output";
+import "../scss/Table.scss";
 
 let globalTableList: string[][] = [];
 function Table({ isTable }: { isTable: boolean }) {
