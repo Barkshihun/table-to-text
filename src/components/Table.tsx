@@ -84,7 +84,16 @@ function Table({ isTable }: { isTable: boolean }) {
         tdList.push(
           <td key={`r${row}c${col}`}>
             <div>
-              <input name={`${row},${col}`} value={tableList[row][col]} placeholder={"입력"} onChange={onChange} data-row={row} data-col={col} style={{ width: `${length + 1}em` }} />
+              <input
+                name={`${row},${col}`}
+                value={tableList[row][col]}
+                placeholder={"입력"}
+                onChange={onChange}
+                data-row={row}
+                data-col={col}
+                style={{ width: `${length + 1}em` }}
+                spellCheck={false}
+              />
             </div>
           </td>
         );

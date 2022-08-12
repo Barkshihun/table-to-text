@@ -140,7 +140,7 @@ function Output({ rows, cols, globalTableList }: { rows: number; cols: number; g
         <input type="button" onClick={onCopy} className="btn-margin" value={"COPY"} />
         <input type="button" value={changeSpaceBtnText} onClick={onChangeSpaceClick} />
       </div>
-      <textarea value={text} onChange={onChange} style={{ height: `${rows + 3}em`, width: `${getHorizontalWidth()}em` }}></textarea>
+      <textarea value={text} onChange={onChange} style={{ height: `${rows + 3}em`, width: `${getHorizontalWidth()}em` }} spellCheck={false}></textarea>
     </div>
   );
 }
