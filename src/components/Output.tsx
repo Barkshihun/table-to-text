@@ -135,10 +135,10 @@ function Output({ rows, cols, globalTableList }: { rows: number; cols: number; g
   const changeSpaceBtnText = space === " " ? "반각 띄어쓰기\nU+0020\n| |" : "전각 띄어쓰기\nU+3000\n|\u3000|";
   globalSpace = space;
   return (
-    <div className="output-container">
-      <div className="output-container__btn-container">
-        <input type="button" onClick={onCopy} className="btn-margin" value={"COPY"} />
-        <input type="button" value={changeSpaceBtnText} onClick={onChangeSpaceClick} />
+    <div className={"output-container"}>
+      <div className={"output-container__btn-container"}>
+        <input type={"button"} onClick={onCopy} className={"btn-margin"} value={"COPY"} />
+        <input type={"button"} value={changeSpaceBtnText} onClick={onChangeSpaceClick} />
       </div>
       <textarea value={text} onChange={onChange} style={{ height: `${rows + 3}em`, width: `${getHorizontalWidth()}em` }} spellCheck={false}></textarea>
     </div>

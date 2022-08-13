@@ -110,14 +110,14 @@ function Table({ isTable }: { isTable: boolean }) {
   }
   return (
     <>
-      <div className="table-container">
-        <div className="table-container__btn-row">
-          <div className="table-container__size">
+      <div className={"table-container"}>
+        <div className={"table-container__btn-row"}>
+          <div className={"table-container__size"}>
             <span>
               {cols}x{rows}
             </span>
           </div>
-          <div className="table-container__col-btns">
+          <div className={"table-container__col-btns"}>
             <button onClick={onColPlus}>
               <FontAwesomeIcon icon={faPlus} />
             </button>
@@ -126,8 +126,8 @@ function Table({ isTable }: { isTable: boolean }) {
             </button>
           </div>
         </div>
-        <div className="table-container__table-row">
-          <div className="table-container__row-btns">
+        <div className={"table-container__table-row"}>
+          <div className={"table-container__row-btns"}>
             <button onClick={onRowPlus}>
               <FontAwesomeIcon icon={faPlus} />
             </button>
@@ -135,7 +135,7 @@ function Table({ isTable }: { isTable: boolean }) {
               <FontAwesomeIcon icon={faMinus} />
             </button>
           </div>
-          <div className="table-container__table-wrapper">
+          <div className={"table-container__table-wrapper"}>
             <table>
               <tbody>{setTableContents()}</tbody>
             </table>
