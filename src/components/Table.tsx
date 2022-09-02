@@ -76,7 +76,7 @@ function Table({ isTable }: { isTable: boolean }) {
   const setTableContents = () => {
     const trList = [];
     const rows = tableList.length;
-    const cols = tableList[0].length;
+    const cols = tableList[0] ? tableList[0].length : 0;
     for (let row = 0; row < rows; row++) {
       const tdList = [];
       for (let col = 0; col < cols; col++) {
