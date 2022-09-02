@@ -15,7 +15,7 @@ function App() {
   return (
     <>
       <header>
-        <button onClick={onTranform} className={"transform-btn btn-margin"} type={"button"}>
+        <button onClick={onTranform} className={"transform-btn"} type={"button"}>
           {isTable ? "텍스트로 변환" : "표로 가기"}
         </button>
       </header>

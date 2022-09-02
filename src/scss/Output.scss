@@ -17,11 +17,16 @@
     justify-content: flex-start;
     margin-right: 10px;
     input {
+      @extend %border;
+      &:first-child {
+        border-bottom: unset;
+      }
       text-align: center;
     }
   }
 }
 textarea {
+  @extend %shadow;
   @include mobile {
     resize: none;
   }

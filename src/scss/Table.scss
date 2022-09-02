@@ -38,16 +38,23 @@
       justify-content: center;
       align-items: center;
       margin-right: 20px;
-      border: 2px solid $black;
-      border-radius: 10px;
+      padding-top: 1%;
+      @extend %border;
+      @extend %border-radius;
     }
     .table-container__col-btns {
       display: flex;
       top: -35px;
+      @extend %border;
       button {
         color: red;
         &:first-child {
-          border-right: unset;
+          @include mobile {
+            border-right: 1px solid $black;
+          }
+          @include desktop {
+            border-right: 2px solid $black;
+          }
         }
       }
     }
@@ -68,6 +75,7 @@
       margin-right: 20px;
       button {
         color: blue;
+        @extend %border;
         &:first-child {
           border-bottom: unset;
         }
@@ -84,6 +92,7 @@
 }
 
 table {
+  @extend %shadow;
   position: absolute;
   border-collapse: collapse;
   border: 2px solid $black;
