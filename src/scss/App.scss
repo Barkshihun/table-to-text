@@ -11,7 +11,7 @@
 }
 button,
 input[type="button"] {
-  font-family: "Jua", sans-serif;
+  font-family: "Do Hyeon", sans-serif;
   background: white;
   display: flex;
   justify-content: center;
@@ -73,6 +73,7 @@ main {
   border-radius: 20px;
   @extend %shadow;
   @include mobile {
-    padding-top: 2%;
+    border-radius: 12px;
+    padding-top: 0.2em;
   }
 }

@@ -28,7 +28,7 @@
       left: 40px;
     }
     .table-container__size {
-      font-family: "Jua", sans-serif;
+      font-family: "Do Hyeon", sans-serif;
       top: -30px;
       left: 12px;
       width: 30%;
@@ -38,7 +38,7 @@
       justify-content: center;
       align-items: center;
       margin-right: 20px;
-      padding-top: 1%;
+      padding-top: 0.1em;
       @extend %border;
       @extend %border-radius;
     }
@@ -87,42 +87,42 @@
       width: 70%;
       // overflow: auto;
       position: relative;
-    }
-  }
-}
-
-table {
-  @extend %shadow;
-  position: absolute;
-  border-collapse: collapse;
-  border: 2px solid $black;
-  background: white;
-  margin-bottom: 50px;
-  td {
-    border: 1px solid $black;
-    div {
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      input {
-        all: unset;
-        text-align: center;
-        @include mobile {
-          min-width: 50px;
-          height: 20px;
-          font-size: $mobile-font-size;
-          padding: 5px 10px;
+      table {
+        position: absolute;
+        display: block;
+        padding-right: 10%;
+        tbody {
+          @extend %shadow;
         }
-        @include desktop {
-          min-width: 90px;
-          height: 40px;
-          font-size: $desktop-font-size;
-          padding: 15px 25px;
-        }
-        &::placeholder {
-          font-style: italic;
-          color: rgb(200, 200, 200);
+        td {
+          background: white;
+          border: 1px solid $black;
+          div {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            input {
+              all: unset;
+              text-align: center;
+              @include mobile {
+                min-width: 50px;
+                height: 20px;
+                font-size: $mobile-font-size;
+                padding: 5px 10px;
+              }
+              @include desktop {
+                min-width: 90px;
+                height: 40px;
+                font-size: $desktop-font-size;
+                padding: 15px 25px;
+              }
+              &::placeholder {
+                font-style: italic;
+                color: rgb(200, 200, 200);
+              }
+            }
+          }
         }
       }
     }
