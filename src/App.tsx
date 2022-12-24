@@ -1,11 +1,13 @@
 import { useState, useRef } from "react";
 import domtoimage from "dom-to-image";
 import Table, { globalTableList } from "./components/Table";
+import LoadingModal from "./components/LoadingModal";
 import "./scss/App.scss";
 
 function App() {
   const tbodyRef = useRef<HTMLTableSectionElement>(null);
   const [isTable, setIsTable] = useState(true);
+  const [showLoading, setShowLoading] = useState(false);
   const onTranform = () => {
     setIsTable((currentIsTable) => {
       if (currentIsTable) {
@@ -15,15 +17,16 @@ function App() {
     });
   };
   const transFormToPng = async () => {
+    setShowLoading(true);
     const tableNode = tbodyRef.current as HTMLTableSectionElement;
     const dataUrl = await domtoimage.toPng(tableNode);
     const aTag = document.createElement("a");
     aTag.download = "표.png";
     aTag.href = dataUrl;
+    setShowLoading(false);
     aTag.click();
   };
   const transFormToCsv = () => {
-    console.log("1", globalTableList);
     let csv: any = [];
     for (let i = 0; i < globalTableList.length; i++) {
       const row = [...globalTableList[i]];
@@ -44,6 +47,7 @@ function App() {
   };
   return (
     <>
+      {showLoading && <LoadingModal />}
       <header>
         <button onClick={onTranform} type={"button"}>
           {isTable ? "텍스트로 변환" : "표로 가기"}
