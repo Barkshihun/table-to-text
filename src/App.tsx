@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import domtoimage from "dom-to-image";
-import Table from "./components/Table";
+import Table, { globalTableList } from "./components/Table";
 import "./scss/App.scss";
 
 function App() {
@@ -22,6 +22,26 @@ function App() {
     aTag.href = dataUrl;
     aTag.click();
   };
+  const transFormToCsv = () => {
+    console.log("1", globalTableList);
+    let csv: any = [];
+    for (let i = 0; i < globalTableList.length; i++) {
+      const row = [...globalTableList[i]];
+      for (let j = 0; j < row.length; j++) {
+        if (row[j].includes('"')) {
+          row[j] = `"${row[j].replace(/"/g, '""')}"`;
+        } else if (row[j].includes(",")) {
+          row[j] = `"${row[j]}"`;
+        }
+      }
+      csv.push(row);
+    }
+    csv = csv.join("\n");
+    const aTag = document.createElement("a");
+    aTag.href = `data:text/plain;charset=utf-8,\ufeff${encodeURIComponent(csv)}`;
+    aTag.download = "표.csv";
+    aTag.click();
+  };
   return (
     <>
       <header>
@@ -31,7 +51,7 @@ function App() {
         {isTable && (
           <div>
             <button onClick={transFormToPng}>png로 변환</button>
-            <button>csv로 변환</button>
+            <button onClick={transFormToCsv}>csv로 변환</button>
           </div>
         )}
       </header>

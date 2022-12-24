@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Output from "./Output";
 import "../scss/Table.scss";
 
-let globalTableList: string[][] = [];
+export let globalTableList: string[][] = [];
 function Table({ isTable, tbodyRef }: { isTable: boolean; tbodyRef: React.RefObject<HTMLTableSectionElement> }) {
   const [cols, setCols] = useState(3);
   const [rows, setRows] = useState(4);
