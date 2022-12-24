@@ -15,9 +15,15 @@ function App() {
   return (
     <>
       <header>
-        <button onClick={onTranform} className={"transform-btn"} type={"button"}>
+        <button onClick={onTranform} type={"button"}>
           {isTable ? "텍스트로 변환" : "표로 가기"}
         </button>
+        {isTable && (
+          <div>
+            <button>png로 변환</button>
+            <button>csv로 변환</button>
+          </div>
+        )}
       </header>
       <main>
         <Table isTable={isTable} />
