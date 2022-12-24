@@ -119,12 +119,13 @@ function Output({ rows, cols, globalTableList }: { rows: number; cols: number; g
       }
     });
   };
-  const onCopy = (event: any) => {
+  const onCopy = () => {
     navigator.clipboard.writeText(text);
     Swal.fire({
       title: "복사 성공",
       timer: 1000,
       position: "top",
+      padding: "1em 1em 2.5em",
       showConfirmButton: false,
       icon: "success",
     });
