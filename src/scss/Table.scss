@@ -85,7 +85,6 @@
       display: flex;
       justify-content: flex-start;
       width: 70%;
-      // overflow: auto;
       position: relative;
       table {
         position: absolute;
@@ -96,7 +95,7 @@
         }
         td {
           background: white;
-          border: 1px solid $black;
+          border: 2px solid $black;
           div {
             height: 100%;
             display: flex;

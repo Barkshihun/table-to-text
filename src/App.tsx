@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import domtoimage from "dom-to-image";
 import Table from "./components/Table";
 import "./scss/App.scss";
 
 function App() {
+  const tbodyRef = useRef<HTMLTableSectionElement>(null);
   const [isTable, setIsTable] = useState(true);
   const onTranform = () => {
     setIsTable((currentIsTable) => {
@@ -12,6 +14,14 @@ function App() {
       return !currentIsTable;
     });
   };
+  const transFormToPng = async () => {
+    const tableNode = tbodyRef.current as HTMLTableSectionElement;
+    const dataUrl = await domtoimage.toPng(tableNode);
+    const aTag = document.createElement("a");
+    aTag.download = "표.png";
+    aTag.href = dataUrl;
+    aTag.click();
+  };
   return (
     <>
       <header>
@@ -20,13 +30,13 @@ function App() {
         </button>
         {isTable && (
           <div>
-            <button>png로 변환</button>
+            <button onClick={transFormToPng}>png로 변환</button>
             <button>csv로 변환</button>
           </div>
         )}
       </header>
       <main>
-        <Table isTable={isTable} />
+        <Table isTable={isTable} tbodyRef={tbodyRef} />
       </main>
     </>
   );

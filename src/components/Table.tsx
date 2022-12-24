@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Output from "./Output";
 import "../scss/Table.scss";
 
 let globalTableList: string[][] = [];
-function Table({ isTable }: { isTable: boolean }) {
+function Table({ isTable, tbodyRef }: { isTable: boolean; tbodyRef: React.RefObject<HTMLTableSectionElement> }) {
   const [cols, setCols] = useState(3);
   const [rows, setRows] = useState(4);
   const makeTableList = (): string[][] => {
@@ -84,16 +84,7 @@ function Table({ isTable }: { isTable: boolean }) {
         tdList.push(
           <td key={`r${row}c${col}`}>
             <div>
-              <input
-                name={`${row},${col}`}
-                value={tableList[row][col]}
-                placeholder={"입력"}
-                onChange={onChange}
-                data-row={row}
-                data-col={col}
-                style={{ width: `${length + 1}em` }}
-                spellCheck={false}
-              />
+              <input name={`${row},${col}`} value={tableList[row][col]} onChange={onChange} data-row={row} data-col={col} style={{ width: `${length + 1}em` }} spellCheck={false} />
             </div>
           </td>
         );
@@ -137,7 +128,7 @@ function Table({ isTable }: { isTable: boolean }) {
           </div>
           <div className={"table-container__table-wrapper"}>
             <table>
-              <tbody>{setTableContents()}</tbody>
+              <tbody ref={tbodyRef}>{setTableContents()}</tbody>
             </table>
           </div>
         </div>
