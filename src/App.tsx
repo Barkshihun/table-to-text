@@ -5,7 +5,7 @@ import LoadingModal from "./components/LoadingModal";
 import "./scss/App.scss";
 
 function App() {
-  const tbodyRef = useRef<HTMLTableSectionElement>(null);
+  const tableRef = useRef<HTMLTableElement>(null);
   const [isTable, setIsTable] = useState(true);
   const [showLoading, setShowLoading] = useState(false);
   const onTranform = () => {
@@ -18,8 +18,18 @@ function App() {
   };
   const transFormToPng = async () => {
     setShowLoading(true);
-    const tableNode = tbodyRef.current as HTMLTableSectionElement;
-    const dataUrl = await domtoimage.toPng(tableNode);
+    const tableNode = tableRef.current as HTMLTableElement;
+    tableNode.style.paddingRight = "0";
+    const scale = 3;
+    const dataUrl = await domtoimage.toPng(tableNode, {
+      width: tableNode.clientWidth * scale,
+      height: tableNode.clientHeight * scale,
+      style: {
+        transform: `scale(${scale})`,
+        transformOrigin: "top left",
+      },
+    });
+    tableNode.style.paddingRight = "10%";
     const aTag = document.createElement("a");
     aTag.download = "표.png";
     aTag.href = dataUrl;
@@ -60,7 +70,7 @@ function App() {
         )}
       </header>
       <main>
-        <Table isTable={isTable} tbodyRef={tbodyRef} />
+        <Table isTable={isTable} tableRef={tableRef} />
       </main>
     </>
   );

@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Output from "./Output";
 import "../scss/Table.scss";
 
 export let globalTableList: string[][] = [];
-function Table({ isTable, tbodyRef }: { isTable: boolean; tbodyRef: React.RefObject<HTMLTableSectionElement> }) {
+function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObject<HTMLTableElement> }) {
   const [cols, setCols] = useState(3);
   const [rows, setRows] = useState(4);
   const makeTableList = (): string[][] => {
@@ -127,8 +127,8 @@ function Table({ isTable, tbodyRef }: { isTable: boolean; tbodyRef: React.RefObj
             </button>
           </div>
           <div className={"table-container__table-wrapper"}>
-            <table>
-              <tbody ref={tbodyRef}>{setTableContents()}</tbody>
+            <table ref={tableRef}>
+              <tbody>{setTableContents()}</tbody>
             </table>
           </div>
         </div>
