@@ -20,6 +20,9 @@ input[type="button"] {
   &:hover {
     background-color: rgb(230, 230, 230);
   }
+  &:active {
+    background-color: rgb(200, 200, 200);
+  }
 }
 
 body,
