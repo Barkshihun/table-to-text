@@ -127,7 +127,7 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
             </button>
           </div>
           <div className={"table-container__table-wrapper"}>
-            <table ref={tableRef}>
+            <table ref={tableRef} className="malgun-gothic">
               <tbody>{setTableContents()}</tbody>
             </table>
           </div>
