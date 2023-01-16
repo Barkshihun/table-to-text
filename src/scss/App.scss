@@ -52,44 +52,43 @@ header {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  button {
-    @extend %border;
-    word-break: keep-all;
+}
+.btn--transform {
+  @extend %border;
+  @extend %shadow;
+}
+.btn--main-tranform {
+  border-radius: 20px;
+  @include mobile {
+    width: 50%;
+    font-size: $mobile-font-size + 10px;
+    border-radius: 12px;
+    padding-top: 0.2em;
   }
-  > button {
-    border-radius: 20px;
-    @extend %shadow;
-    @include mobile {
-      width: 50%;
-      font-size: $mobile-font-size + 10px;
-      border-radius: 12px;
-      padding-top: 0.2em;
-    }
-    @include desktop {
-      width: 30%;
-      min-width: 340px;
-      font-size: $desktop-font-size + 10px;
-    }
-  }
-  > div {
-    display: flex;
-    justify-content: space-between;
-    @include mobile {
-      width: 50%;
-    }
+  @include desktop {
     width: 30%;
-    margin: 20px 0px;
-    padding: 0px 2%;
-    box-sizing: border-box;
-    button {
-      font-size: 20px;
-      border-radius: 10px;
-      @extend %shadow;
-      @include mobile {
-        font-size: 10px;
-        border-radius: 5px;
-      }
-      width: 45%;
-    }
+    min-width: 340px;
+    font-size: $desktop-font-size + 10px;
   }
+}
+.sub-btn-container {
+  display: flex;
+  justify-content: space-between;
+  @include mobile {
+    width: 50%;
+  }
+  width: 30%;
+  margin: 20px 0px;
+  padding: 0px 2%;
+  box-sizing: border-box;
+}
+.sub-btn-container__btn {
+  font-size: 20px;
+  border-radius: 10px;
+  @include mobile {
+    font-size: 10px;
+    border-radius: 5px;
+  }
+  width: 45%;
+  word-break: keep-all;
 }
