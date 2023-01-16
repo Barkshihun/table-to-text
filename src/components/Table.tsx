@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Output from "./Output";
 import "../scss/Table.scss";
@@ -103,6 +103,9 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
     <>
       <div className={"table-system-wrapper"}>
         <div className={"top-container"}>
+          <div className="btn btn--delete">
+            <FontAwesomeIcon icon={faTrash} />
+          </div>
           <div className={"top-container__size-indicator"}>
             <span>
               {cols}x{rows}
