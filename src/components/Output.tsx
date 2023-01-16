@@ -138,8 +138,8 @@ function Output({ rows, cols, globalTableList }: { rows: number; cols: number; g
   return (
     <div className={"output-container"}>
       <div className={"output-container__btn-container"}>
-        <input type={"button"} onClick={onCopy} className={"btn-margin"} value={"COPY"} />
-        <input type={"button"} value={changeSpaceBtnText} onClick={onChangeSpaceClick} />
+        <input className="btn btn-margin" type={"button"} onClick={onCopy} value={"COPY"} />
+        <input className="btn" type={"button"} value={changeSpaceBtnText} onClick={onChangeSpaceClick} />
       </div>
       <textarea value={text} onChange={onChange} style={{ height: `${rows + 3}em`, width: `${getHorizontalWidth()}em` }} spellCheck={false}></textarea>
     </div>

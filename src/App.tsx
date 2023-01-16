@@ -59,13 +59,17 @@ function App() {
     <>
       {showLoading && <LoadingModal />}
       <header>
-        <button onClick={onTranform} type={"button"}>
+        <button className="btn" onClick={onTranform} type={"button"}>
           {isTable ? "텍스트로 변환" : "표로 가기"}
         </button>
         {isTable && (
           <div>
-            <button onClick={transFormToPng}>png로 변환</button>
-            <button onClick={transFormToCsv}>csv로 변환</button>
+            <button className="btn" onClick={transFormToPng}>
+              png로 변환
+            </button>
+            <button className="btn" onClick={transFormToCsv}>
+              csv로 변환
+            </button>
           </div>
         )}
       </header>

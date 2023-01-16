@@ -109,20 +109,20 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
             </span>
           </div>
           <div className={"table-container__col-btns"}>
-            <button onClick={onColPlus}>
+            <button className="btn" onClick={onColPlus}>
               <FontAwesomeIcon icon={faPlus} />
             </button>
-            <button onClick={onColMinus}>
+            <button className="btn" onClick={onColMinus}>
               <FontAwesomeIcon icon={faMinus} />
             </button>
           </div>
         </div>
         <div className={"table-container__table-row"}>
           <div className={"table-container__row-btns"}>
-            <button onClick={onRowPlus}>
+            <button className="btn" onClick={onRowPlus}>
               <FontAwesomeIcon icon={faPlus} />
             </button>
-            <button onClick={onRowMinus}>
+            <button className="btn" onClick={onRowMinus}>
               <FontAwesomeIcon icon={faMinus} />
             </button>
           </div>
