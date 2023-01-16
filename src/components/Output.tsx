@@ -137,9 +137,9 @@ function Output({ rows, cols, globalTableList }: { rows: number; cols: number; g
   globalSpace = space;
   return (
     <div className={"output-container"}>
-      <div className={"output-container__btn-container"}>
-        <input className="btn btn-margin" type={"button"} onClick={onCopy} value={"COPY"} />
-        <input className="btn" type={"button"} value={changeSpaceBtnText} onClick={onChangeSpaceClick} />
+      <div className={"btn-container--textarea-left"}>
+        <input className="btn btn--textarea-left" type={"button"} onClick={onCopy} value={"COPY"} />
+        <input className="btn btn--textarea-left" type={"button"} value={changeSpaceBtnText} onClick={onChangeSpaceClick} />
       </div>
       <textarea className="malgun-gothic" value={text} onChange={onChange} style={{ height: `${rows + 3}em`, width: `${getHorizontalWidth()}em` }} spellCheck={false}></textarea>
     </div>

@@ -14,7 +14,7 @@ textarea {
   padding-right: 10%;
   margin-top: 50px;
 }
-.output-container__btn-container {
+.btn-container--textarea-left {
   @include mobile {
     width: 100px;
   }
@@ -27,16 +27,16 @@ textarea {
   flex-direction: column;
   justify-content: flex-start;
   margin-right: 10px;
-  input {
-    @extend %border;
-    line-height: 1;
-    &:first-child {
-      padding: 0.2em 0;
-      border-bottom: unset;
-    }
-    &:last-child {
-      padding: 0.5em 0;
-    }
-    text-align: center;
+}
+.btn--textarea-left {
+  @extend %border;
+  line-height: 1;
+  &:first-child {
+    padding: 0.2em 0;
+    border-bottom: unset;
   }
+  &:last-child {
+    padding: 0.5em 0;
+  }
+  text-align: center;
 }
