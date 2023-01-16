@@ -28,6 +28,14 @@ main {
   height: 100vh;
   width: 100%;
 }
+header {
+  width: 100%;
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
 .btn {
   font-family: "Do Hyeon", sans-serif;
   background-color: white;
@@ -44,14 +52,6 @@ main {
 }
 .malgun-gothic {
   font-family: "맑은 고딕", "NanumGothic", sans-serif;
-}
-header {
-  width: 100%;
-  margin-top: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
 }
 .btn--transform {
   @extend %border;

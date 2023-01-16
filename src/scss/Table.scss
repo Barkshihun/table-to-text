@@ -1,6 +1,6 @@
 @import "./utils";
 
-.table-container {
+.table-system-wrapper {
   flex-shrink: 1;
   @include desktop {
     width: 50%;
@@ -18,7 +18,7 @@
   display: flex;
   justify-content: center;
 }
-.table-container__btn-row {
+.top-container {
   position: absolute;
   width: 50%;
   display: flex;
@@ -29,7 +29,7 @@
     left: 40px;
   }
 }
-.table-container__size {
+.top-container__size-indicator {
   font-family: "Do Hyeon", sans-serif;
   width: 30%;
   min-width: 65px;
@@ -42,7 +42,7 @@
   @extend %border;
   @extend %border-radius;
 }
-.table-container__col-btns {
+.btn-container--top {
   display: flex;
   top: -35px;
   @extend %border;
@@ -58,8 +58,7 @@
     }
   }
 }
-
-.table-container__table-row {
+.bottom-container {
   @include mobile {
     margin-top: 40px;
   }
@@ -69,7 +68,7 @@
   display: flex;
   width: 100%;
 }
-.table-container__row-btns {
+.btn-container--table-left {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -82,7 +81,7 @@
     }
   }
 }
-.table-container__table-wrapper {
+.table-container {
   display: flex;
   justify-content: flex-start;
   width: 70%;
@@ -116,10 +115,6 @@
             height: 40px;
             font-size: $desktop-font-size;
             padding: 15px 25px;
-          }
-          &::placeholder {
-            font-style: italic;
-            color: rgb(200, 200, 200);
           }
         }
       }

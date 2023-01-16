@@ -101,14 +101,14 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
   }
   return (
     <>
-      <div className={"table-container"}>
-        <div className={"table-container__btn-row"}>
-          <div className={"table-container__size"}>
+      <div className={"table-system-wrapper"}>
+        <div className={"top-container"}>
+          <div className={"top-container__size-indicator"}>
             <span>
               {cols}x{rows}
             </span>
           </div>
-          <div className={"table-container__col-btns"}>
+          <div className={"btn-container--top"}>
             <button className="btn" onClick={onColPlus}>
               <FontAwesomeIcon icon={faPlus} />
             </button>
@@ -117,8 +117,8 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
             </button>
           </div>
         </div>
-        <div className={"table-container__table-row"}>
-          <div className={"table-container__row-btns"}>
+        <div className={"bottom-container"}>
+          <div className={"btn-container--table-left"}>
             <button className="btn" onClick={onRowPlus}>
               <FontAwesomeIcon icon={faPlus} />
             </button>
@@ -126,7 +126,7 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
               <FontAwesomeIcon icon={faMinus} />
             </button>
           </div>
-          <div className={"table-container__table-wrapper"}>
+          <div className={"table-container"}>
             <table ref={tableRef} className="malgun-gothic">
               <tbody>{setTableContents()}</tbody>
             </table>
