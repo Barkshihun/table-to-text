@@ -16,6 +16,12 @@ function TableSizeModal({
   const colsInputRef = useRef<HTMLInputElement>(null);
   const rowsInputRef = useRef<HTMLInputElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
+  const onEsc = (event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      setShowTableSizeModal(false);
+    }
+  };
   const onTableSizeConfig = (event: React.FormEvent) => {
     event.preventDefault();
     const colsInput = colsInputRef.current as HTMLInputElement;
@@ -27,7 +33,11 @@ function TableSizeModal({
     setShowTableSizeModal(false);
   };
   useEffect(() => {
-    colsInputRef.current?.focus();
+    window.addEventListener("keydown", onEsc);
+    colsInputRef.current?.select();
+    return () => {
+      window.removeEventListener("keydown", onEsc);
+    };
   }, []);
   return (
     <div
@@ -49,7 +59,7 @@ function TableSizeModal({
               step={1}
               ref={colsInputRef}
               defaultValue={cols}
-              onKeyDown={(event: React.KeyboardEvent) => {
+              onKeyDown={(event) => {
                 if (event.key === "Tab" && event.shiftKey === true) {
                   event.preventDefault();
                   btnRef.current?.focus();
@@ -62,7 +72,7 @@ function TableSizeModal({
           <button
             className="btn btn--table-size-config"
             ref={btnRef}
-            onKeyDown={(event: React.KeyboardEvent) => {
+            onKeyDown={(event) => {
               if (event.key === "Tab") {
                 event.preventDefault();
                 if (event.shiftKey === true) {
