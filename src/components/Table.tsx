@@ -23,8 +23,8 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
     return tableList;
   };
   const [tableList, setTableList] = useState(makeTableList());
-  //   console.log(globalTableList, "tableList", tableList);
   globalTableList = tableList;
+
   // 클릭 이벤트 시작
   const controlPlus = (target: "rows" | "cols") => {
     if (rows === 0) {
@@ -61,7 +61,7 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
   const onRowMinus = () => controlMinus("rows");
   const onColPlus = () => controlPlus("cols");
   const onColMinus = () => controlMinus("cols");
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onTableContentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.dataset.row && event.target.dataset.col) {
       const row = parseInt(event.target.dataset.row);
       const col = parseInt(event.target.dataset.col);
@@ -82,7 +82,7 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
         tdList.push(
           <td key={`r${row}c${col}`}>
             <div>
-              <input name={`${row},${col}`} value={tableList[row][col]} onChange={onChange} data-row={row} data-col={col} style={{ width: `${length + 1}em` }} spellCheck={false} />
+              <input name={`${row},${col}`} value={tableList[row][col]} onChange={onTableContentChange} data-row={row} data-col={col} style={{ width: `${length + 1}em` }} spellCheck={false} />
             </div>
           </td>
         );
