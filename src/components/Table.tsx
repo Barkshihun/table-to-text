@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Output from "./Output";
@@ -25,10 +25,11 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
     }
     return tableList;
   };
+  const tableInputsRef = useRef<any>({});
   const [tableList, setTableList] = useState(makeTableList());
   globalTableList = tableList;
 
-  // 클릭 이벤트 시작
+  // 이벤트 시작
   const controlPlus = (target: "rows" | "cols") => {
     if (rows === 0) {
       setRows(1);
@@ -80,7 +81,35 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
   const onChangeTableSize = () => {
     setShowTableSizeModal(true);
   };
-  // 클릭 이벤트 끝
+  const onArrowDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.target.dataset.row && event.target.dataset.col) {
+      const row = parseInt(event.target.dataset.row);
+      const col = parseInt(event.target.dataset.col);
+      if (event.shiftKey === true && event.ctrlKey === true) {
+        if (event.key === "ArrowLeft" && col !== 0) {
+          event.preventDefault();
+          const focusElem = tableInputsRef.current[`${row},${col - 1}`] as HTMLInputElement;
+          focusElem.focus();
+        }
+        if (event.key === "ArrowRight" && col !== cols - 1) {
+          event.preventDefault();
+          const focusElem = tableInputsRef.current[`${row},${col + 1}`] as HTMLInputElement;
+          focusElem.focus();
+        }
+        if (event.key === "ArrowUp" && row !== 0) {
+          event.preventDefault();
+          const focusElem = tableInputsRef.current[`${row - 1},${col}`] as HTMLInputElement;
+          focusElem.focus();
+        }
+        if (event.key === "ArrowDown" && row !== rows - 1) {
+          event.preventDefault();
+          const focusElem = tableInputsRef.current[`${row + 1},${col}`] as HTMLInputElement;
+          focusElem.focus();
+        }
+      }
+    }
+  };
+  // 이벤트 끝
 
   const setTableContents = () => {
     const trList = [];
@@ -93,13 +122,33 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
         tdList.push(
           <td key={`r${row}c${col}`}>
             <div>
-              <input name={`${row},${col}`} value={tableList[row][col]} onChange={onTableContentChange} data-row={row} data-col={col} style={{ width: `${length + 1}em` }} spellCheck={false} />
+              <input
+                value={tableList[row][col]}
+                ref={(elem: HTMLInputElement) => {
+                  let tableInput = tableInputsRef.current as any;
+                  tableInput[`${row},${col}`] = elem;
+                }}
+                onChange={onTableContentChange}
+                onKeyDown={onArrowDown}
+                data-row={row}
+                data-col={col}
+                style={{ width: `${length + 1}em` }}
+                spellCheck={false}
+              />
             </div>
           </td>
         );
       }
       trList.push(<tr key={`row${row}`}>{tdList.map((td) => td)}</tr>);
     }
+    let tempTableInputs: { [coord: string]: HTMLInputElement } = {};
+    for (const coord in tableInputsRef.current) {
+      const input = tableInputsRef.current[coord] as HTMLInputElement;
+      if (input) {
+        tempTableInputs[coord] = input;
+      }
+    }
+    tableInputsRef.current = tempTableInputs;
     return trList;
   };
   useEffect(() => {
