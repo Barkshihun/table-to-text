@@ -10,7 +10,7 @@ export let globalTableList: string[][] = [];
 function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObject<HTMLTableElement> }) {
   const [cols, setCols] = useState(3);
   const [rows, setRows] = useState(4);
-  const [showTableSizeModal, setShowTableSizeModal] = useState(true);
+  const [showTableSizeModal, setShowTableSizeModal] = useState(false);
   const makeTableList = (): string[][] => {
     let tableList = new Array(rows);
     for (let row = 0; row < rows; row++) {
@@ -110,7 +110,7 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
   }
   return (
     <>
-      {showTableSizeModal && <TableSizeModal cols={cols} rows={rows} />}
+      {showTableSizeModal && <TableSizeModal cols={cols} rows={rows} setCols={setCols} setRows={setRows} setShowTableSizeModal={setShowTableSizeModal} />}
       <div className={"table-system-wrapper"}>
         <div className={"top-container"}>
           <div className="btn btn--delete">

@@ -59,19 +59,24 @@
   font-size: 30px;
   text-align: center;
   font-family: "Do Hyeon", sans-serif;
-  border: 2px solid rgb(144, 144, 144);
+  border: 2px solid $black;
   border-radius: 5px;
   &:hover {
     background-color: $hover;
     border: 2px solid $black;
   }
   &:focus {
-    border: 2px solid $black;
+    outline: 2px solid gray;
+    outline-offset: 2px;
   }
 }
-.btn--table-size {
+.btn--table-size-config {
   border: 2px solid $black;
   padding-top: 3px;
   border-radius: 5px;
   width: 60%;
+  &:focus {
+    outline: 2px solid gray;
+    outline-offset: 2px;
+  }
 }
