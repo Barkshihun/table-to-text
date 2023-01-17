@@ -29,8 +29,7 @@
     left: 20px;
   }
 }
-.top-container__size-indicator {
-  font-family: "Do Hyeon", sans-serif;
+.btn--size-indicator {
   width: 30%;
   min-width: 65px;
   background: white;
@@ -41,6 +40,18 @@
   padding-top: 0.1em;
   @extend %border;
   @extend %border-radius;
+  &:hover {
+    background-color: rgb(230, 230, 230);
+    button {
+      background-color: rgb(230, 230, 230);
+    }
+  }
+  &:active {
+    background-color: rgb(200, 200, 200);
+    button {
+      background-color: rgb(200, 200, 200);
+    }
+  }
 }
 .btn-container--top {
   display: flex;

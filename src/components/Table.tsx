@@ -109,11 +109,9 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
           <div className="btn btn--delete">
             <FontAwesomeIcon icon={faTrash} onClick={onDelteContents} />
           </div>
-          <div className={"top-container__size-indicator"}>
-            <span>
-              {cols}x{rows}
-            </span>
-          </div>
+          <button className="btn btn--size-indicator">
+            {cols}x{rows}
+          </button>
           <div className={"btn-container--top"}>
             <button className="btn" onClick={onColPlus}>
               <FontAwesomeIcon icon={faPlus} />
