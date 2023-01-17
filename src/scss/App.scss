@@ -44,7 +44,7 @@ header {
   align-items: center;
   cursor: pointer;
   &:hover {
-    background-color: rgb(230, 230, 230);
+    background-color: $hover;
   }
   &:active {
     background-color: rgb(200, 200, 200);
