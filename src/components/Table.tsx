@@ -2,12 +2,15 @@ import { useState, useEffect } from "react";
 import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Output from "./Output";
+import TableSizeModal from "./TableSizeModal";
+import "../scss/Modal.scss";
 import "../scss/Table.scss";
 
 export let globalTableList: string[][] = [];
 function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObject<HTMLTableElement> }) {
   const [cols, setCols] = useState(3);
   const [rows, setRows] = useState(4);
+  const [showTableSizeModal, setShowTableSizeModal] = useState(true);
   const makeTableList = (): string[][] => {
     let tableList = new Array(rows);
     for (let row = 0; row < rows; row++) {
@@ -74,6 +77,9 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
     globalTableList = makeTableList();
     setTableList(globalTableList);
   };
+  const onChangeTableSize = () => {
+    setShowTableSizeModal(true);
+  };
   // 클릭 이벤트 끝
 
   const setTableContents = () => {
@@ -104,12 +110,13 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
   }
   return (
     <>
+      {showTableSizeModal && <TableSizeModal cols={cols} rows={rows} />}
       <div className={"table-system-wrapper"}>
         <div className={"top-container"}>
           <div className="btn btn--delete">
             <FontAwesomeIcon icon={faTrash} onClick={onDelteContents} />
           </div>
-          <button className="btn btn--size-indicator">
+          <button className="btn btn--size-indicator" onClick={onChangeTableSize}>
             {cols}x{rows}
           </button>
           <div className={"btn-container--top"}>
