@@ -13,11 +13,9 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
     for (let row = 0; row < rows; row++) {
       tableList[row] = new Array(cols);
       for (let col = 0; col < cols; col++) {
-        if (globalTableList) {
-          if (globalTableList[row]) {
-            tableList[row][col] = globalTableList[row][col] ? globalTableList[row][col] : ``;
-            continue;
-          }
+        if (globalTableList[row]) {
+          tableList[row][col] = globalTableList[row][col] ? globalTableList[row][col] : ``;
+          continue;
         }
         tableList[row][col] = ``;
       }
