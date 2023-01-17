@@ -77,7 +77,7 @@ header {
   @include mobile {
     width: 50%;
   }
-  width: 30%;
+  width: 40%;
   margin: 20px 0px;
   padding: 0px 2%;
   box-sizing: border-box;
@@ -89,6 +89,10 @@ header {
     font-size: 10px;
     border-radius: 5px;
   }
-  width: 45%;
+  width: 30%;
   word-break: keep-all;
+}
+.input--file {
+  display: none;
+  // width: 0;
 }
