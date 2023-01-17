@@ -69,6 +69,11 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
       setTableList([...globalTableList]);
     }
   };
+  const onDelteContents = () => {
+    globalTableList = [];
+    globalTableList = makeTableList();
+    setTableList(globalTableList);
+  };
   // 클릭 이벤트 끝
 
   const setTableContents = () => {
@@ -102,7 +107,7 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
       <div className={"table-system-wrapper"}>
         <div className={"top-container"}>
           <div className="btn btn--delete">
-            <FontAwesomeIcon icon={faTrash} />
+            <FontAwesomeIcon icon={faTrash} onClick={onDelteContents} />
           </div>
           <div className={"top-container__size-indicator"}>
             <span>
