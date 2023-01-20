@@ -1,87 +1,80 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Output from "./Output";
+import { setCols, setRows, setZero, setOne, setShowTableSizeModal, setTableList, editTableList } from "../store/tableSlice";
+import { RootState } from "../store/store";
 import TableSizeModal from "./TableSizeModal";
 import "../scss/Modal.scss";
 import "../scss/Table.scss";
 
-export let globalTableList: string[][] = [];
-function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObject<HTMLTableElement> }) {
-  const [cols, setCols] = useState(3);
-  const [rows, setRows] = useState(4);
-  const [showTableSizeModal, setShowTableSizeModal] = useState(false);
-  const makeTableList = (): string[][] => {
-    let tableList = new Array(rows);
+function Table({ tableRef }: { tableRef: React.RefObject<HTMLTableElement> }) {
+  const dispatch = useDispatch();
+  const tableList = useSelector((state: RootState) => state.table.tableList);
+  const cols = useSelector((state: RootState) => state.table.cols);
+  const rows = useSelector((state: RootState) => state.table.rows);
+  const showTableSizeModal = useSelector((state: RootState) => state.table.showTableSizeModal);
+  const makeTableList = (empty: boolean): string[][] => {
+    let tempTableList = new Array(rows);
     for (let row = 0; row < rows; row++) {
-      tableList[row] = new Array(cols);
+      tempTableList[row] = new Array(cols);
       for (let col = 0; col < cols; col++) {
-        if (globalTableList[row]) {
-          tableList[row][col] = globalTableList[row][col] ? globalTableList[row][col] : ``;
-          continue;
+        if (tableList[row]) {
+          if (tableList[row][col] && empty === false) {
+            tempTableList[row][col] = tableList[row][col];
+            continue;
+          }
         }
-        tableList[row][col] = ``;
+        tempTableList[row][col] = "";
       }
     }
-    return tableList;
+    return tempTableList;
   };
   const tableInputsRef = useRef<any>({});
-  const [tableList, setTableList] = useState(makeTableList());
-  globalTableList = tableList;
 
   // 이벤트 시작
-  const controlPlus = (target: "rows" | "cols") => {
+  const onPlus = (target: "row" | "col") => {
     if (rows === 0) {
-      setRows(1);
-      setCols(1);
+      dispatch(setOne());
       return;
     }
     switch (target) {
-      case "rows":
-        setRows((prevRow) => ++prevRow);
+      case "row":
+        dispatch(setRows(rows + 1));
         break;
-      case "cols":
-        setCols((prevCol) => ++prevCol);
+      case "col":
+        dispatch(setCols(cols + 1));
         break;
     }
   };
-  const controlMinus = (target: "rows" | "cols") => {
-    if ((target === "rows" && rows <= 1) || (target === "cols" && cols <= 1)) {
-      setRows(0);
-      setCols(0);
-      globalTableList = [];
+  const onMinus = (target: "row" | "col") => {
+    if ((target === "row" && rows <= 1) || (target === "col" && cols <= 1)) {
+      dispatch(setZero());
       return;
     }
     switch (target) {
-      case "rows":
-        setRows((prevRow) => --prevRow);
+      case "row":
+        dispatch(setRows(rows - 1));
         break;
-      case "cols":
-        setCols((prevCol) => --prevCol);
+      case "col":
+        dispatch(setCols(cols - 1));
         break;
     }
   };
-  const onRowPlus = () => controlPlus("rows");
-  const onRowMinus = () => controlMinus("rows");
-  const onColPlus = () => controlPlus("cols");
-  const onColMinus = () => controlMinus("cols");
   const onTableContentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.dataset.row && event.target.dataset.col) {
       const row = parseInt(event.target.dataset.row);
       const col = parseInt(event.target.dataset.col);
-      globalTableList[row][col] = event.target.value;
-      setTableList([...globalTableList]);
+      dispatch(editTableList({ row, col, value: event.target.value }));
     }
   };
-  const onDelteContents = () => {
-    globalTableList = [];
-    globalTableList = makeTableList();
-    setTableList(globalTableList);
+  const onResetContents = () => {
+    dispatch(setTableList(makeTableList(true)));
   };
   const onChangeTableSize = () => {
-    setShowTableSizeModal(true);
+    dispatch(setShowTableSizeModal(true));
   };
-  const onArrowDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const onArrowKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.target.dataset.row && event.target.dataset.col) {
       const row = parseInt(event.target.dataset.row);
       const col = parseInt(event.target.dataset.col);
@@ -129,7 +122,7 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
                   tableInput[`${row},${col}`] = elem;
                 }}
                 onChange={onTableContentChange}
-                onKeyDown={onArrowDown}
+                onKeyDown={onArrowKeyDown}
                 data-row={row}
                 data-col={col}
                 style={{ width: `${length + 1}em` }}
@@ -152,47 +145,44 @@ function Table({ isTable, tableRef }: { isTable: boolean; tableRef: React.RefObj
     return trList;
   };
   useEffect(() => {
-    setTableList(makeTableList());
+    dispatch(setTableList(makeTableList(false)));
   }, [rows, cols]);
-  if (!isTable) {
-    return <Output rows={rows} cols={cols} globalTableList={globalTableList} />;
-  }
   return (
     <>
-      {showTableSizeModal && <TableSizeModal cols={cols} rows={rows} setCols={setCols} setRows={setRows} setShowTableSizeModal={setShowTableSizeModal} />}
-      <div className={"table-system-wrapper"}>
+      {showTableSizeModal && <TableSizeModal />}
+      <main className={"table-system-wrapper"}>
         <div className={"top-container"}>
           <div className="btn btn--delete">
-            <FontAwesomeIcon icon={faTrash} onClick={onDelteContents} />
+            <FontAwesomeIcon icon={faTrash} onClick={onResetContents} />
           </div>
           <button className="btn btn--size-indicator" onClick={onChangeTableSize}>
             {cols}x{rows}
           </button>
           <div className={"btn-container--top"}>
-            <button className="btn" onClick={onColPlus}>
+            <button className="btn" onClick={() => onPlus("col")}>
               <FontAwesomeIcon icon={faPlus} />
             </button>
-            <button className="btn" onClick={onColMinus}>
+            <button className="btn" onClick={() => onMinus("col")}>
               <FontAwesomeIcon icon={faMinus} />
             </button>
           </div>
         </div>
         <div className={"bottom-container"}>
           <div className={"btn-container--table-left"}>
-            <button className="btn" onClick={onRowPlus}>
+            <button className="btn" onClick={() => onPlus("row")}>
               <FontAwesomeIcon icon={faPlus} />
             </button>
-            <button className="btn" onClick={onRowMinus}>
+            <button className="btn" onClick={() => onMinus("row")}>
               <FontAwesomeIcon icon={faMinus} />
             </button>
           </div>
           <div className={"table-container"}>
-            <table ref={tableRef} className="malgun-gothic">
+            <table className="malgun-gothic" ref={tableRef}>
               <tbody>{setTableContents()}</tbody>
             </table>
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }

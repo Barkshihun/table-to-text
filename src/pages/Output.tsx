@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 import Swal from "sweetalert2";
 import "../scss/Output.scss";
 
 let globalSpace = " ";
-function Output({ rows, cols, globalTableList }: { rows: number; cols: number; globalTableList: string[][] }) {
+function Output() {
+  const cols = useSelector((state: RootState) => state.table.cols);
+  const rows = useSelector((state: RootState) => state.table.rows);
+  const tableList = useSelector((state: RootState) => state.table.tableList);
   const [space, setSpace] = useState(globalSpace);
 
   // 정규표현식 시작
@@ -43,7 +48,7 @@ function Output({ rows, cols, globalTableList }: { rows: number; cols: number; g
     for (let col = 0; col < cols; col++) {
       let tempList = [];
       for (let row = 0; row < rows; row++) {
-        tempList.push(computeLength(globalTableList[row][col]));
+        tempList.push(computeLength(tableList[row][col]));
       }
       longestTextPerCol.push(Math.max(...tempList));
     }
@@ -52,7 +57,7 @@ function Output({ rows, cols, globalTableList }: { rows: number; cols: number; g
   };
   const longestTextPerColList = getLongestComputedLengthPerCol();
   const computeText = (row: number, col: number): string => {
-    let text = globalTableList[row][col];
+    let text = tableList[row][col];
     if (text) {
       const textLength = computeLength(text);
       if (textLength < longestTextPerColList[col]) {
@@ -71,7 +76,7 @@ function Output({ rows, cols, globalTableList }: { rows: number; cols: number; g
     }
     return text;
   };
-  const globalTableListToText = () => {
+  const tableListToText = () => {
     let textList: string[] = [];
     const endOfRowIndex = rows - 1;
     for (let row = 0; row < rows; row++) {
@@ -102,7 +107,7 @@ function Output({ rows, cols, globalTableList }: { rows: number; cols: number; g
     }
     return textList.join("").length;
   };
-  const [text, setText] = useState(globalTableListToText());
+  const [text, setText] = useState(tableListToText());
 
   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(event.target.value);
@@ -131,18 +136,18 @@ function Output({ rows, cols, globalTableList }: { rows: number; cols: number; g
     });
   };
   useEffect(() => {
-    setText(globalTableListToText());
+    setText(tableListToText());
   }, [space]);
   const changeSpaceBtnText = space === " " ? "반각 띄어쓰기\nU+0020\n| |" : "전각 띄어쓰기\nU+3000\n|\u3000|";
   globalSpace = space;
   return (
-    <div className={"output-container"}>
+    <main className={"output-container"}>
       <div className={"btn-container--textarea-left"}>
         <input className="btn btn--textarea-left" type={"button"} onClick={onCopy} value={"COPY"} />
         <input className="btn btn--textarea-left" type={"button"} value={changeSpaceBtnText} onClick={onChangeSpaceClick} />
       </div>
       <textarea className="malgun-gothic" value={text} onChange={onChange} style={{ height: `${rows + 3}em`, width: `${getHorizontalWidth()}em` }} spellCheck={false}></textarea>
-    </div>
+    </main>
   );
 }
 

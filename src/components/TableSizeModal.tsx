@@ -1,36 +1,30 @@
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../store/store";
+import { setCols, setRows, setShowTableSizeModal } from "../store/tableSlice";
 
-function TableSizeModal({
-  cols,
-  rows,
-  setCols,
-  setRows,
-  setShowTableSizeModal,
-}: {
-  cols: number;
-  rows: number;
-  setCols: React.Dispatch<React.SetStateAction<number>>;
-  setRows: React.Dispatch<React.SetStateAction<number>>;
-  setShowTableSizeModal: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+function TableSizeModal() {
+  const dispatch = useDispatch();
+  const cols = useSelector((state: RootState) => state.table.cols);
+  const rows = useSelector((state: RootState) => state.table.rows);
   const colsInputRef = useRef<HTMLInputElement>(null);
   const rowsInputRef = useRef<HTMLInputElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
   const onEsc = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
       event.preventDefault();
-      setShowTableSizeModal(false);
+      dispatch(setShowTableSizeModal(false));
     }
   };
   const onTableSizeConfig = (event: React.FormEvent) => {
     event.preventDefault();
     const colsInput = colsInputRef.current as HTMLInputElement;
-    const rowssInput = rowsInputRef.current as HTMLInputElement;
-    const cols = parseInt(colsInput.value);
-    const rows = parseInt(rowssInput.value);
-    setCols(cols);
-    setRows(rows);
-    setShowTableSizeModal(false);
+    const rowsInput = rowsInputRef.current as HTMLInputElement;
+    const inputtedCols = parseInt(colsInput.value);
+    const inputtedRows = parseInt(rowsInput.value);
+    dispatch(setCols(inputtedCols));
+    dispatch(setRows(inputtedRows));
+    dispatch(setShowTableSizeModal(false));
   };
   useEffect(() => {
     window.addEventListener("keydown", onEsc);
