@@ -26,15 +26,3 @@ textarea {
   justify-content: flex-start;
   margin-right: 10px;
 }
-.btn--textarea-left {
-  @extend %border;
-  line-height: 1;
-  &:first-child {
-    padding: 0.2em 0;
-    border-bottom: unset;
-  }
-  &:last-child {
-    padding: 0.5em 0;
-  }
-  text-align: center;
-}

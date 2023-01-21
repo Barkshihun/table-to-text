@@ -4,13 +4,13 @@ import { RootState } from "./store/store";
 import Output from "./pages/Output";
 import Home from "./pages/Home";
 import "./scss/App.scss";
+import "./scss/Btn.scss";
 
 function App() {
   const isHome = useSelector((state: RootState) => state.renderedPage.isHome);
   const dispatch = useDispatch();
   return (
     <>
-      {" "}
       <header>
         <button
           className="btn btn--main-tranform btn--transform"

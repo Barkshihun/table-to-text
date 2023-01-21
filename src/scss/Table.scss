@@ -29,30 +29,6 @@
     left: 20px;
   }
 }
-.btn--size-indicator {
-  width: 30%;
-  min-width: 65px;
-  background: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 20px;
-  padding-top: 0.1em;
-  @extend %border;
-  @extend %border-radius;
-  &:hover {
-    background-color: rgb(230, 230, 230);
-    button {
-      background-color: rgb(230, 230, 230);
-    }
-  }
-  &:active {
-    background-color: rgb(200, 200, 200);
-    button {
-      background-color: rgb(200, 200, 200);
-    }
-  }
-}
 .btn-container--top {
   display: flex;
   top: -35px;
@@ -67,14 +43,6 @@
         border-right: 2px solid $black;
       }
     }
-  }
-}
-.btn--delete {
-  padding: 0 5px;
-  border-radius: 7px;
-  @extend %border;
-  svg {
-    font-size: 20px;
   }
 }
 .bottom-container {

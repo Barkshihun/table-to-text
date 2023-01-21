@@ -30,40 +30,8 @@ header {
   justify-content: flex-start;
   align-items: center;
 }
-.btn {
-  font-family: "Do Hyeon", sans-serif;
-  background-color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  &:hover {
-    background-color: $hover;
-  }
-  &:active {
-    background-color: rgb(200, 200, 200);
-  }
-}
 .malgun-gothic {
   font-family: "맑은 고딕", "NanumGothic", sans-serif;
-}
-.btn--transform {
-  @extend %border;
-  @extend %shadow;
-}
-.btn--main-tranform {
-  border-radius: 20px;
-  @include mobile {
-    width: 50%;
-    font-size: $mobile-font-size + 10px;
-    border-radius: 12px;
-    padding-top: 0.2em;
-  }
-  @include desktop {
-    width: 30%;
-    min-width: 340px;
-    font-size: $desktop-font-size + 10px;
-  }
 }
 .sub-btn-container {
   display: flex;
