@@ -111,12 +111,12 @@ function Table({ tableRef }: { tableRef: React.RefObject<HTMLTableElement> }) {
     for (let row = 0; row < rows; row++) {
       const tdList = [];
       for (let col = 0; col < cols; col++) {
-        const length = tableList[row][col].length;
         tdList.push(
           <td key={`r${row}c${col}`}>
-            <div>
-              <input
-                value={tableList[row][col]}
+            <div className="contentEditable-div-container">
+              <div
+                className="contentEditable-div-container__div"
+                contentEditable
                 ref={(elem: HTMLInputElement) => {
                   let tableInput = tableInputsRef.current as any;
                   tableInput[`${row},${col}`] = elem;
@@ -125,8 +125,6 @@ function Table({ tableRef }: { tableRef: React.RefObject<HTMLTableElement> }) {
                 onKeyDown={onArrowKeyDown}
                 data-row={row}
                 data-col={col}
-                style={{ width: `${length + 1}em` }}
-                spellCheck={false}
               />
             </div>
           </td>

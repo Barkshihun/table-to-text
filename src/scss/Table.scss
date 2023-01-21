@@ -83,28 +83,33 @@
     td {
       background: white;
       @extend %border;
-      div {
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        input {
-          all: unset;
-          text-align: center;
-          @include mobile {
-            min-width: 50px;
-            height: 20px;
-            font-size: $mobile-font-size;
-            padding: 5px 10px;
-          }
-          @include desktop {
-            min-width: 90px;
-            height: 40px;
-            font-size: $desktop-font-size;
-            padding: 15px 25px;
-          }
-        }
-      }
     }
+  }
+}
+.contentEditable-div-container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: text;
+  @include mobile {
+    font-size: $mobile-font-size;
+    padding: 10px;
+  }
+  @include desktop {
+    font-size: $desktop-font-size;
+    padding: 25px;
+  }
+}
+.contentEditable-div-container__div {
+  outline: none;
+  text-align: center;
+  width: max-content;
+  height: max-content;
+  @include mobile {
+    min-width: 50px;
+  }
+  @include desktop {
+    min-width: 90px;
   }
 }
