@@ -37,11 +37,16 @@ const tableSlice = createSlice({
     setTableList: (state, action) => {
       state.tableList = action.payload;
     },
-    editTableList: (state, { payload: { row, col, value } }) => {
+    editTableList: (state, { payload: { row, col, value } }: { payload: { row: number; col: number; value: string } }) => {
       state.tableList[row][col] = value;
+    },
+    importCsv: (state, { payload: { rows, cols, rawDataTableList } }: { payload: { rows: number; cols: number; rawDataTableList: string[][] } }) => {
+      state.rows = rows;
+      state.cols = cols;
+      state.tableList = rawDataTableList;
     },
   },
 });
 
-export const { setCols, setRows, setZero, setOne, setShowTableSizeModal, setTableList, editTableList } = tableSlice.actions;
+export const { setCols, setRows, setZero, setOne, setShowTableSizeModal, setTableList, editTableList, importCsv } = tableSlice.actions;
 export default tableSlice;

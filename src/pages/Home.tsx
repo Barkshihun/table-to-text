@@ -1,11 +1,13 @@
 import { useRef, useState } from "react";
 import domtoimage from "dom-to-image";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
+import { importCsv } from "../store/tableSlice";
 import LoadingModal from "../components/LoadingModal";
 import Table from "../components/Table";
 
 function Home() {
+  const dispatch = useDispatch();
   const tableList = useSelector((state: RootState) => state.table.tableList);
   const [showLoading, setShowLoading] = useState(false);
   const tableRef = useRef<HTMLTableElement>(null);
@@ -17,8 +19,20 @@ function Home() {
         const reader = new FileReader();
         reader.readAsText(csvFile);
         reader.onloadend = () => {
-          const result = reader.result;
-          console.log(result);
+          let rawData = reader.result as string;
+          rawData = rawData.replace(/\r/g, "");
+          console.log("들어옴");
+          let rawDataList = rawData.split("\n");
+          let rawDataTableList: string[][] = [];
+          const rows = rawDataList.length;
+          for (let i = 0; i < rows; i++) {
+            rawDataTableList[i] = rawDataList[i].split(",");
+          }
+          const cols = rawDataTableList[0].length;
+          console.table(rawDataTableList);
+          console.log("cols", cols, "rows", rows);
+          dispatch(importCsv({ rows, cols, rawDataTableList }));
+          console.log("끝이다");
         };
       }
     }
