@@ -5,6 +5,7 @@ import { RootState } from "../store/store";
 import { importCsv } from "../store/tableSlice";
 import LoadingModal from "../components/LoadingModal";
 import Table from "../components/Table";
+import "../scss/Home.scss";
 
 function Home() {
   const dispatch = useDispatch();

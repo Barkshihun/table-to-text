@@ -33,27 +33,3 @@ header {
 .malgun-gothic {
   font-family: "맑은 고딕", "NanumGothic", sans-serif;
 }
-.sub-btn-container {
-  display: flex;
-  justify-content: space-between;
-  @include mobile {
-    width: 50%;
-  }
-  width: 40%;
-  margin: 20px 0px;
-  padding: 0px 2%;
-  box-sizing: border-box;
-}
-.sub-btn-container__btn {
-  font-size: 20px;
-  border-radius: 10px;
-  @include mobile {
-    font-size: 10px;
-    border-radius: 5px;
-  }
-  width: 30%;
-  word-break: keep-all;
-}
-.input--file {
-  display: none;
-}
