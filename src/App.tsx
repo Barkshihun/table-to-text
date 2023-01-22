@@ -23,7 +23,6 @@ function App() {
         tempTableList[row][col] = contentEditableDivs[row][col].innerText;
       }
     }
-    console.log(tempTableList);
     return tempTableList;
   };
   return (

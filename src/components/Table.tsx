@@ -13,6 +13,7 @@ function Table({ tableRef, contentEditableDivsRef }: { tableRef: React.RefObject
   const cols = useSelector((state: RootState) => state.table.cols);
   const rows = useSelector((state: RootState) => state.table.rows);
   const showTableSizeModal = useSelector((state: RootState) => state.table.showTableSizeModal);
+  const tableList = useSelector((state: RootState) => state.table.tableList);
 
   // 이벤트 시작
   const onPlus = (target: "row" | "col") => {
@@ -98,8 +99,13 @@ function Table({ tableRef, contentEditableDivsRef }: { tableRef: React.RefObject
               <div
                 className="contentEditable-div-container__div"
                 contentEditable
-                ref={(elem) => {
+                ref={(elem: HTMLDivElement) => {
                   if (elem) {
+                    if (tableList[row]) {
+                      if (tableList[row][col]) {
+                        elem.innerText = tableList[row][col];
+                      }
+                    }
                     contentEditableDivsRef.current[row][col] = elem;
                   }
                 }}
@@ -116,7 +122,7 @@ function Table({ tableRef, contentEditableDivsRef }: { tableRef: React.RefObject
     }
     return trList;
   };
-  // console.table(contentEditableDivsRef.current);
+
   console.log("렌더링");
   return (
     <>
