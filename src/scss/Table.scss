@@ -71,19 +71,14 @@
 .table-container {
   display: flex;
   justify-content: flex-start;
-  width: 70%;
-  position: relative;
-  table {
-    position: absolute;
-    display: block;
-    padding-right: 10%;
-    tbody {
-      @extend %shadow;
-    }
-    td {
-      background: white;
-      @extend %border;
-    }
+  width: max-content;
+  padding-right: 30px;
+  tbody {
+    @extend %shadow;
+  }
+  td {
+    background: white;
+    @extend %border;
   }
 }
 .contentEditable-div-container {
