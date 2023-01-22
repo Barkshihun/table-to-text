@@ -10,26 +10,9 @@ import "../scss/Table.scss";
 
 function Table({ tableRef }: { tableRef: React.RefObject<HTMLTableElement> }) {
   const dispatch = useDispatch();
-  const tableList = useSelector((state: RootState) => state.table.tableList);
   const cols = useSelector((state: RootState) => state.table.cols);
   const rows = useSelector((state: RootState) => state.table.rows);
   const showTableSizeModal = useSelector((state: RootState) => state.table.showTableSizeModal);
-  const makeTableList = (empty: boolean): string[][] => {
-    let tempTableList = new Array(rows);
-    for (let row = 0; row < rows; row++) {
-      tempTableList[row] = new Array(cols);
-      for (let col = 0; col < cols; col++) {
-        if (tableList[row]) {
-          if (tableList[row][col] && empty === false) {
-            tempTableList[row][col] = tableList[row][col];
-            continue;
-          }
-        }
-        tempTableList[row][col] = "";
-      }
-    }
-    return tempTableList;
-  };
   const contentEditableDivsRef = useRef<HTMLDivElement[][]>([]);
 
   // 이벤트 시작
@@ -61,16 +44,15 @@ function Table({ tableRef }: { tableRef: React.RefObject<HTMLTableElement> }) {
         break;
     }
   };
-  const onTableContentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.dataset.row && event.target.dataset.col) {
-      const row = parseInt(event.target.dataset.row);
-      const col = parseInt(event.target.dataset.col);
-      dispatch(editTableList({ row, col, value: event.target.value }));
-    }
+  const onTableContentInput = (event: React.ChangeEvent<HTMLDivElement>) => {
+    let row: string | number;
+    let col: string | number;
+    row = event.target.dataset.row as string;
+    col = event.target.dataset.col as string;
+    row = parseInt(row);
+    col = parseInt(col);
   };
-  const onResetContents = () => {
-    dispatch(setTableList(makeTableList(true)));
-  };
+  const onResetContents = () => {};
   const onChangeTableSize = () => {
     dispatch(setShowTableSizeModal(true));
   };
@@ -122,7 +104,7 @@ function Table({ tableRef }: { tableRef: React.RefObject<HTMLTableElement> }) {
                     contentEditableDivsRef.current[row][col] = elem;
                   }
                 }}
-                onChange={onTableContentChange}
+                onInput={onTableContentInput}
                 onKeyDown={onArrowKeyDown}
                 data-row={row}
                 data-col={col}
@@ -135,10 +117,8 @@ function Table({ tableRef }: { tableRef: React.RefObject<HTMLTableElement> }) {
     }
     return trList;
   };
-  useEffect(() => {
-    dispatch(setTableList(makeTableList(false)));
-  }, [rows, cols]);
-  console.table(contentEditableDivsRef.current);
+  // console.table(contentEditableDivsRef.current);
+  console.log("렌더링");
   return (
     <>
       {showTableSizeModal && <TableSizeModal />}
