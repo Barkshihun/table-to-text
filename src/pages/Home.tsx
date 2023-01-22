@@ -7,7 +7,7 @@ import LoadingModal from "../components/LoadingModal";
 import Table from "../components/Table";
 import "../scss/Home.scss";
 
-function Home() {
+function Home({ contentEditableDivsRef }: { contentEditableDivsRef: React.MutableRefObject<HTMLDivElement[][]> }) {
   const dispatch = useDispatch();
   const tableList = useSelector((state: RootState) => state.table.tableList);
   const [showLoading, setShowLoading] = useState(false);
@@ -92,7 +92,7 @@ function Home() {
           png로 변환
         </button>
       </div>
-      <Table tableRef={tableRef} />
+      <Table tableRef={tableRef} contentEditableDivsRef={contentEditableDivsRef} />
     </>
   );
 }

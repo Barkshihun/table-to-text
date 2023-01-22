@@ -2,18 +2,17 @@ import { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { setCols, setRows, setZero, setOne, setShowTableSizeModal, setTableList, editTableList } from "../store/tableSlice";
+import { setCols, setRows, setZero, setOne, setShowTableSizeModal } from "../store/tableSlice";
 import { RootState } from "../store/store";
 import TableSizeModal from "./TableSizeModal";
 import "../scss/Modal.scss";
 import "../scss/Table.scss";
 
-function Table({ tableRef }: { tableRef: React.RefObject<HTMLTableElement> }) {
+function Table({ tableRef, contentEditableDivsRef }: { tableRef: React.RefObject<HTMLTableElement>; contentEditableDivsRef: React.MutableRefObject<HTMLDivElement[][]> }) {
   const dispatch = useDispatch();
   const cols = useSelector((state: RootState) => state.table.cols);
   const rows = useSelector((state: RootState) => state.table.rows);
   const showTableSizeModal = useSelector((state: RootState) => state.table.showTableSizeModal);
-  const contentEditableDivsRef = useRef<HTMLDivElement[][]>([]);
 
   // 이벤트 시작
   const onPlus = (target: "row" | "col") => {
