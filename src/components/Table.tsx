@@ -52,7 +52,13 @@ function Table({ tableRef, contentEditableDivsRef }: { tableRef: React.RefObject
     row = parseInt(row);
     col = parseInt(col);
   };
-  const onResetContents = () => {};
+  const onResetContents = () => {
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        contentEditableDivsRef.current[row][col].innerText = "";
+      }
+    }
+  };
   const onChangeTableSize = () => {
     dispatch(setShowTableSizeModal(true));
   };
@@ -129,8 +135,8 @@ function Table({ tableRef, contentEditableDivsRef }: { tableRef: React.RefObject
       {showTableSizeModal && <TableSizeModal />}
       <main className={"table-system-wrapper"}>
         <div className={"top-container"}>
-          <div className="btn btn--delete">
-            <FontAwesomeIcon icon={faTrash} onClick={onResetContents} />
+          <div className="btn btn--delete" onClick={onResetContents}>
+            <FontAwesomeIcon icon={faTrash} />
           </div>
           <button className="btn btn--size-indicator" onClick={onChangeTableSize}>
             {cols}x{rows}
