@@ -30,7 +30,7 @@ function Table({ tableRef }: { tableRef: React.RefObject<HTMLTableElement> }) {
     }
     return tempTableList;
   };
-  const tableInputsRef = useRef<any>({});
+  const contentEditableDivsRef = useRef<HTMLDivElement[][]>([]);
 
   // 이벤트 시작
   const onPlus = (target: "row" | "col") => {
@@ -81,22 +81,22 @@ function Table({ tableRef }: { tableRef: React.RefObject<HTMLTableElement> }) {
       if (event.shiftKey === true && event.ctrlKey === true) {
         if (event.key === "ArrowLeft" && col !== 0) {
           event.preventDefault();
-          const focusElem = tableInputsRef.current[`${row},${col - 1}`] as HTMLInputElement;
+          const focusElem = contentEditableDivsRef.current[row][col - 1] as HTMLInputElement;
           focusElem.focus();
         }
         if (event.key === "ArrowRight" && col !== cols - 1) {
           event.preventDefault();
-          const focusElem = tableInputsRef.current[`${row},${col + 1}`] as HTMLInputElement;
+          const focusElem = contentEditableDivsRef.current[row][col + 1] as HTMLInputElement;
           focusElem.focus();
         }
         if (event.key === "ArrowUp" && row !== 0) {
           event.preventDefault();
-          const focusElem = tableInputsRef.current[`${row - 1},${col}`] as HTMLInputElement;
+          const focusElem = contentEditableDivsRef.current[row - 1][col] as HTMLInputElement;
           focusElem.focus();
         }
         if (event.key === "ArrowDown" && row !== rows - 1) {
           event.preventDefault();
-          const focusElem = tableInputsRef.current[`${row + 1},${col}`] as HTMLInputElement;
+          const focusElem = contentEditableDivsRef.current[row + 1][col] as HTMLInputElement;
           focusElem.focus();
         }
       }
@@ -106,10 +106,10 @@ function Table({ tableRef }: { tableRef: React.RefObject<HTMLTableElement> }) {
 
   const setTableContents = () => {
     const trList = [];
-    const rows = tableList.length;
-    const cols = tableList[0] ? tableList[0].length : 0;
+    contentEditableDivsRef.current = new Array(rows);
     for (let row = 0; row < rows; row++) {
       const tdList = [];
+      contentEditableDivsRef.current[row] = new Array(cols);
       for (let col = 0; col < cols; col++) {
         tdList.push(
           <td key={`r${row}c${col}`}>
@@ -117,9 +117,10 @@ function Table({ tableRef }: { tableRef: React.RefObject<HTMLTableElement> }) {
               <div
                 className="contentEditable-div-container__div"
                 contentEditable
-                ref={(elem: HTMLInputElement) => {
-                  let tableInput = tableInputsRef.current as any;
-                  tableInput[`${row},${col}`] = elem;
+                ref={(elem) => {
+                  if (elem) {
+                    contentEditableDivsRef.current[row][col] = elem;
+                  }
                 }}
                 onChange={onTableContentChange}
                 onKeyDown={onArrowKeyDown}
@@ -132,19 +133,12 @@ function Table({ tableRef }: { tableRef: React.RefObject<HTMLTableElement> }) {
       }
       trList.push(<tr key={`row${row}`}>{tdList.map((td) => td)}</tr>);
     }
-    let tempTableInputs: { [coord: string]: HTMLInputElement } = {};
-    for (const coord in tableInputsRef.current) {
-      const input = tableInputsRef.current[coord] as HTMLInputElement;
-      if (input) {
-        tempTableInputs[coord] = input;
-      }
-    }
-    tableInputsRef.current = tempTableInputs;
     return trList;
   };
   useEffect(() => {
     dispatch(setTableList(makeTableList(false)));
   }, [rows, cols]);
+  console.table(contentEditableDivsRef.current);
   return (
     <>
       {showTableSizeModal && <TableSizeModal />}
