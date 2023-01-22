@@ -7,9 +7,14 @@ import LoadingModal from "../components/LoadingModal";
 import Table from "../components/Table";
 import "../scss/Home.scss";
 
-function Home({ contentEditableDivsRef }: { contentEditableDivsRef: React.MutableRefObject<HTMLDivElement[][]> }) {
+function Home({
+  transformToTableList,
+  contentEditableDivsRef,
+}: {
+  transformToTableList: (contentEditableDivs: HTMLDivElement[][]) => string[][];
+  contentEditableDivsRef: React.MutableRefObject<HTMLDivElement[][]>;
+}) {
   const dispatch = useDispatch();
-  const tableList = useSelector((state: RootState) => state.table.tableList);
   const [showLoading, setShowLoading] = useState(false);
   const tableRef = useRef<HTMLTableElement>(null);
 
@@ -39,6 +44,7 @@ function Home({ contentEditableDivsRef }: { contentEditableDivsRef: React.Mutabl
     }
   };
   const onTransformToCsv = () => {
+    const tableList = transformToTableList(contentEditableDivsRef.current);
     let csv: any = [];
     for (let i = 0; i < tableList.length; i++) {
       const row = [...tableList[i]];

@@ -16,7 +16,7 @@ function App() {
   const contentEditableDivsRef = useRef<HTMLDivElement[][]>([]);
 
   const transformToTableList = (contentEditableDivs: HTMLDivElement[][]) => {
-    let tempTableList = new Array(rows);
+    let tempTableList: string[][] = new Array(rows);
     for (let row = 0; row < rows; row++) {
       tempTableList[row] = new Array(cols);
       for (let col = 0; col < cols; col++) {
@@ -41,7 +41,7 @@ function App() {
           {isHome === true ? "텍스트로 변환" : "표로 가기"}
         </button>
       </header>
-      {isHome === true ? <Home contentEditableDivsRef={contentEditableDivsRef} /> : <Output />}
+      {isHome === true ? <Home transformToTableList={transformToTableList} contentEditableDivsRef={contentEditableDivsRef} /> : <Output />}
     </>
   );
 }
