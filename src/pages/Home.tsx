@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import domtoimage from "dom-to-image";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store/store";
+import { useDispatch } from "react-redux";
 import { importCsv } from "../store/tableSlice";
 import LoadingModal from "../components/LoadingModal";
 import Table from "../components/Table";
@@ -16,7 +15,7 @@ function Home({
 }) {
   const dispatch = useDispatch();
   const [showLoading, setShowLoading] = useState(false);
-  const tableRef = useRef<HTMLTableElement>(null);
+  const tableContainerRef = useRef<HTMLDivElement>(null);
 
   const onImportCsv = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -65,7 +64,7 @@ function Home({
   };
   const onTransformToPng = async () => {
     setShowLoading(true);
-    const tableNode = tableRef.current as HTMLTableElement;
+    const tableNode = tableContainerRef.current as HTMLDivElement;
     tableNode.style.paddingRight = "0";
     const scale = 3;
     const dataUrl = await domtoimage.toPng(tableNode, {
@@ -76,7 +75,7 @@ function Home({
         transformOrigin: "top left",
       },
     });
-    tableNode.style.paddingRight = "10%";
+    tableNode.style.paddingRight = "30px";
     const aTag = document.createElement("a");
     aTag.download = "표.png";
     aTag.href = dataUrl;
@@ -98,7 +97,7 @@ function Home({
           png로 변환
         </button>
       </div>
-      <Table tableRef={tableRef} contentEditableDivsRef={contentEditableDivsRef} />
+      <Table tableContainerRef={tableContainerRef} contentEditableDivsRef={contentEditableDivsRef} />
     </>
   );
 }

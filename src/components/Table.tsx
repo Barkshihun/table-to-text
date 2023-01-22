@@ -8,7 +8,7 @@ import TableSizeModal from "./TableSizeModal";
 import "../scss/Modal.scss";
 import "../scss/Table.scss";
 
-function Table({ tableRef, contentEditableDivsRef }: { tableRef: React.RefObject<HTMLTableElement>; contentEditableDivsRef: React.MutableRefObject<HTMLDivElement[][]> }) {
+function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRef: React.RefObject<HTMLDivElement>; contentEditableDivsRef: React.MutableRefObject<HTMLDivElement[][]> }) {
   const dispatch = useDispatch();
   const cols = useSelector((state: RootState) => state.table.cols);
   const rows = useSelector((state: RootState) => state.table.rows);
@@ -159,8 +159,8 @@ function Table({ tableRef, contentEditableDivsRef }: { tableRef: React.RefObject
               <FontAwesomeIcon icon={faMinus} />
             </button>
           </div>
-          <div className={"table-container"}>
-            <table className="malgun-gothic" ref={tableRef}>
+          <div className={"table-container"} ref={tableContainerRef}>
+            <table className="malgun-gothic">
               <tbody>{setTableContents()}</tbody>
             </table>
           </div>
