@@ -14,6 +14,15 @@ function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRe
   const rows = useSelector((state: RootState) => state.table.rows);
   const showTableSizeModal = useSelector((state: RootState) => state.table.showTableSizeModal);
   const tableList = useSelector((state: RootState) => state.table.tableList);
+  function focusCaretAtEnd(elem: HTMLDivElement) {
+    const selection = window.getSelection() as Selection;
+    const range = document.createRange();
+    selection.removeAllRanges();
+    range.selectNodeContents(elem);
+    range.collapse(false);
+    selection.addRange(range);
+    elem.focus();
+  }
 
   // 이벤트 시작
   const onPlus = (target: "row" | "col") => {
@@ -70,22 +79,22 @@ function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRe
         if (event.key === "ArrowLeft" && col !== 0) {
           event.preventDefault();
           const focusElem = contentEditableDivsRef.current[row][col - 1] as HTMLInputElement;
-          focusElem.focus();
+          focusCaretAtEnd(focusElem);
         }
         if (event.key === "ArrowRight" && col !== cols - 1) {
           event.preventDefault();
           const focusElem = contentEditableDivsRef.current[row][col + 1] as HTMLInputElement;
-          focusElem.focus();
+          focusCaretAtEnd(focusElem);
         }
         if (event.key === "ArrowUp" && row !== 0) {
           event.preventDefault();
           const focusElem = contentEditableDivsRef.current[row - 1][col] as HTMLInputElement;
-          focusElem.focus();
+          focusCaretAtEnd(focusElem);
         }
         if (event.key === "ArrowDown" && row !== rows - 1) {
           event.preventDefault();
           const focusElem = contentEditableDivsRef.current[row + 1][col] as HTMLInputElement;
-          focusElem.focus();
+          focusCaretAtEnd(focusElem);
         }
       }
     }
@@ -129,7 +138,6 @@ function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRe
     return trList;
   };
 
-  console.log("렌더링");
   return (
     <>
       {showTableSizeModal && <TableSizeModal />}
