@@ -41,7 +41,7 @@ function App() {
           {isHome === true ? "텍스트로 변환" : "표로 가기"}
         </button>
       </header>
-      {isHome === true ? <Home transformToTableList={transformToTableList} contentEditableDivsRef={contentEditableDivsRef} /> : <Output />}
+      {isHome === true ? <Home contentEditableDivsRef={contentEditableDivsRef} /> : <Output />}
     </>
   );
 }

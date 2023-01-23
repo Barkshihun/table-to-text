@@ -1,22 +1,51 @@
 import { useRef, useState } from "react";
 import domtoimage from "dom-to-image";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store/store";
 import { importCsv } from "../store/tableSlice";
 import LoadingModal from "../components/LoadingModal";
 import Table from "../components/Table";
 import "../scss/Home.scss";
 
-function Home({
-  transformToTableList,
-  contentEditableDivsRef,
-}: {
-  transformToTableList: (contentEditableDivs: HTMLDivElement[][]) => string[][];
-  contentEditableDivsRef: React.MutableRefObject<HTMLDivElement[][]>;
-}) {
+function Home({ contentEditableDivsRef }: { contentEditableDivsRef: React.MutableRefObject<HTMLDivElement[][]> }) {
   const dispatch = useDispatch();
   const [showLoading, setShowLoading] = useState(false);
   const tableContainerRef = useRef<HTMLDivElement>(null);
+  const cols = useSelector((state: RootState) => state.table.cols);
+  const rows = useSelector((state: RootState) => state.table.rows);
 
+  const transformToCsvData = (contentEditableDivs: HTMLDivElement[][]) => {
+    const lastCol = cols - 1;
+    let tempCsvData = "";
+    for (let row = 0; row < rows; row++) {
+      let rowCsvData = "";
+      for (let col = 0; col < cols; col++) {
+        let text = contentEditableDivs[row][col].innerText;
+        let lastTextIndex = text.length - 1;
+        if (text[0] === "\n") {
+          text = text.substring(1);
+          lastTextIndex = text.length - 1;
+        }
+        if (text[lastTextIndex] === "\n") {
+          text = text.substring(0, lastTextIndex);
+        }
+        text = text.replace(/\n\n/g, "\n");
+        if (text.includes('"')) {
+          rowCsvData += `"${text.replace(/"/g, '""')}"`;
+        } else if (text.includes(",") || text.includes("\n")) {
+          rowCsvData += `"${text}"`;
+        } else {
+          rowCsvData += text;
+        }
+        if (col !== lastCol) {
+          rowCsvData += ",";
+        }
+      }
+      rowCsvData += "\n";
+      tempCsvData += rowCsvData;
+    }
+    return tempCsvData;
+  };
   const onImportCsv = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const csvFile = event.target.files[0];
@@ -44,22 +73,9 @@ function Home({
     }
   };
   const onTransformToCsv = () => {
-    const tableList = transformToTableList(contentEditableDivsRef.current);
-    let csv: any = [];
-    for (let i = 0; i < tableList.length; i++) {
-      const row = [...tableList[i]];
-      for (let j = 0; j < row.length; j++) {
-        if (row[j].includes('"')) {
-          row[j] = `"${row[j].replace(/"/g, '""')}"`;
-        } else if (row[j].includes(",")) {
-          row[j] = `"${row[j]}"`;
-        }
-      }
-      csv.push(row);
-    }
-    csv = csv.join("\n");
+    const csvData = transformToCsvData(contentEditableDivsRef.current);
     const aTag = document.createElement("a");
-    aTag.href = `data:text/plain;charset=utf-8,\ufeff${encodeURIComponent(csv)}`;
+    aTag.href = `data:text/plain;charset=utf-8,\ufeff${encodeURIComponent(csvData)}`;
     aTag.download = "표.csv";
     aTag.click();
   };
