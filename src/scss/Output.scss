@@ -12,6 +12,8 @@ textarea {
   justify-content: center;
   width: 100%;
   margin-top: 50px;
+  box-sizing: border-box;
+  padding: 0 50px;
 }
 .btn-container--textarea-left {
   @include mobile {
