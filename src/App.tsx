@@ -13,15 +13,36 @@ function App() {
   const cols = useSelector((state: RootState) => state.table.cols);
   const rows = useSelector((state: RootState) => state.table.rows);
   const dispatch = useDispatch();
-  const contentEditableDivsRef = useRef<HTMLDivElement[][]>([]);
+  const contentEditablePresRef = useRef<HTMLPreElement[][]>([]);
 
-  const transformToTableList = (contentEditableDivs: HTMLDivElement[][]) => {
+  const transformToTableList = (contentEditablePres: HTMLPreElement[][]) => {
     let tempTableList: string[][] = new Array(rows);
-    for (let row = 0; row < rows; row++) {
-      tempTableList[row] = new Array(cols);
+    let tableListRows = rows;
+    let contentEditablePresRow = 0;
+    for (let tableListRow = 0; tableListRow < tableListRows; tableListRow++) {
+      tempTableList[tableListRow] = new Array(cols);
+      let verticalLongestRowLength = 1;
       for (let col = 0; col < cols; col++) {
-        tempTableList[row][col] = contentEditableDivs[row][col].innerText;
+        console.log("tableListRow", tableListRow, "contentEditableDivsRow", contentEditablePresRow);
+        const text = contentEditablePres[contentEditablePresRow][col].innerText;
+        const verticalRowLength = text.split("\n").length;
+        if (verticalRowLength > verticalLongestRowLength) {
+          verticalLongestRowLength = verticalRowLength;
+        }
       }
+      for (let i = 1; i < verticalLongestRowLength; i++) {
+        tempTableList.splice(tableListRow + i, 0, new Array());
+      }
+      for (let col = 0; col < cols; col++) {
+        const text: string | string[] = contentEditablePres[contentEditablePresRow][col].innerText.split("\n");
+        for (let i = 0; i < text.length; i++) {
+          tempTableList[tableListRow + i][col] = text[i];
+        }
+      }
+      const diff = verticalLongestRowLength - 1;
+      tableListRow += diff;
+      tableListRows += diff;
+      contentEditablePresRow++;
     }
     return tempTableList;
   };
@@ -31,8 +52,9 @@ function App() {
         <button
           className="btn btn--main-tranform btn--transform"
           onClick={() => {
+            console.table(transformToTableList(contentEditablePresRef.current));
             if (isHome) {
-              dispatch(setTableList(transformToTableList(contentEditableDivsRef.current)));
+              dispatch(setTableList(transformToTableList(contentEditablePresRef.current)));
             }
             dispatch(setIsHome(!isHome));
           }}
@@ -41,7 +63,7 @@ function App() {
           {isHome === true ? "텍스트로 변환" : "표로 가기"}
         </button>
       </header>
-      {isHome === true ? <Home contentEditableDivsRef={contentEditableDivsRef} /> : <Output />}
+      {isHome === true ? <Home contentEditablePresRef={contentEditablePresRef} /> : <Output />}
     </>
   );
 }

@@ -7,29 +7,20 @@ import LoadingModal from "../components/LoadingModal";
 import Table from "../components/Table";
 import "../scss/Home.scss";
 
-function Home({ contentEditableDivsRef }: { contentEditableDivsRef: React.MutableRefObject<HTMLDivElement[][]> }) {
+function Home({ contentEditablePresRef }: { contentEditablePresRef: React.MutableRefObject<HTMLPreElement[][]> }) {
   const dispatch = useDispatch();
   const [showLoading, setShowLoading] = useState(false);
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const cols = useSelector((state: RootState) => state.table.cols);
   const rows = useSelector((state: RootState) => state.table.rows);
 
-  const transformToCsvData = (contentEditableDivs: HTMLDivElement[][]) => {
+  const transformToCsvData = (contentEditablePres: HTMLPreElement[][]) => {
     const lastCol = cols - 1;
     let tempCsvData = "";
     for (let row = 0; row < rows; row++) {
       let rowCsvData = "";
       for (let col = 0; col < cols; col++) {
-        let text = contentEditableDivs[row][col].innerText;
-        let lastTextIndex = text.length - 1;
-        if (text[0] === "\n") {
-          text = text.substring(1);
-          lastTextIndex = text.length - 1;
-        }
-        if (text[lastTextIndex] === "\n") {
-          text = text.substring(0, lastTextIndex);
-        }
-        text = text.replace(/\n\n/g, "\n");
+        const text = contentEditablePres[row][col].innerText;
         if (text.includes('"')) {
           rowCsvData += `"${text.replace(/"/g, '""')}"`;
         } else if (text.includes(",") || text.includes("\n")) {
@@ -118,7 +109,7 @@ function Home({ contentEditableDivsRef }: { contentEditableDivsRef: React.Mutabl
     }
   };
   const onTransformToCsv = () => {
-    const csvData = transformToCsvData(contentEditableDivsRef.current);
+    const csvData = transformToCsvData(contentEditablePresRef.current);
     const aTag = document.createElement("a");
     aTag.href = `data:text/plain;charset=utf-8,\ufeff${encodeURIComponent(csvData)}`;
     aTag.download = "표.csv";
@@ -159,7 +150,7 @@ function Home({ contentEditableDivsRef }: { contentEditableDivsRef: React.Mutabl
           png로 변환
         </button>
       </div>
-      <Table tableContainerRef={tableContainerRef} contentEditableDivsRef={contentEditableDivsRef} />
+      <Table tableContainerRef={tableContainerRef} contentEditablePresRef={contentEditablePresRef} />
     </>
   );
 }

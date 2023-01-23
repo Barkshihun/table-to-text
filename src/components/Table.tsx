@@ -8,7 +8,7 @@ import TableSizeModal from "./TableSizeModal";
 import "../scss/Modal.scss";
 import "../scss/Table.scss";
 
-function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRef: React.RefObject<HTMLDivElement>; contentEditableDivsRef: React.MutableRefObject<HTMLDivElement[][]> }) {
+function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRef: React.RefObject<HTMLDivElement>; contentEditablePresRef: React.MutableRefObject<HTMLPreElement[][]> }) {
   const dispatch = useDispatch();
   const cols = useSelector((state: RootState) => state.table.cols);
   const rows = useSelector((state: RootState) => state.table.rows);
@@ -46,7 +46,7 @@ function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRe
         break;
     }
   };
-  const onTableContentInput = (event: React.ChangeEvent<HTMLDivElement>) => {
+  const onTableContentInput = (event: React.ChangeEvent<HTMLPreElement>) => {
     let row: string | number;
     let col: string | number;
     row = event.target.dataset.row as string;
@@ -57,14 +57,14 @@ function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRe
   const onResetContents = () => {
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
-        contentEditableDivsRef.current[row][col].innerText = "";
+        contentEditablePresRef.current[row][col].innerText = "";
       }
     }
   };
   const onChangeTableSize = () => {
     dispatch(setShowTableSizeModal(true));
   };
-  const focusCaretAtEnd = (elem: HTMLDivElement, select?: boolean) => {
+  const focusCaretAtEnd = (elem: HTMLPreElement, select?: boolean) => {
     const selection = window.getSelection() as Selection;
     const range = document.createRange();
     selection.removeAllRanges();
@@ -75,32 +75,32 @@ function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRe
     selection.addRange(range);
   };
   const controlShiftTab = (col: number, row: number) => {
-    let focusElem: HTMLDivElement;
+    let focusElem: HTMLPreElement;
     if (col === 0) {
       if (row === 0) {
-        focusElem = contentEditableDivsRef.current[lastRow][lastCol];
+        focusElem = contentEditablePresRef.current[lastRow][lastCol];
       } else {
-        focusElem = contentEditableDivsRef.current[row - 1][lastCol];
+        focusElem = contentEditablePresRef.current[row - 1][lastCol];
       }
     } else {
-      focusElem = contentEditableDivsRef.current[row][col - 1];
+      focusElem = contentEditablePresRef.current[row][col - 1];
     }
     focusCaretAtEnd(focusElem, true);
   };
   const controlTab = (col: number, row: number) => {
-    let focusElem: HTMLDivElement;
+    let focusElem: HTMLPreElement;
     if (col === lastCol) {
       if (row === lastRow) {
-        focusElem = contentEditableDivsRef.current[0][0];
+        focusElem = contentEditablePresRef.current[0][0];
       } else {
-        focusElem = contentEditableDivsRef.current[row + 1][0];
+        focusElem = contentEditablePresRef.current[row + 1][0];
       }
     } else {
-      focusElem = contentEditableDivsRef.current[row][col + 1];
+      focusElem = contentEditablePresRef.current[row][col + 1];
     }
     focusCaretAtEnd(focusElem, true);
   };
-  const onArrowKeyOrTabDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const onArrowKeyOrTabDown = (event: React.KeyboardEvent<HTMLPreElement>) => {
     let row: string | number;
     let col: string | number;
     row = event.target.dataset.row as string;
@@ -119,22 +119,22 @@ function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRe
     if (event.shiftKey === true && event.ctrlKey === true) {
       if (event.key === "ArrowLeft" && col !== 0) {
         event.preventDefault();
-        const focusElem = contentEditableDivsRef.current[row][col - 1] as HTMLDivElement;
+        const focusElem = contentEditablePresRef.current[row][col - 1] as HTMLPreElement;
         focusCaretAtEnd(focusElem);
       }
       if (event.key === "ArrowRight" && col !== lastCol) {
         event.preventDefault();
-        const focusElem = contentEditableDivsRef.current[row][col + 1] as HTMLDivElement;
+        const focusElem = contentEditablePresRef.current[row][col + 1] as HTMLPreElement;
         focusCaretAtEnd(focusElem);
       }
       if (event.key === "ArrowUp" && row !== 0) {
         event.preventDefault();
-        const focusElem = contentEditableDivsRef.current[row - 1][col] as HTMLDivElement;
+        const focusElem = contentEditablePresRef.current[row - 1][col] as HTMLPreElement;
         focusCaretAtEnd(focusElem);
       }
       if (event.key === "ArrowDown" && row !== lastRow) {
         event.preventDefault();
-        const focusElem = contentEditableDivsRef.current[row + 1][col] as HTMLDivElement;
+        const focusElem = contentEditablePresRef.current[row + 1][col] as HTMLPreElement;
         focusCaretAtEnd(focusElem);
       }
     }
@@ -143,23 +143,23 @@ function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRe
 
   const setTableContents = () => {
     const trList = [];
-    contentEditableDivsRef.current = new Array(rows);
+    contentEditablePresRef.current = new Array(rows);
     for (let row = 0; row < rows; row++) {
       const tdList = [];
-      contentEditableDivsRef.current[row] = new Array(cols);
+      contentEditablePresRef.current[row] = new Array(cols);
       for (let col = 0; col < cols; col++) {
         tdList.push(
           <td key={`r${row}c${col}`}>
             <div className="contentEditable-div-container">
-              <div
+              <pre
                 className="contentEditable-div-container__div"
                 contentEditable
-                ref={(elem: HTMLDivElement) => {
+                ref={(elem: HTMLPreElement) => {
                   if (elem) {
                     if (tableList[row]) {
                       elem.innerText = tableList[row][col];
                     }
-                    contentEditableDivsRef.current[row][col] = elem;
+                    contentEditablePresRef.current[row][col] = elem;
                   }
                 }}
                 onInput={onTableContentInput}
