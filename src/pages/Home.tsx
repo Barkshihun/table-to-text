@@ -37,6 +37,7 @@ function Home({
           console.table(rawDataTableList);
           console.log("cols", cols, "rows", rows);
           dispatch(importCsv({ rows, cols, rawDataTableList }));
+          event.target.value = "";
           console.log("끝이다");
         };
       }
