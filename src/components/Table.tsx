@@ -14,15 +14,6 @@ function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRe
   const rows = useSelector((state: RootState) => state.table.rows);
   const showTableSizeModal = useSelector((state: RootState) => state.table.showTableSizeModal);
   const tableList = useSelector((state: RootState) => state.table.tableList);
-  function focusCaretAtEnd(elem: HTMLDivElement) {
-    const selection = window.getSelection() as Selection;
-    const range = document.createRange();
-    selection.removeAllRanges();
-    range.selectNodeContents(elem);
-    range.collapse(false);
-    selection.addRange(range);
-    elem.focus();
-  }
 
   // 이벤트 시작
   const onPlus = (target: "row" | "col") => {
@@ -71,31 +62,78 @@ function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRe
   const onChangeTableSize = () => {
     dispatch(setShowTableSizeModal(true));
   };
-  const onArrowKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.target.dataset.row && event.target.dataset.col) {
-      const row = parseInt(event.target.dataset.row);
-      const col = parseInt(event.target.dataset.col);
-      if (event.shiftKey === true && event.ctrlKey === true) {
-        if (event.key === "ArrowLeft" && col !== 0) {
-          event.preventDefault();
-          const focusElem = contentEditableDivsRef.current[row][col - 1] as HTMLInputElement;
-          focusCaretAtEnd(focusElem);
-        }
-        if (event.key === "ArrowRight" && col !== cols - 1) {
-          event.preventDefault();
-          const focusElem = contentEditableDivsRef.current[row][col + 1] as HTMLInputElement;
-          focusCaretAtEnd(focusElem);
-        }
-        if (event.key === "ArrowUp" && row !== 0) {
-          event.preventDefault();
-          const focusElem = contentEditableDivsRef.current[row - 1][col] as HTMLInputElement;
-          focusCaretAtEnd(focusElem);
-        }
-        if (event.key === "ArrowDown" && row !== rows - 1) {
-          event.preventDefault();
-          const focusElem = contentEditableDivsRef.current[row + 1][col] as HTMLInputElement;
-          focusCaretAtEnd(focusElem);
-        }
+  const focusCaretAtEnd = (elem: HTMLDivElement, select?: boolean) => {
+    const selection = window.getSelection() as Selection;
+    const range = document.createRange();
+    selection.removeAllRanges();
+    range.selectNodeContents(elem);
+    if (!select) {
+      range.collapse(false);
+    }
+    selection.addRange(range);
+  };
+  const controlShiftTab = (col: number, row: number) => {
+    let focusElem: HTMLDivElement;
+    if (col === 0) {
+      if (row === 0) {
+        focusElem = contentEditableDivsRef.current[rows - 1][cols - 1];
+      } else {
+        focusElem = contentEditableDivsRef.current[row - 1][cols - 1];
+      }
+    } else {
+      focusElem = contentEditableDivsRef.current[row][col - 1];
+    }
+    focusCaretAtEnd(focusElem, true);
+  };
+  const controlTab = (col: number, row: number) => {
+    let focusElem: HTMLDivElement;
+    if (col === cols - 1) {
+      if (row === rows - 1) {
+        focusElem = contentEditableDivsRef.current[0][0];
+      } else {
+        focusElem = contentEditableDivsRef.current[row + 1][0];
+      }
+    } else {
+      focusElem = contentEditableDivsRef.current[row][col + 1];
+    }
+    focusCaretAtEnd(focusElem, true);
+  };
+  const onArrowKeyOrTabDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    let row: string | number;
+    let col: string | number;
+    row = event.target.dataset.row as string;
+    col = event.target.dataset.col as string;
+    row = parseInt(row);
+    col = parseInt(col);
+    if (event.key === "Tab") {
+      event.preventDefault();
+      if (event.shiftKey === true) {
+        controlShiftTab(col, row);
+      } else {
+        controlTab(col, row);
+      }
+      return;
+    }
+    if (event.shiftKey === true && event.ctrlKey === true) {
+      if (event.key === "ArrowLeft" && col !== 0) {
+        event.preventDefault();
+        const focusElem = contentEditableDivsRef.current[row][col - 1] as HTMLDivElement;
+        focusCaretAtEnd(focusElem);
+      }
+      if (event.key === "ArrowRight" && col !== cols - 1) {
+        event.preventDefault();
+        const focusElem = contentEditableDivsRef.current[row][col + 1] as HTMLDivElement;
+        focusCaretAtEnd(focusElem);
+      }
+      if (event.key === "ArrowUp" && row !== 0) {
+        event.preventDefault();
+        const focusElem = contentEditableDivsRef.current[row - 1][col] as HTMLDivElement;
+        focusCaretAtEnd(focusElem);
+      }
+      if (event.key === "ArrowDown" && row !== rows - 1) {
+        event.preventDefault();
+        const focusElem = contentEditableDivsRef.current[row + 1][col] as HTMLDivElement;
+        focusCaretAtEnd(focusElem);
       }
     }
   };
@@ -125,7 +163,7 @@ function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRe
                   }
                 }}
                 onInput={onTableContentInput}
-                onKeyDown={onArrowKeyDown}
+                onKeyDown={onArrowKeyOrTabDown}
                 data-row={row}
                 data-col={col}
               />
