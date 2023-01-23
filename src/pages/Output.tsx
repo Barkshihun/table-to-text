@@ -1,15 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import Swal from "sweetalert2";
 import "../scss/Output.scss";
 
-let globalSpace = " ";
+let globalSpace: " " | "\u3000" = " ";
 function Output() {
   const cols = useSelector((state: RootState) => state.table.cols);
   const rows = useSelector((state: RootState) => state.table.rows);
   const tableList = useSelector((state: RootState) => state.table.tableList);
-  const [space, setSpace] = useState(globalSpace);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const changeSpaceBtnRef = useRef<HTMLInputElement>(null);
+  console.table(tableList);
 
   // 정규표현식 시작
   // +20로 계산  +2
@@ -21,7 +23,7 @@ function Output() {
   const regElse = new RegExp(`[^ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ぁ-ゔ|ァ-ヴー|々〆〤|一-龥|a-z|A-Z|${thickChars.join("|")}]`, "g");
   // 정규표현식 끝
 
-  const spaceInTable = space === " " ? `${space.repeat(2)}` : `${space.repeat(1)}`;
+  const spaceInTable = globalSpace === " " ? `${globalSpace.repeat(2)}` : `${globalSpace.repeat(1)}`;
   const computeLength = (str: string) => {
     let textLength = 0;
     const cjkList = str.match(regCJK);
@@ -62,16 +64,16 @@ function Output() {
       const textLength = computeLength(text);
       if (textLength < longestTextPerColList[col]) {
         let gap = longestTextPerColList[col] - computeLength(text);
-        if (space === "\u3000") {
+        if (globalSpace === "\u3000") {
           gap = Math.round(gap / 2);
         }
-        text = `${text}${space.repeat(gap)}`;
+        text = `${text}${globalSpace.repeat(gap)}`;
       }
     } else {
-      if (space === "\u3000") {
-        text = `${space.repeat(Math.round(longestTextPerColList[col] / 2))}`;
+      if (globalSpace === "\u3000") {
+        text = `${globalSpace.repeat(Math.round(longestTextPerColList[col] / 2))}`;
       } else {
-        text = `${space.repeat(longestTextPerColList[col])}`;
+        text = `${globalSpace.repeat(longestTextPerColList[col])}`;
       }
     }
     return text;
@@ -107,24 +109,22 @@ function Output() {
     }
     return textList.join("").length;
   };
-  const [text, setText] = useState(tableListToText());
-
-  const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setText(event.target.value);
-  };
   const onChangeSpaceClick = () => {
-    setSpace((currentSpace) => {
-      switch (currentSpace) {
-        case " ":
-          return "\u3000";
-        case "\u3000":
-          return " ";
-        default:
-          return " ";
-      }
-    });
+    const findSpaces = new RegExp(`${globalSpace}`, "g");
+    const textarea = textareaRef.current as HTMLTextAreaElement;
+    const changeSpaceBtn = changeSpaceBtnRef.current as HTMLInputElement;
+    if (globalSpace === " ") {
+      textarea.value = textarea.value.replace(findSpaces, "\u3000");
+      changeSpaceBtn.value = "전각 띄어쓰기\nU+3000\n|\u3000|";
+      globalSpace = "\u3000";
+    } else {
+      textarea.value = textarea.value.replace(findSpaces, " ");
+      changeSpaceBtn.value = "반각 띄어쓰기\nU+0020\n| |";
+      globalSpace = " ";
+    }
   };
   const onCopy = () => {
+    const text = textareaRef.current?.value as string;
     navigator.clipboard.writeText(text);
     Swal.fire({
       title: "복사 성공",
@@ -135,18 +135,21 @@ function Output() {
       icon: "success",
     });
   };
-  useEffect(() => {
-    setText(tableListToText());
-  }, [space]);
-  const changeSpaceBtnText = space === " " ? "반각 띄어쓰기\nU+0020\n| |" : "전각 띄어쓰기\nU+3000\n|\u3000|";
-  globalSpace = space;
+
+  console.count("렌더");
   return (
     <main className={"output-container"}>
       <div className={"btn-container--textarea-left"}>
         <input className="btn btn--textarea-left" type={"button"} onClick={onCopy} value={"COPY"} />
-        <input className="btn btn--textarea-left" type={"button"} value={changeSpaceBtnText} onClick={onChangeSpaceClick} />
+        <input
+          className="btn btn--textarea-left"
+          type={"button"}
+          ref={changeSpaceBtnRef}
+          value={globalSpace === " " ? "반각 띄어쓰기\nU+0020\n| |" : "전각 띄어쓰기\nU+3000\n|\u3000|"}
+          onClick={onChangeSpaceClick}
+        />
       </div>
-      <textarea className="malgun-gothic" value={text} onChange={onChange} style={{ height: `${rows + 3}em`, width: `${getHorizontalWidth()}em` }} spellCheck={false}></textarea>
+      <textarea className="malgun-gothic" ref={textareaRef} defaultValue={tableListToText()} style={{ height: `${rows + 3}em`, width: `${getHorizontalWidth()}em` }} spellCheck={false}></textarea>
     </main>
   );
 }
