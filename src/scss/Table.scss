@@ -97,10 +97,14 @@
   }
 }
 .contentEditable-div-container__div {
-  outline: none;
   text-align: center;
   width: max-content;
   height: max-content;
+  line-height: 1.2;
+  &:focus {
+    outline: 2px solid gray;
+    outline-offset: 10px;
+  }
   @include mobile {
     min-width: 50px;
   }
