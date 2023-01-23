@@ -1,17 +1,23 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 interface initialState {
-  cols: number;
-  rows: number;
   showTableSizeModal: boolean;
-  tableList: string[][];
+  originCols: number;
+  originRows: number;
+  originTableList: string[][];
+  colsForTransform: number;
+  rowsForTransform: number;
+  tableListForTransform: string[][];
 }
 
 const initialState: initialState = {
-  cols: 3,
-  rows: 4,
   showTableSizeModal: false,
-  tableList: [],
+  originCols: 3,
+  originRows: 4,
+  originTableList: [],
+  colsForTransform: 3,
+  rowsForTransform: 4,
+  tableListForTransform: [],
 };
 
 const tableSlice = createSlice({
@@ -19,36 +25,44 @@ const tableSlice = createSlice({
   initialState,
   reducers: {
     setCols: (state, action) => {
-      state.cols = action.payload;
+      state.originCols = action.payload;
     },
     setRows: (state, action) => {
-      state.rows = action.payload;
+      state.originRows = action.payload;
     },
     setZero: (state) => {
-      state.cols = 0;
-      state.rows = 0;
-      state.tableList = [];
+      state.originCols = 0;
+      state.originRows = 0;
+      state.originTableList = [];
     },
     setOne: (state) => {
-      state.cols = 1;
-      state.rows = 1;
+      state.originCols = 1;
+      state.originRows = 1;
     },
     setShowTableSizeModal: (state, action) => {
       state.showTableSizeModal = action.payload;
     },
-    setTableList: (state, action) => {
-      state.tableList = action.payload;
+    setTableListForTransform: (
+      state,
+      {
+        payload: { colsForTransform, rowsForTransform, tableListForTransform, originTableList },
+      }: { payload: { colsForTransform: number; rowsForTransform: number; tableListForTransform: string[][]; originTableList: string[][] } }
+    ) => {
+      state.colsForTransform = colsForTransform;
+      state.rowsForTransform = rowsForTransform;
+      state.tableListForTransform = tableListForTransform;
+      state.originTableList = originTableList;
     },
     resetTableList: (state) => {
-      state.tableList = [];
+      state.originTableList = [];
     },
-    importCsv: (state, { payload: { rows, cols, rawDataTableList } }: { payload: { rows: number; cols: number; rawDataTableList: string[][] } }) => {
-      state.rows = rows;
-      state.cols = cols;
-      state.tableList = rawDataTableList;
+    importCsv: (state, { payload: { cols, rows, rawDataTableList } }: { payload: { cols: number; rows: number; rawDataTableList: string[][] } }) => {
+      state.originCols = cols;
+      state.originRows = rows;
+      state.originTableList = rawDataTableList;
     },
   },
 });
 
-export const { setCols, setRows, setZero, setOne, setShowTableSizeModal, setTableList, resetTableList, importCsv } = tableSlice.actions;
+export const { setCols, setRows, setZero, setOne, setShowTableSizeModal, setTableListForTransform, resetTableList, importCsv } = tableSlice.actions;
 export default tableSlice;

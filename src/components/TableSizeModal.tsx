@@ -5,8 +5,8 @@ import { setCols, setRows, setShowTableSizeModal } from "../store/tableSlice";
 
 function TableSizeModal() {
   const dispatch = useDispatch();
-  const cols = useSelector((state: RootState) => state.table.cols);
-  const rows = useSelector((state: RootState) => state.table.rows);
+  const cols = useSelector((state: RootState) => state.table.originCols);
+  const rows = useSelector((state: RootState) => state.table.originRows);
   const colsInputRef = useRef<HTMLInputElement>(null);
   const rowsInputRef = useRef<HTMLInputElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);

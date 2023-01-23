@@ -6,12 +6,13 @@ import "../scss/Output.scss";
 
 let globalSpace: " " | "\u3000" = " ";
 function Output() {
-  const cols = useSelector((state: RootState) => state.table.cols);
-  const rows = useSelector((state: RootState) => state.table.rows);
-  const tableList = useSelector((state: RootState) => state.table.tableList);
+  const cols = useSelector((state: RootState) => state.table.colsForTransform);
+  const rows = useSelector((state: RootState) => state.table.rowsForTransform);
+  const tableList = useSelector((state: RootState) => state.table.tableListForTransform);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const changeSpaceBtnRef = useRef<HTMLInputElement>(null);
   console.table(tableList);
+  console.log("로그다!", cols, rows);
 
   // 정규표현식 시작
   // +20로 계산  +2
@@ -26,6 +27,9 @@ function Output() {
   const spaceInTable = globalSpace === " " ? `${globalSpace.repeat(2)}` : `${globalSpace.repeat(1)}`;
   const computeLength = (str: string) => {
     let textLength = 0;
+    if (!str) {
+      return 0;
+    }
     const cjkList = str.match(regCJK);
     const thickList = str.match(regThick);
     const engList = str.match(regEng);

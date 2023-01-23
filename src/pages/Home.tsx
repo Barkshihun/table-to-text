@@ -11,8 +11,8 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
   const dispatch = useDispatch();
   const [showLoading, setShowLoading] = useState(false);
   const tableContainerRef = useRef<HTMLDivElement>(null);
-  const cols = useSelector((state: RootState) => state.table.cols);
-  const rows = useSelector((state: RootState) => state.table.rows);
+  const cols = useSelector((state: RootState) => state.table.originCols);
+  const rows = useSelector((state: RootState) => state.table.originRows);
 
   const transformToCsvData = (contentEditablePres: HTMLPreElement[][]) => {
     const lastCol = cols - 1;
@@ -103,7 +103,7 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
           const rows = rawDataTableList.length;
           const cols = rawDataTableList[0].length;
           event.target.value = "";
-          dispatch(importCsv({ rows, cols, rawDataTableList }));
+          dispatch(importCsv({ cols, rows, rawDataTableList }));
         };
       }
     }

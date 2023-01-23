@@ -10,12 +10,12 @@ import "../scss/Table.scss";
 
 function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRef: React.RefObject<HTMLDivElement>; contentEditablePresRef: React.MutableRefObject<HTMLPreElement[][]> }) {
   const dispatch = useDispatch();
-  const cols = useSelector((state: RootState) => state.table.cols);
-  const rows = useSelector((state: RootState) => state.table.rows);
+  const cols = useSelector((state: RootState) => state.table.originCols);
+  const rows = useSelector((state: RootState) => state.table.originRows);
   const lastCol = cols - 1;
   const lastRow = rows - 1;
   const showTableSizeModal = useSelector((state: RootState) => state.table.showTableSizeModal);
-  const tableList = useSelector((state: RootState) => state.table.tableList);
+  const tableList = useSelector((state: RootState) => state.table.originTableList);
 
   // 이벤트 시작
   const onPlus = (target: "row" | "col") => {
@@ -175,6 +175,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
     }
     return trList;
   };
+  console.log("로그", tableList);
   useEffect(() => {
     if (tableList[0]) {
       dispatch(resetTableList());
