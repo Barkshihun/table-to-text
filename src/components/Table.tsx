@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { setCols, setRows, setZero, setOne, setShowTableSizeModal } from "../store/tableSlice";
+import { setCols, setRows, setZero, setOne, setShowTableSizeModal, resetTableList } from "../store/tableSlice";
 import { RootState } from "../store/store";
 import TableSizeModal from "./TableSizeModal";
 import "../scss/Modal.scss";
@@ -177,7 +177,12 @@ function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRe
     }
     return trList;
   };
-
+  useEffect(() => {
+    if (tableList[0]) {
+      dispatch(resetTableList());
+    }
+  }, [tableList]);
+  console.count("렌더링");
   return (
     <>
       {showTableSizeModal && <TableSizeModal />}

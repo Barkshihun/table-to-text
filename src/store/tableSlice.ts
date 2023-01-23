@@ -1,15 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+interface initialState {
+  cols: number;
+  rows: number;
+  showTableSizeModal: boolean;
+  tableList: string[][];
+}
+
+const initialState: initialState = {
   cols: 3,
   rows: 4,
   showTableSizeModal: false,
-  tableList: [
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""],
-  ],
+  tableList: [],
 };
 
 const tableSlice = createSlice({
@@ -37,6 +39,9 @@ const tableSlice = createSlice({
     setTableList: (state, action) => {
       state.tableList = action.payload;
     },
+    resetTableList: (state) => {
+      state.tableList = [];
+    },
     importCsv: (state, { payload: { rows, cols, rawDataTableList } }: { payload: { rows: number; cols: number; rawDataTableList: string[][] } }) => {
       state.rows = rows;
       state.cols = cols;
@@ -45,5 +50,5 @@ const tableSlice = createSlice({
   },
 });
 
-export const { setCols, setRows, setZero, setOne, setShowTableSizeModal, setTableList, importCsv } = tableSlice.actions;
+export const { setCols, setRows, setZero, setOne, setShowTableSizeModal, setTableList, resetTableList, importCsv } = tableSlice.actions;
 export default tableSlice;
