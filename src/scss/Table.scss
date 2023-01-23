@@ -78,6 +78,7 @@
   }
   td {
     background: white;
+    cursor: text;
     @extend %border;
   }
 }
@@ -86,7 +87,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: text;
   @include mobile {
     font-size: $mobile-font-size;
     padding: 10px;
