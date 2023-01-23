@@ -157,9 +157,7 @@ function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRe
                 ref={(elem: HTMLDivElement) => {
                   if (elem) {
                     if (tableList[row]) {
-                      if (tableList[row][col]) {
-                        elem.innerText = tableList[row][col];
-                      }
+                      elem.innerText = tableList[row][col];
                     }
                     contentEditableDivsRef.current[row][col] = elem;
                   }

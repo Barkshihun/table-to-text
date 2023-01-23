@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import domtoimage from "dom-to-image";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { importCsv } from "../store/tableSlice";
+import { setZero, importCsv } from "../store/tableSlice";
 import LoadingModal from "../components/LoadingModal";
 import Table from "../components/Table";
 import "../scss/Home.scss";
@@ -55,19 +55,64 @@ function Home({ contentEditableDivsRef }: { contentEditableDivsRef: React.Mutabl
         reader.onloadend = () => {
           let rawData = reader.result as string;
           rawData = rawData.replace(/\r/g, "");
-          console.log("들어옴");
-          let rawDataList = rawData.split("\n");
-          let rawDataTableList: string[][] = [];
-          const rows = rawDataList.length;
-          for (let i = 0; i < rows; i++) {
-            rawDataTableList[i] = rawDataList[i].split(",");
+          if (rawData === "" || rawData === "\n") {
+            dispatch(setZero());
+            return;
           }
+          let isInQuotation = false;
+          let startIndex = 0;
+          const rawDataTableList: string[][] = [[]];
+          let rawDataTableListRow = 0;
+          const transFormQuotation = (text: string) => {
+            if (text[0] === '"' && text[text.length - 1] === '"') {
+              text = text.slice(1, -1);
+            }
+            text = text.replace(/""/g, '"');
+            return text;
+          };
+          for (let i = 0; i < rawData.length; i++) {
+            switch (rawData[i]) {
+              case '"':
+                if (isInQuotation) {
+                  isInQuotation = false;
+                } else {
+                  isInQuotation = true;
+                }
+                break;
+              case ",":
+                if (!isInQuotation) {
+                  let text = rawData.substring(startIndex, i);
+                  text = transFormQuotation(text);
+                  rawDataTableList[rawDataTableListRow].push(text);
+                  startIndex = i + 1;
+                }
+                break;
+              case "\n":
+                if (!isInQuotation) {
+                  let text = rawData.substring(startIndex, i);
+                  text = transFormQuotation(text);
+                  rawDataTableList[rawDataTableListRow].push(text);
+                  rawDataTableList.push([]);
+                  startIndex = i + 1;
+                  rawDataTableListRow++;
+                }
+                break;
+              default:
+                break;
+            }
+            if (i === rawData.length - 1 && !(rawData[i] === "\n")) {
+              let text = rawData.substring(startIndex, i + 1);
+              text = transFormQuotation(text);
+              rawDataTableList[rawDataTableListRow].push(text);
+            }
+          }
+          if (rawDataTableList[rawDataTableList.length - 1].length === 0) {
+            rawDataTableList.pop();
+          }
+          const rows = rawDataTableList.length;
           const cols = rawDataTableList[0].length;
           event.target.value = "";
-          console.table(rawDataTableList);
-          console.log("cols", cols, "rows", rows);
           dispatch(importCsv({ rows, cols, rawDataTableList }));
-          console.log("끝이다");
         };
       }
     }
