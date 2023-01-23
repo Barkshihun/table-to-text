@@ -12,6 +12,8 @@ function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRe
   const dispatch = useDispatch();
   const cols = useSelector((state: RootState) => state.table.cols);
   const rows = useSelector((state: RootState) => state.table.rows);
+  const lastCol = cols - 1;
+  const lastRow = rows - 1;
   const showTableSizeModal = useSelector((state: RootState) => state.table.showTableSizeModal);
   const tableList = useSelector((state: RootState) => state.table.tableList);
 
@@ -76,9 +78,9 @@ function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRe
     let focusElem: HTMLDivElement;
     if (col === 0) {
       if (row === 0) {
-        focusElem = contentEditableDivsRef.current[rows - 1][cols - 1];
+        focusElem = contentEditableDivsRef.current[lastRow][lastCol];
       } else {
-        focusElem = contentEditableDivsRef.current[row - 1][cols - 1];
+        focusElem = contentEditableDivsRef.current[row - 1][lastCol];
       }
     } else {
       focusElem = contentEditableDivsRef.current[row][col - 1];
@@ -87,8 +89,8 @@ function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRe
   };
   const controlTab = (col: number, row: number) => {
     let focusElem: HTMLDivElement;
-    if (col === cols - 1) {
-      if (row === rows - 1) {
+    if (col === lastCol) {
+      if (row === lastRow) {
         focusElem = contentEditableDivsRef.current[0][0];
       } else {
         focusElem = contentEditableDivsRef.current[row + 1][0];
@@ -120,7 +122,7 @@ function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRe
         const focusElem = contentEditableDivsRef.current[row][col - 1] as HTMLDivElement;
         focusCaretAtEnd(focusElem);
       }
-      if (event.key === "ArrowRight" && col !== cols - 1) {
+      if (event.key === "ArrowRight" && col !== lastCol) {
         event.preventDefault();
         const focusElem = contentEditableDivsRef.current[row][col + 1] as HTMLDivElement;
         focusCaretAtEnd(focusElem);
@@ -130,7 +132,7 @@ function Table({ tableContainerRef, contentEditableDivsRef }: { tableContainerRe
         const focusElem = contentEditableDivsRef.current[row - 1][col] as HTMLDivElement;
         focusCaretAtEnd(focusElem);
       }
-      if (event.key === "ArrowDown" && row !== rows - 1) {
+      if (event.key === "ArrowDown" && row !== lastRow) {
         event.preventDefault();
         const focusElem = contentEditableDivsRef.current[row + 1][col] as HTMLDivElement;
         focusCaretAtEnd(focusElem);
