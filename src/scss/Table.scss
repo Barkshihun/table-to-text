@@ -88,7 +88,6 @@
 .contentEditable-div-container {
   height: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
   @include mobile {
     font-size: $mobile-font-size;
@@ -100,7 +99,6 @@
   }
 }
 .contentEditable-div-container__div {
-  text-align: center;
   width: max-content;
   height: max-content;
   line-height: 1.2;
