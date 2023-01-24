@@ -68,11 +68,13 @@
     }
   }
 }
+.table-container--padding {
+  padding-right: 30px;
+}
 .table-container {
   display: flex;
   justify-content: flex-start;
   width: max-content;
-  padding-right: 30px;
   tbody {
     @extend %shadow;
   }

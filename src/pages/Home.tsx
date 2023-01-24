@@ -130,8 +130,8 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
   };
   const onTransformToPng = async () => {
     setShowLoading(true);
+    console.log("와우");
     const tableNode = tableContainerRef.current as HTMLDivElement;
-    tableNode.style.paddingRight = "0";
     const scale = 3;
     const dataUrl = await toPng(tableNode, {
       width: tableNode.clientWidth * scale,
@@ -141,7 +141,7 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
         transformOrigin: "top left",
       },
     });
-    tableNode.style.paddingRight = "30px";
+    console.log("끝!");
     const aTag = document.createElement("a");
     aTag.download = "표.png";
     aTag.href = dataUrl;

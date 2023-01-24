@@ -210,10 +210,12 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
               <FontAwesomeIcon icon={faMinus} />
             </button>
           </div>
-          <div className={"table-container"} ref={tableContainerRef}>
-            <table className="malgun-gothic">
-              <tbody>{setTableContents()}</tbody>
-            </table>
+          <div className={"table-container--padding"}>
+            <div className={"table-container"} ref={tableContainerRef}>
+              <table className="malgun-gothic">
+                <tbody>{setTableContents()}</tbody>
+              </table>
+            </div>
           </div>
         </div>
       </main>
