@@ -175,7 +175,6 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
     }
     return trList;
   };
-  console.log("로그", tableList);
   useEffect(() => {
     if (tableList[0]) {
       dispatch(resetTableList());

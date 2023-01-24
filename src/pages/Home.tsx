@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import domtoimage from "dom-to-image";
+import chardet from "chardet";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { setZero, importCsv } from "../store/tableSlice";
@@ -41,69 +42,81 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
     if (event.target.files) {
       const csvFile = event.target.files[0];
       if (csvFile.type === "text/csv") {
-        const reader = new FileReader();
-        reader.readAsText(csvFile);
-        reader.onloadend = () => {
-          let rawData = reader.result as string;
-          rawData = rawData.replace(/\r/g, "");
-          if (rawData === "" || rawData === "\n") {
-            dispatch(setZero());
+        const readerForEncoding = new FileReader();
+        readerForEncoding.readAsArrayBuffer(csvFile);
+        let encoding;
+        readerForEncoding.onloadend = () => {
+          let csvDataArrayBuffer = readerForEncoding.result as ArrayBuffer;
+          const csvDataUint8Array = new Uint8Array(csvDataArrayBuffer);
+          encoding = chardet.detect(csvDataUint8Array);
+          if (!encoding) {
             return;
           }
-          let isInQuotation = false;
-          let startIndex = 0;
-          const rawDataTableList: string[][] = [[]];
-          let rawDataTableListRow = 0;
-          const transFormQuotation = (text: string) => {
-            if (text[0] === '"' && text[text.length - 1] === '"') {
-              text = text.slice(1, -1);
+          console.log("encoding", encoding);
+          const readerForText = new FileReader();
+          readerForText.readAsText(csvFile, encoding);
+          readerForText.onload = () => {
+            let csvTextData = readerForText.result as string;
+            csvTextData = csvTextData.replace(/\r/g, "");
+            if (csvTextData === "" || csvTextData === "\n") {
+              dispatch(setZero());
+              return;
             }
-            text = text.replace(/""/g, '"');
-            return text;
+            let isInQuotation = false;
+            let startIndex = 0;
+            const rawDataTableList: string[][] = [[]];
+            let rawDataTableListRow = 0;
+            const transFormQuotation = (text: string) => {
+              if (text[0] === '"' && text[text.length - 1] === '"') {
+                text = text.slice(1, -1);
+              }
+              text = text.replace(/""/g, '"');
+              return text;
+            };
+            for (let i = 0; i < csvTextData.length; i++) {
+              switch (csvTextData[i]) {
+                case '"':
+                  if (isInQuotation) {
+                    isInQuotation = false;
+                  } else {
+                    isInQuotation = true;
+                  }
+                  break;
+                case ",":
+                  if (!isInQuotation) {
+                    let text = csvTextData.substring(startIndex, i);
+                    text = transFormQuotation(text);
+                    rawDataTableList[rawDataTableListRow].push(text);
+                    startIndex = i + 1;
+                  }
+                  break;
+                case "\n":
+                  if (!isInQuotation) {
+                    let text = csvTextData.substring(startIndex, i);
+                    text = transFormQuotation(text);
+                    rawDataTableList[rawDataTableListRow].push(text);
+                    rawDataTableList.push([]);
+                    startIndex = i + 1;
+                    rawDataTableListRow++;
+                  }
+                  break;
+                default:
+                  break;
+              }
+              if (i === csvTextData.length - 1 && !(csvTextData[i] === "\n")) {
+                let text = csvTextData.substring(startIndex, i + 1);
+                text = transFormQuotation(text);
+                rawDataTableList[rawDataTableListRow].push(text);
+              }
+            }
+            if (rawDataTableList[rawDataTableList.length - 1].length === 0) {
+              rawDataTableList.pop();
+            }
+            const rows = rawDataTableList.length;
+            const cols = rawDataTableList[0].length;
+            dispatch(importCsv({ cols, rows, rawDataTableList }));
+            event.target.value = "";
           };
-          for (let i = 0; i < rawData.length; i++) {
-            switch (rawData[i]) {
-              case '"':
-                if (isInQuotation) {
-                  isInQuotation = false;
-                } else {
-                  isInQuotation = true;
-                }
-                break;
-              case ",":
-                if (!isInQuotation) {
-                  let text = rawData.substring(startIndex, i);
-                  text = transFormQuotation(text);
-                  rawDataTableList[rawDataTableListRow].push(text);
-                  startIndex = i + 1;
-                }
-                break;
-              case "\n":
-                if (!isInQuotation) {
-                  let text = rawData.substring(startIndex, i);
-                  text = transFormQuotation(text);
-                  rawDataTableList[rawDataTableListRow].push(text);
-                  rawDataTableList.push([]);
-                  startIndex = i + 1;
-                  rawDataTableListRow++;
-                }
-                break;
-              default:
-                break;
-            }
-            if (i === rawData.length - 1 && !(rawData[i] === "\n")) {
-              let text = rawData.substring(startIndex, i + 1);
-              text = transFormQuotation(text);
-              rawDataTableList[rawDataTableListRow].push(text);
-            }
-          }
-          if (rawDataTableList[rawDataTableList.length - 1].length === 0) {
-            rawDataTableList.pop();
-          }
-          const rows = rawDataTableList.length;
-          const cols = rawDataTableList[0].length;
-          event.target.value = "";
-          dispatch(importCsv({ cols, rows, rawDataTableList }));
         };
       }
     }
