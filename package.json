@@ -21,6 +21,7 @@
     "chardet": "^1.5.1",
     "dom-to-image": "^2.6.0",
     "gh-pages": "^4.0.0",
+    "html-to-image": "^1.11.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
