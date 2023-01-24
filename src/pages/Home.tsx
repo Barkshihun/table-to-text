@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import domtoimage from "dom-to-image";
+import { toPng } from "html-to-image";
 import chardet from "chardet";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
@@ -133,7 +133,7 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
     const tableNode = tableContainerRef.current as HTMLDivElement;
     tableNode.style.paddingRight = "0";
     const scale = 3;
-    const dataUrl = await domtoimage.toPng(tableNode, {
+    const dataUrl = await toPng(tableNode, {
       width: tableNode.clientWidth * scale,
       height: tableNode.clientHeight * scale,
       style: {
