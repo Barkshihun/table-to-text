@@ -167,15 +167,15 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
       {isShowDownloadModal && <DownloadModal />}
       {showTransformingModal && <TransformingModal />}
       <div className="sub-btn-container">
-        <label className="btn sub-btn-container__btn btn--transform" htmlFor="importCsv">
+        <label className="btn sub-btn-container__btn btn--emphasize" htmlFor="importCsv">
           csv 불러오기
           <input type={"file"} id="importCsv" className="input--file" accept=".csv" onChange={onImportCsv}></input>
         </label>
-        <button className="btn sub-btn-container__btn btn--transform" onClick={() => {}}>
+        <button className="btn sub-btn-container__btn btn--emphasize" onClick={() => {}}>
           csv로 다운
         </button>
         <button
-          className="btn sub-btn-container__btn btn--transform"
+          className="btn sub-btn-container__btn btn--emphasize"
           onClick={() => {
             dispatch(showDownloadModal("png"));
           }}

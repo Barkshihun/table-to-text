@@ -60,7 +60,7 @@ function App() {
     <>
       <header>
         <button
-          className="btn btn--main-tranform btn--transform"
+          className="btn btn--main-tranform btn--emphasize"
           onClick={() => {
             if (isHome) {
               const { colsForTransform, rowsForTransform, tableListForTransform } = transformToTableListForTransform(contentEditablePresRef.current);
