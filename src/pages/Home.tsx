@@ -5,13 +5,13 @@ import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { setZero, importCsv } from "../store/tableSlice";
-import LoadingModal from "../components/LoadingModal";
+import TransformingModal from "../components/TransformingModal";
 import Table from "../components/Table";
 import "../scss/Home.scss";
 
 function Home({ contentEditablePresRef }: { contentEditablePresRef: React.MutableRefObject<HTMLPreElement[][]> }) {
   const dispatch = useDispatch();
-  const [showLoading, setShowLoading] = useState(false);
+  const [showTransformingModal, setShowTransformingModal] = useState(false);
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const cols = useSelector((state: RootState) => state.table.originCols);
   const rows = useSelector((state: RootState) => state.table.originRows);
@@ -161,7 +161,7 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
   };
   return (
     <>
-      {showLoading && <LoadingModal />}
+      {showTransformingModal && <TransformingModal />}
       <div className="sub-btn-container">
         <label className="btn sub-btn-container__btn btn--transform" htmlFor="importCsv">
           csv 불러오기

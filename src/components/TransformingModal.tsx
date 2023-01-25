@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-function LoadingModal() {
+function TransformingModal() {
   useEffect(() => {
     document.body.classList.add("no-scroll");
     return () => {
@@ -15,4 +15,4 @@ function LoadingModal() {
     </div>
   );
 }
-export default LoadingModal;
+export default TransformingModal;
