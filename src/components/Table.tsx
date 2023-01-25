@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { setCols, setRows, setZero, setOne, setShowTableSizeModal, resetTableList } from "../store/tableSlice";
+import { setCols, setRows, setZero, setOne, resetTableList } from "../store/tableSlice";
+import { setShowTableSizeModal } from "../store/componentRenderSlice";
 import { RootState } from "../store/store";
 import TableSizeModal from "./TableSizeModal";
 import "../scss/Modal.scss";
@@ -14,7 +15,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
   const rows = useSelector((state: RootState) => state.table.originRows);
   const lastCol = cols - 1;
   const lastRow = rows - 1;
-  const showTableSizeModal = useSelector((state: RootState) => state.table.showTableSizeModal);
+  const showTableSizeModal = useSelector((state: RootState) => state.componentRender.showTableSizeModal);
   const tableList = useSelector((state: RootState) => state.table.originTableList);
 
   // 이벤트 시작

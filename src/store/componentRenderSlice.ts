@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   isHome: true,
+  showTableSizeModal: false,
 };
 
 const componentRenderSlice = createSlice({
@@ -10,8 +11,11 @@ const componentRenderSlice = createSlice({
     setIsHome: (state, action) => {
       state.isHome = action.payload;
     },
+    setShowTableSizeModal: (state, action) => {
+      state.showTableSizeModal = action.payload;
+    },
   },
 });
 
-export const { setIsHome } = componentRenderSlice.actions;
+export const { setIsHome, setShowTableSizeModal } = componentRenderSlice.actions;
 export default componentRenderSlice;

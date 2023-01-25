@@ -1,7 +1,8 @@
 import { useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store/store";
-import { setCols, setRows, setShowTableSizeModal } from "../store/tableSlice";
+import { setShowTableSizeModal } from "../store/componentRenderSlice";
+import { setCols, setRows } from "../store/tableSlice";
 
 function TableSizeModal() {
   const dispatch = useDispatch();
