@@ -18,7 +18,6 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
   const cols = useSelector((state: RootState) => state.table.originCols);
   const rows = useSelector((state: RootState) => state.table.originRows);
   const isShowDownloadModal = useSelector((state: RootState) => state.componentRender.isShowDownloadModal);
-  const downloadModalText = useSelector((state: RootState) => state.componentRender.downloadModalText);
 
   const transformToCsvData = (contentEditablePres: HTMLPreElement[][]) => {
     const lastCol = cols - 1;
@@ -46,17 +45,17 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
   const onImportCsv = (event: React.ChangeEvent<HTMLInputElement>) => {
     const FileList = event.target.files as FileList;
     const csvFile = FileList[0];
+    event.target.value = "";
     if (!csvFile) {
       return;
     }
     if (csvFile.type === "text/csv") {
       const readerForEncoding = new FileReader();
       readerForEncoding.readAsArrayBuffer(csvFile);
-      let encoding;
       readerForEncoding.onloadend = () => {
         let csvDataArrayBuffer = readerForEncoding.result as ArrayBuffer;
         const csvDataUint8Array = new Uint8Array(csvDataArrayBuffer);
-        encoding = chardet.detect(csvDataUint8Array);
+        const encoding = chardet.detect(csvDataUint8Array);
         if (!encoding) {
           Swal.fire({
             icon: "error",
@@ -127,7 +126,6 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
           const rows = rawDataTableList.length;
           const cols = rawDataTableList[0].length;
           dispatch(importCsv({ cols, rows, rawDataTableList }));
-          event.target.value = "";
         };
       };
     } else {
@@ -163,6 +161,7 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
     aTag.click();
     setShowTransformingModal(false);
   };
+
   return (
     <>
       {isShowDownloadModal && <DownloadModal onDownloadToCsv={onDownloadToCsv} onDownloadToPng={onDownloadToPng} />}
