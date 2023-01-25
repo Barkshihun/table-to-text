@@ -1,22 +1,33 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store/store";
-import { hideDownloadModal } from "../store/componentRenderSlice";
+import { hideDownloadModal, setDownloadModalText } from "../store/componentRenderSlice";
 
-function DownloadModal() {
+function DownloadModal({ onDownloadToCsv, onDownloadToPng }: { onDownloadToCsv: (name: string) => void; onDownloadToPng: (name: string) => Promise<void> }) {
   const dispatch = useDispatch();
-  const [text, setText] = useState("");
+  const extension = useSelector((state: RootState) => state.componentRender.downloadModalExtension);
+  const downloadModalText = useSelector((state: RootState) => state.componentRender.downloadModalText);
   const inputRef = useRef<HTMLInputElement>(null);
   const noBtnRef = useRef<HTMLButtonElement>(null);
   const yesBtnRef = useRef<HTMLButtonElement>(null);
 
   const onSave = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(text);
-    // dispatch(hideDownloadModal());
+    dispatch(hideDownloadModal());
+    const name = downloadModalText ? downloadModalText : "표";
+    switch (extension) {
+      case "csv":
+        onDownloadToCsv(name);
+        break;
+      case "png":
+        onDownloadToPng(name);
+        break;
+      default:
+        break;
+    }
   };
-  const onInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setDownloadModalText(event.target.value));
   };
   const onEsc = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
@@ -24,6 +35,7 @@ function DownloadModal() {
       dispatch(hideDownloadModal());
     }
   };
+
   useEffect(() => {
     inputRef.current?.focus();
     window.addEventListener("keydown", onEsc);
@@ -36,7 +48,7 @@ function DownloadModal() {
   return (
     <div
       className="modal"
-      onClick={(event) => {
+      onMouseDown={(event) => {
         const target = event.target as HTMLDivElement;
         if (target.className === "modal") {
           dispatch(hideDownloadModal());
@@ -44,15 +56,16 @@ function DownloadModal() {
       }}
     >
       <div className="modal__content">
+        <h1>다운로드 하시겠습니까?</h1>
+        <span>
+          {downloadModalText ? downloadModalText : "표"}.{extension}
+        </span>
         <form className="modal__table-size-wrapper" onSubmit={onSave}>
           <input
             className="modal__input"
-            type="number"
-            min={1}
-            step={1}
             ref={inputRef}
-            // value={text}
-            onChange={onInput}
+            value={downloadModalText}
+            onChange={onChange}
             onKeyDown={(event) => {
               if (event.key === "Tab" && event.shiftKey === true) {
                 event.preventDefault();
@@ -60,25 +73,34 @@ function DownloadModal() {
               }
             }}
           />
-          <button className="btn btn--table-size-config" ref={noBtnRef}>
-            아니요
-          </button>
-          <button
-            className="btn btn--table-size-config"
-            ref={yesBtnRef}
-            onKeyDown={(event) => {
-              if (event.key === "Tab") {
-                event.preventDefault();
-                if (event.shiftKey === true) {
-                  noBtnRef.current?.focus();
-                  return;
+          <div className="modal__btn-container">
+            <button
+              className="btn btn--table-size-config"
+              ref={noBtnRef}
+              type="button"
+              onClick={() => {
+                dispatch(hideDownloadModal());
+              }}
+            >
+              아니요
+            </button>
+            <button
+              className="btn btn--table-size-config"
+              ref={yesBtnRef}
+              onKeyDown={(event) => {
+                if (event.key === "Tab") {
+                  event.preventDefault();
+                  if (event.shiftKey === true) {
+                    noBtnRef.current?.focus();
+                    return;
+                  }
+                  inputRef.current?.focus();
                 }
-                inputRef.current?.focus();
-              }
-            }}
-          >
-            네
-          </button>
+              }}
+            >
+              네
+            </button>
+          </div>
         </form>
       </div>
     </div>

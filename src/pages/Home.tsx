@@ -18,6 +18,7 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
   const cols = useSelector((state: RootState) => state.table.originCols);
   const rows = useSelector((state: RootState) => state.table.originRows);
   const isShowDownloadModal = useSelector((state: RootState) => state.componentRender.isShowDownloadModal);
+  const downloadModalText = useSelector((state: RootState) => state.componentRender.downloadModalText);
 
   const transformToCsvData = (contentEditablePres: HTMLPreElement[][]) => {
     const lastCol = cols - 1;
@@ -164,14 +165,19 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
   };
   return (
     <>
-      {isShowDownloadModal && <DownloadModal />}
+      {isShowDownloadModal && <DownloadModal onDownloadToCsv={onDownloadToCsv} onDownloadToPng={onDownloadToPng} />}
       {showTransformingModal && <TransformingModal />}
       <div className="sub-btn-container">
         <label className="btn sub-btn-container__btn btn--emphasize" htmlFor="importCsv">
           csv 불러오기
           <input type={"file"} id="importCsv" className="input--file" accept=".csv" onChange={onImportCsv}></input>
         </label>
-        <button className="btn sub-btn-container__btn btn--emphasize" onClick={() => {}}>
+        <button
+          className="btn sub-btn-container__btn btn--emphasize"
+          onClick={() => {
+            dispatch(showDownloadModal("csv"));
+          }}
+        >
           csv로 다운
         </button>
         <button
