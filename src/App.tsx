@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useRef } from "react";
-import { setIsHome } from "./store/renderedPageSlice";
+import { setIsHome } from "./store/componentRenderSlice";
 import { setTableListForTransform } from "./store/tableSlice";
 import { RootState } from "./store/store";
 import Output from "./pages/Output";
@@ -9,7 +9,7 @@ import "./scss/App.scss";
 import "./scss/Btn.scss";
 
 function App() {
-  const isHome = useSelector((state: RootState) => state.renderedPage.isHome);
+  const isHome = useSelector((state: RootState) => state.componentRender.isHome);
   const cols = useSelector((state: RootState) => state.table.originCols);
   const rows = useSelector((state: RootState) => state.table.originRows);
   const dispatch = useDispatch();

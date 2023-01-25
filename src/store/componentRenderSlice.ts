@@ -3,7 +3,7 @@ const initialState = {
   isHome: true,
 };
 
-const renderedPageSlice = createSlice({
+const componentRenderSlice = createSlice({
   name: "render",
   initialState,
   reducers: {
@@ -13,5 +13,5 @@ const renderedPageSlice = createSlice({
   },
 });
 
-export const { setIsHome } = renderedPageSlice.actions;
-export default renderedPageSlice;
+export const { setIsHome } = componentRenderSlice.actions;
+export default componentRenderSlice;
