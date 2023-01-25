@@ -28,9 +28,11 @@ function TableSizeModal() {
   };
   useEffect(() => {
     window.addEventListener("keydown", onEsc);
+    document.body.classList.add("no-scroll");
     colsInputRef.current?.select();
     return () => {
       window.removeEventListener("keydown", onEsc);
+      document.body.classList.remove("no-scroll");
     };
   }, []);
   return (
