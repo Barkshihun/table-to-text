@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+
 const initialState = {
   isHome: true,
   showTableSizeModal: false,
@@ -8,11 +9,11 @@ const componentRenderSlice = createSlice({
   name: "render",
   initialState,
   reducers: {
-    setIsHome: (state, action) => {
-      state.isHome = action.payload;
+    setIsHome: (state, { payload }: { payload: boolean }) => {
+      state.isHome = payload;
     },
-    setShowTableSizeModal: (state, action) => {
-      state.showTableSizeModal = action.payload;
+    setShowTableSizeModal: (state, { payload }: { payload: boolean }) => {
+      state.showTableSizeModal = payload;
     },
   },
 });

@@ -22,11 +22,11 @@ const tableSlice = createSlice({
   name: "table",
   initialState,
   reducers: {
-    setCols: (state, action) => {
-      state.originCols = action.payload;
+    setCols: (state, { payload }: { payload: number }) => {
+      state.originCols = payload;
     },
-    setRows: (state, action) => {
-      state.originRows = action.payload;
+    setRows: (state, { payload }: { payload: number }) => {
+      state.originRows = payload;
     },
     setZero: (state) => {
       state.originCols = 0;
