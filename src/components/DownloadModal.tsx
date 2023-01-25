@@ -57,7 +57,7 @@ function DownloadModal({ onDownloadToCsv, onDownloadToPng }: { onDownloadToCsv: 
     >
       <div className="modal__content">
         <h1>다운로드 하시겠습니까?</h1>
-        <span>
+        <span className="malgun-gothic">
           {downloadModalText ? downloadModalText : "표"}.{extension}
         </span>
         <form className="modal__table-size-wrapper" onSubmit={onSave}>
@@ -75,7 +75,7 @@ function DownloadModal({ onDownloadToCsv, onDownloadToPng }: { onDownloadToCsv: 
           />
           <div className="modal__btn-container">
             <button
-              className="btn btn--table-size-config"
+              className="btn btn--modal"
               ref={noBtnRef}
               type="button"
               onClick={() => {
@@ -85,7 +85,7 @@ function DownloadModal({ onDownloadToCsv, onDownloadToPng }: { onDownloadToCsv: 
               아니요
             </button>
             <button
-              className="btn btn--table-size-config"
+              className="btn btn--modal"
               ref={yesBtnRef}
               onKeyDown={(event) => {
                 if (event.key === "Tab") {

@@ -67,7 +67,7 @@ function TableSizeModal() {
             <input className="modal__input" type="number" min={1} step={1} ref={rowsInputRef} defaultValue={rows} />
           </div>
           <button
-            className="btn btn--table-size-config"
+            className="btn btn--modal"
             ref={btnRef}
             onKeyDown={(event) => {
               if (event.key === "Tab") {
