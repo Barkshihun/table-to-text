@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { setZero, importCsv } from "../store/tableSlice";
-import { showDownloadModal } from "../store/componentRenderSlice";
+import { showDownloadModal, setDownloadModalText } from "../store/componentRenderSlice";
 import DownloadModal from "../components/DownloadModal";
 import TransformingModal from "../components/TransformingModal";
 import Table from "../components/Table";
@@ -126,6 +126,13 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
           const rows = rawDataTableList.length;
           const cols = rawDataTableList[0].length;
           dispatch(importCsv({ cols, rows, rawDataTableList }));
+          if (csvFile.name[0] !== ".") {
+            console.log("감");
+            const fileName = csvFile.name.slice(0, -4);
+            dispatch(setDownloadModalText(fileName));
+          } else {
+            dispatch(setDownloadModalText(""));
+          }
         };
       };
     } else {
