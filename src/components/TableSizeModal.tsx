@@ -39,7 +39,7 @@ function TableSizeModal() {
   return (
     <div
       className="modal"
-      onClick={(event) => {
+      onMouseDown={(event) => {
         const target = event.target as HTMLDivElement;
         if (target.className === "modal") {
           dispatch(setShowTableSizeModal(false));
