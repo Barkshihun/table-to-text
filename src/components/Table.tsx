@@ -15,7 +15,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
   const rows = useSelector((state: RootState) => state.table.originRows);
   const lastCol = cols - 1;
   const lastRow = rows - 1;
-  const showTableSizeModal = useSelector((state: RootState) => state.componentRender.showTableSizeModal);
+  const isShowTableSizeModal = useSelector((state: RootState) => state.componentRender.isShowTableSizeModal);
   const tableList = useSelector((state: RootState) => state.table.originTableList);
 
   // 이벤트 시작
@@ -184,7 +184,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
   console.count("렌더링");
   return (
     <>
-      {showTableSizeModal && <TableSizeModal />}
+      {isShowTableSizeModal && <TableSizeModal />}
       <main className={"table-system-wrapper"}>
         <div className={"top-container"}>
           <div className="btn btn--delete" onClick={onResetContents}>

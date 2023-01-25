@@ -5,6 +5,8 @@ import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { setZero, importCsv } from "../store/tableSlice";
+import { showDownloadModal } from "../store/componentRenderSlice";
+import DownloadModal from "../components/DownloadModal";
 import TransformingModal from "../components/TransformingModal";
 import Table from "../components/Table";
 import "../scss/Home.scss";
@@ -15,6 +17,7 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const cols = useSelector((state: RootState) => state.table.originCols);
   const rows = useSelector((state: RootState) => state.table.originRows);
+  const isShowDownloadModal = useSelector((state: RootState) => state.componentRender.isShowDownloadModal);
 
   const transformToCsvData = (contentEditablePres: HTMLPreElement[][]) => {
     const lastCol = cols - 1;
@@ -134,15 +137,15 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
       });
     }
   };
-  const onTransformToCsv = () => {
+  const onDownloadToCsv = (name: string) => {
     const csvData = transformToCsvData(contentEditablePresRef.current);
     const aTag = document.createElement("a");
     aTag.href = `data:text/plain;charset=utf-8,\ufeff${encodeURIComponent(csvData)}`;
-    aTag.download = "표.csv";
+    aTag.download = `${name}.csv`;
     aTag.click();
   };
-  const onTransformToPng = async () => {
-    setShowLoading(true);
+  const onDownloadToPng = async (name: string) => {
+    setShowTransformingModal(true);
     const tableNode = tableContainerRef.current as HTMLDivElement;
     const scale = 3;
     const dataUrl = await toPng(tableNode, {
@@ -154,24 +157,30 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
       },
     });
     const aTag = document.createElement("a");
-    aTag.download = "표.png";
+    aTag.download = `${name}.png`;
     aTag.href = dataUrl;
     aTag.click();
-    setShowLoading(false);
+    setShowTransformingModal(false);
   };
   return (
     <>
+      {isShowDownloadModal && <DownloadModal />}
       {showTransformingModal && <TransformingModal />}
       <div className="sub-btn-container">
         <label className="btn sub-btn-container__btn btn--transform" htmlFor="importCsv">
           csv 불러오기
           <input type={"file"} id="importCsv" className="input--file" accept=".csv" onChange={onImportCsv}></input>
         </label>
-        <button className="btn sub-btn-container__btn btn--transform" onClick={onTransformToCsv}>
-          csv로 변환
+        <button className="btn sub-btn-container__btn btn--transform" onClick={() => {}}>
+          csv로 다운
         </button>
-        <button className="btn sub-btn-container__btn btn--transform" onClick={onTransformToPng}>
-          png로 변환
+        <button
+          className="btn sub-btn-container__btn btn--transform"
+          onClick={() => {
+            dispatch(showDownloadModal("png"));
+          }}
+        >
+          png로 다운
         </button>
       </div>
       <Table tableContainerRef={tableContainerRef} contentEditablePresRef={contentEditablePresRef} />
