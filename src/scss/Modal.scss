@@ -70,16 +70,6 @@
     outline-offset: 2px;
   }
 }
-.btn--modal {
-  border: 2px solid $black;
-  padding-top: 3px;
-  border-radius: 5px;
-  width: 60%;
-  &:focus {
-    outline: 2px solid gray;
-    outline-offset: 2px;
-  }
-}
 .modal__btn-container {
   width: 100%;
   display: flex;

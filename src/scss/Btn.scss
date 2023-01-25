@@ -66,6 +66,17 @@
   }
 }
 
+.btn--modal {
+  border: 2px solid $black;
+  padding-top: 3px;
+  border-radius: 5px;
+  width: 60%;
+  &:focus {
+    outline: 2px solid gray;
+    outline-offset: 2px;
+  }
+}
+
 .btn--textarea-left {
   @extend %border;
   line-height: 1;
