@@ -11,8 +11,6 @@ function Output() {
   const tableList = useSelector((state: RootState) => state.table.tableListForTransform);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const changeSpaceBtnRef = useRef<HTMLInputElement>(null);
-  console.table(tableList);
-  console.log("로그다!", cols, rows);
 
   // 정규표현식 시작
   // +20로 계산  +2
