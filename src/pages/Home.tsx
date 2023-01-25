@@ -138,14 +138,14 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
       });
     }
   };
-  const onDownloadToCsv = (name: string) => {
+  const onDownloadToCsv = (fileName: string) => {
     const csvData = transformToCsvData(contentEditablePresRef.current);
     const aTag = document.createElement("a");
     aTag.href = `data:text/plain;charset=utf-8,\ufeff${encodeURIComponent(csvData)}`;
-    aTag.download = `${name}.csv`;
+    aTag.download = `${fileName}.csv`;
     aTag.click();
   };
-  const onDownloadToPng = async (name: string) => {
+  const onDownloadToPng = async (fileName: string) => {
     setShowTransformingModal(true);
     const tableNode = tableContainerRef.current as HTMLDivElement;
     const scale = 3;
@@ -158,7 +158,7 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
       },
     });
     const aTag = document.createElement("a");
-    aTag.download = `${name}.png`;
+    aTag.download = `${fileName}.png`;
     aTag.href = dataUrl;
     aTag.click();
     setShowTransformingModal(false);

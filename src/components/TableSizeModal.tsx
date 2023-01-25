@@ -48,9 +48,9 @@ function TableSizeModal() {
     >
       <div className="modal__content">
         <form className="modal__table-size-wrapper" onSubmit={onTableSizeConfig}>
-          <div className="modal__input-container">
+          <div className="modal__table-size-input-container">
             <input
-              className="modal__input"
+              className="modal__input modal__input--table-size"
               type="number"
               min={1}
               step={1}
@@ -64,10 +64,10 @@ function TableSizeModal() {
               }}
             />
             <span>x</span>
-            <input className="modal__input" type="number" min={1} step={1} ref={rowsInputRef} defaultValue={rows} />
+            <input className="modal__input modal__input--table-size" type="number" min={1} step={1} ref={rowsInputRef} defaultValue={rows} />
           </div>
           <button
-            className="btn btn--modal"
+            className="btn btn--modal btn--yes"
             ref={btnRef}
             onKeyDown={(event) => {
               if (event.key === "Tab") {

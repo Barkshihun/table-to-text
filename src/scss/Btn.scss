@@ -68,12 +68,40 @@
 
 .btn--modal {
   border: 2px solid $black;
-  padding-top: 3px;
+  padding-top: 8px;
+  padding-bottom: 5px;
   border-radius: 5px;
   width: 60%;
+}
+.btn--download-modal {
+  width: 45%;
+}
+.btn--yes {
+  border: none;
+  background-color: rgb(112 102 224);
+  color: white;
+  &:hover {
+    background-color: rgb(101 92 201);
+  }
+  &:active {
+    background-color: rgb(90 82 179);
+  }
   &:focus {
-    outline: 2px solid gray;
-    outline-offset: 2px;
+    outline: 3px solid rgb(183 178 239);
+  }
+}
+.btn--no {
+  border: none;
+  background-color: rgb(220 55 65);
+  color: white;
+  &:hover {
+    background-color: rgb(198 49 58);
+  }
+  &:active {
+    background-color: rgb(176 44 52);
+  }
+  &:focus {
+    outline: 3px solid rgb(237 155 160);
   }
 }
 
