@@ -17,7 +17,7 @@ const initialState: initialState = {
 };
 
 const componentRenderSlice = createSlice({
-  name: "render",
+  name: "componentRender",
   initialState,
   reducers: {
     setIsHome: (state, { payload }: { payload: boolean }) => {
