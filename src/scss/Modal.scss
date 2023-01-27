@@ -43,6 +43,12 @@
   }
   animation: 0.2s ease-in-out popup;
 }
+.modal__content--config-shortcut {
+  height: max-content;
+  width: max-content;
+  padding: 40px 50px;
+  align-items: flex-start;
+}
 .modal__table-size-wrapper {
   display: flex;
   flex-direction: column;
@@ -115,4 +121,9 @@
   display: flex;
   justify-content: space-evenly;
   margin-top: 13px;
+}
+.config-shortcut-btn-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }

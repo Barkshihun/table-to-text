@@ -1,10 +1,11 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useRef } from "react";
-import { setIsHome } from "./store/componentRenderSlice";
+import { setIsHome, showConfigShortcutModal } from "./store/componentRenderSlice";
 import { setTableListForTransform } from "./store/tableSlice";
 import { RootState } from "./store/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faQuestion } from "@fortawesome/free-solid-svg-icons";
+import ConfigShortcutModal from "./components/ConfigShortcutModal";
 import Output from "./pages/Output";
 import Home from "./pages/Home";
 import "./scss/App.scss";
@@ -12,6 +13,7 @@ import "./scss/Btn.scss";
 
 function App() {
   const isHome = useSelector((state: RootState) => state.componentRender.isHome);
+  const isShowConfigShortcutModal = useSelector((state: RootState) => state.componentRender.isShowConfigShortcutModal);
   const cols = useSelector((state: RootState) => state.table.originCols);
   const rows = useSelector((state: RootState) => state.table.originRows);
   const dispatch = useDispatch();
@@ -60,6 +62,7 @@ function App() {
   };
   return (
     <>
+      {isShowConfigShortcutModal && <ConfigShortcutModal />}
       <header>
         <div className="relative">
           <button
@@ -77,7 +80,12 @@ function App() {
             {isHome === true ? "텍스트로 변환" : "표로 가기"}
           </button>
           <div className="sub-icon-container">
-            <div className="config-icon">
+            <div
+              className="config-icon"
+              onClick={() => {
+                dispatch(showConfigShortcutModal());
+              }}
+            >
               <FontAwesomeIcon icon={faGear} />
             </div>
             <div className="toolTip">

@@ -4,7 +4,8 @@ interface initialState {
   isHome: boolean;
   isShowTableSizeModal: boolean;
   isShowDownloadModal: boolean;
-  downloadModalExtension: "csv" | "png" | null;
+  isShowConfigShortcutModal: boolean;
+  downloadModalExtension: "csv" | "png" | undefined;
   downloadModalText: string;
 }
 
@@ -12,7 +13,8 @@ const initialState: initialState = {
   isHome: true,
   isShowTableSizeModal: false,
   isShowDownloadModal: false,
-  downloadModalExtension: null,
+  isShowConfigShortcutModal: false,
+  downloadModalExtension: undefined,
   downloadModalText: "",
 };
 
@@ -36,8 +38,14 @@ const componentRenderSlice = createSlice({
     setDownloadModalText: (state, { payload }: { payload: string }) => {
       state.downloadModalText = payload;
     },
+    showConfigShortcutModal: (state) => {
+      state.isShowConfigShortcutModal = true;
+    },
+    hideConfigShortcutModal: (state) => {
+      state.isShowConfigShortcutModal = false;
+    },
   },
 });
 
-export const { setIsHome, setShowTableSizeModal, showDownloadModal, hideDownloadModal, setDownloadModalText } = componentRenderSlice.actions;
+export const { setIsHome, setShowTableSizeModal, showDownloadModal, hideDownloadModal, setDownloadModalText, showConfigShortcutModal, hideConfigShortcutModal } = componentRenderSlice.actions;
 export default componentRenderSlice;
