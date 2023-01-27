@@ -19,6 +19,106 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
   const rows = useSelector((state: RootState) => state.table.originRows);
   const isShowDownloadModal = useSelector((state: RootState) => state.componentRender.isShowDownloadModal);
 
+  const transFormQuotation = (text: string) => {
+    if (text[0] === '"' && text[text.length - 1] === '"') {
+      text = text.slice(1, -1);
+    }
+    text = text.replace(/""/g, '"');
+    return text;
+  };
+  const onImportCsv = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const FileList = event.target.files as FileList;
+    const csvFile = FileList[0];
+    event.target.value = "";
+    if (!csvFile) {
+      return;
+    }
+    if (csvFile.type !== "text/csv") {
+      Swal.fire({
+        icon: "error",
+        title: "csv 파일만 불러올 수 있습니다",
+        position: "top",
+      });
+      return;
+    }
+    const readerForEncoding = new FileReader();
+    const readerForText = new FileReader();
+    readerForEncoding.readAsArrayBuffer(csvFile);
+    readerForEncoding.onload = () => {
+      let csvDataArrayBuffer = readerForEncoding.result as ArrayBuffer;
+      const csvDataUint8Array = new Uint8Array(csvDataArrayBuffer);
+      const encoding = chardet.detect(csvDataUint8Array);
+      if (!encoding) {
+        Swal.fire({
+          icon: "error",
+          title: "파일의 인코딩을 알 수 없습니다",
+          position: "top",
+        });
+        return;
+      }
+      readerForText.readAsText(csvFile, encoding);
+    };
+    readerForText.onload = () => {
+      let csvTextData = readerForText.result as string;
+      csvTextData = csvTextData.replace(/\r/g, "");
+      if (csvTextData === "" || csvTextData === "\n") {
+        dispatch(setZero());
+        return;
+      }
+      let isInQuotation = false;
+      let startIndex = 0;
+      const rawDataTableList: string[][] = [[]];
+      let rawDataTableListRow = 0;
+      for (let i = 0; i < csvTextData.length; i++) {
+        switch (csvTextData[i]) {
+          case '"':
+            if (isInQuotation) {
+              isInQuotation = false;
+            } else {
+              isInQuotation = true;
+            }
+            break;
+          case ",":
+            if (!isInQuotation) {
+              let text = csvTextData.substring(startIndex, i);
+              text = transFormQuotation(text);
+              rawDataTableList[rawDataTableListRow].push(text);
+              startIndex = i + 1;
+            }
+            break;
+          case "\n":
+            if (!isInQuotation) {
+              let text = csvTextData.substring(startIndex, i);
+              text = transFormQuotation(text);
+              rawDataTableList[rawDataTableListRow].push(text);
+              rawDataTableList.push([]);
+              startIndex = i + 1;
+              rawDataTableListRow++;
+            }
+            break;
+          default:
+            break;
+        }
+        if (i === csvTextData.length - 1 && !(csvTextData[i] === "\n")) {
+          let text = csvTextData.substring(startIndex, i + 1);
+          text = transFormQuotation(text);
+          rawDataTableList[rawDataTableListRow].push(text);
+        }
+      }
+      if (rawDataTableList[rawDataTableList.length - 1].length === 0) {
+        rawDataTableList.pop();
+      }
+      const rows = rawDataTableList.length;
+      const cols = rawDataTableList[0].length;
+      dispatch(importCsv({ cols, rows, rawDataTableList }));
+      if (csvFile.name[0] !== ".") {
+        const fileName = csvFile.name.slice(0, -4);
+        dispatch(setDownloadModalText(fileName));
+      } else {
+        dispatch(setDownloadModalText(""));
+      }
+    };
+  };
   const transformToCsvData = (contentEditablePres: HTMLPreElement[][]) => {
     const lastCol = cols - 1;
     let tempCsvData = "";
@@ -41,107 +141,6 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
       tempCsvData += rowCsvData;
     }
     return tempCsvData;
-  };
-  const onImportCsv = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const FileList = event.target.files as FileList;
-    const csvFile = FileList[0];
-    event.target.value = "";
-    if (!csvFile) {
-      return;
-    }
-    if (csvFile.type === "text/csv") {
-      const readerForEncoding = new FileReader();
-      readerForEncoding.readAsArrayBuffer(csvFile);
-      readerForEncoding.onloadend = () => {
-        let csvDataArrayBuffer = readerForEncoding.result as ArrayBuffer;
-        const csvDataUint8Array = new Uint8Array(csvDataArrayBuffer);
-        const encoding = chardet.detect(csvDataUint8Array);
-        if (!encoding) {
-          Swal.fire({
-            icon: "error",
-            title: "파일의 인코딩을 알 수 없습니다",
-            position: "top",
-          });
-          return;
-        }
-        const readerForText = new FileReader();
-        readerForText.readAsText(csvFile, encoding);
-        readerForText.onload = () => {
-          let csvTextData = readerForText.result as string;
-          csvTextData = csvTextData.replace(/\r/g, "");
-          if (csvTextData === "" || csvTextData === "\n") {
-            dispatch(setZero());
-            return;
-          }
-          let isInQuotation = false;
-          let startIndex = 0;
-          const rawDataTableList: string[][] = [[]];
-          let rawDataTableListRow = 0;
-          const transFormQuotation = (text: string) => {
-            if (text[0] === '"' && text[text.length - 1] === '"') {
-              text = text.slice(1, -1);
-            }
-            text = text.replace(/""/g, '"');
-            return text;
-          };
-          for (let i = 0; i < csvTextData.length; i++) {
-            switch (csvTextData[i]) {
-              case '"':
-                if (isInQuotation) {
-                  isInQuotation = false;
-                } else {
-                  isInQuotation = true;
-                }
-                break;
-              case ",":
-                if (!isInQuotation) {
-                  let text = csvTextData.substring(startIndex, i);
-                  text = transFormQuotation(text);
-                  rawDataTableList[rawDataTableListRow].push(text);
-                  startIndex = i + 1;
-                }
-                break;
-              case "\n":
-                if (!isInQuotation) {
-                  let text = csvTextData.substring(startIndex, i);
-                  text = transFormQuotation(text);
-                  rawDataTableList[rawDataTableListRow].push(text);
-                  rawDataTableList.push([]);
-                  startIndex = i + 1;
-                  rawDataTableListRow++;
-                }
-                break;
-              default:
-                break;
-            }
-            if (i === csvTextData.length - 1 && !(csvTextData[i] === "\n")) {
-              let text = csvTextData.substring(startIndex, i + 1);
-              text = transFormQuotation(text);
-              rawDataTableList[rawDataTableListRow].push(text);
-            }
-          }
-          if (rawDataTableList[rawDataTableList.length - 1].length === 0) {
-            rawDataTableList.pop();
-          }
-          const rows = rawDataTableList.length;
-          const cols = rawDataTableList[0].length;
-          dispatch(importCsv({ cols, rows, rawDataTableList }));
-          if (csvFile.name[0] !== ".") {
-            console.log("감");
-            const fileName = csvFile.name.slice(0, -4);
-            dispatch(setDownloadModalText(fileName));
-          } else {
-            dispatch(setDownloadModalText(""));
-          }
-        };
-      };
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "csv 파일만 불러올 수 있습니다",
-        position: "top",
-      });
-    }
   };
   const onDownloadToCsv = (fileName: string) => {
     const csvData = transformToCsvData(contentEditablePresRef.current);
