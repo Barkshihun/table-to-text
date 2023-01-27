@@ -4,7 +4,7 @@ import { setIsHome } from "./store/componentRenderSlice";
 import { setTableListForTransform } from "./store/tableSlice";
 import { RootState } from "./store/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQuestion } from "@fortawesome/free-solid-svg-icons";
+import { faGear, faQuestion } from "@fortawesome/free-solid-svg-icons";
 import Output from "./pages/Output";
 import Home from "./pages/Home";
 import "./scss/App.scss";
@@ -76,9 +76,14 @@ function App() {
           >
             {isHome === true ? "텍스트로 변환" : "표로 가기"}
           </button>
-          <div className="toolTip">
-            <FontAwesomeIcon icon={faQuestion} />
-            <div className="toolTip__text">글자마다 크기가 다 다르기 때문에 변환이 잘 안 될 수 있습니다</div>
+          <div className="sub-icon-container">
+            <div className="config-icon">
+              <FontAwesomeIcon icon={faGear} />
+            </div>
+            <div className="toolTip">
+              <FontAwesomeIcon icon={faQuestion} />
+              <div className="toolTip__text">글자마다 크기가 다 다르기 때문에 변환이 잘 안 될 수 있습니다</div>
+            </div>
           </div>
         </div>
       </header>

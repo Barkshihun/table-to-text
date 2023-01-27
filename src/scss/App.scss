@@ -40,22 +40,43 @@ header {
 .relative {
   position: relative;
 }
+.sub-icon-container {
+  position: absolute;
+  bottom: 0;
+  right: -35px;
+  width: 30px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 5px 0;
+}
+.config-icon {
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+  svg {
+    font-size: 20px;
+  }
+  &:hover {
+    transform: rotate(30deg);
+  }
+}
 .toolTip {
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  right: -40px;
-  bottom: 5px;
   background-color: $black;
   color: white;
   cursor: pointer;
   @extend %border;
   border-radius: 50%;
+  position: relative;
   svg {
-    font-size: 15px;
+    font-size: 10px;
   }
 }
 .toolTip__text {
