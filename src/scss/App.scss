@@ -37,3 +37,56 @@ header {
 .no-scroll {
   overflow: hidden !important;
 }
+.relative {
+  position: relative;
+}
+.toolTip {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: -40px;
+  bottom: 5px;
+  background-color: $black;
+  color: white;
+  cursor: pointer;
+  @extend %border;
+  border-radius: 50%;
+  svg {
+    font-size: 15px;
+  }
+}
+.toolTip__text {
+  visibility: hidden;
+  padding: 20px;
+  line-height: 1.3;
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  top: 35px;
+  width: 120px;
+  height: 100px;
+  background-color: rgb(84 84 84);
+  border-radius: 10px;
+  color: white;
+  cursor: auto;
+  word-break: keep-all;
+  @extend %shadow;
+  &::after {
+    content: "";
+    position: absolute;
+    border-style: solid;
+    border-width: 10px;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -10px;
+    border-color: transparent transparent rgb(84 84 84) transparent;
+  }
+}
+.toolTip:hover .toolTip__text {
+  visibility: visible;
+}
