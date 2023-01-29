@@ -1,64 +1,12 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { ITEM_NAME, EventCodeObj, ActionName, ConfigKey, SetConfigKey } from "../shortcutTypeAndConst";
+import { ITEM_NAME, EventCodeObj, defaultShortcutsObj, ActionName, ConfigKey, SetConfigKey } from "../shortcutTypeAndConst";
 import { hideConfigShortcutModal } from "../store/componentRenderSlice";
 import ConfigShortcutModalBtn from "./ConfigShortcutModalBtn";
 
 function ConfigShortcutModal() {
   const dispatch = useDispatch();
 
-  const defaultShortcutsObj: {
-    [actionName in ActionName]: EventCodeObj;
-  } = {
-    moveToNextCell: {
-      ctrlKey: false,
-      shiftKey: false,
-      altKey: false,
-      code: "Tab",
-    },
-    moveToPrevCell: {
-      ctrlKey: false,
-      shiftKey: true,
-      altKey: false,
-      code: "Tab",
-    },
-    moveToUpCell: {
-      ctrlKey: true,
-      shiftKey: true,
-      altKey: false,
-      code: "ArrowUp",
-    },
-    moveToDownCell: {
-      ctrlKey: true,
-      shiftKey: true,
-      altKey: false,
-      code: "ArrowDown",
-    },
-    moveToLeftCell: {
-      ctrlKey: true,
-      shiftKey: true,
-      altKey: false,
-      code: "ArrowLeft",
-    },
-    moveToRightCell: {
-      ctrlKey: true,
-      shiftKey: true,
-      altKey: false,
-      code: "ArrowRight",
-    },
-    addRowOrCol: {
-      ctrlKey: true,
-      shiftKey: true,
-      altKey: false,
-      code: "Equal",
-    },
-    removeRowOrCol: {
-      ctrlKey: true,
-      shiftKey: false,
-      altKey: false,
-      code: "Minus",
-    },
-  } as const;
   let shortcutsObj: {
     [actionName in ActionName]: EventCodeObj;
   };
@@ -182,8 +130,8 @@ function ConfigShortcutModal() {
       shortcutsObj = defaultShortcutsObj;
     }
     const btnsArr = [];
-    let actionName: ActionName;
-    for (actionName in shortcutsObj) {
+    for (const key in shortcutsObj) {
+      const actionName = key as ActionName;
       const { ctrlKey, shiftKey, altKey, code } = shortcutsObj[actionName];
       const shortcutString = shortcutStringfy(ctrlKey, shiftKey, altKey, code);
       const koreanActionName = getKoreanActionName(actionName);

@@ -138,7 +138,7 @@ function Output() {
     });
   };
 
-  console.count("렌더");
+  console.count("Output렌더링");
   return (
     <main className={"output-container"}>
       <div className={"btn-container--textarea-left"}>

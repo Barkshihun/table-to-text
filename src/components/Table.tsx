@@ -4,6 +4,7 @@ import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { setCols, setRows, setZero, setOne, resetTableList } from "../store/tableSlice";
 import { setShowTableSizeModal } from "../store/componentRenderSlice";
+import { ITEM_NAME, EventCodeObj, defaultShortcutsObj, ActionName } from "../shortcutTypeAndConst";
 import { RootState } from "../store/store";
 import TableSizeModal from "./TableSizeModal";
 import "../scss/Modal.scss";
@@ -47,23 +48,12 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
         break;
     }
   };
-  const onTableContentInput = (event: React.ChangeEvent<HTMLPreElement>) => {
-    let row: string | number;
-    let col: string | number;
-    row = event.target.dataset.row as string;
-    col = event.target.dataset.col as string;
-    row = parseInt(row);
-    col = parseInt(col);
-  };
   const onResetContents = () => {
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
         contentEditablePresRef.current[row][col].innerText = "";
       }
     }
-  };
-  const onChangeTableSize = () => {
-    dispatch(setShowTableSizeModal(true));
   };
   const focusCaretAtEnd = (elem: HTMLPreElement, select?: boolean) => {
     const selection = window.getSelection() as Selection;
@@ -75,69 +65,113 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
     }
     selection.addRange(range);
   };
-  const controlShiftTab = (col: number, row: number) => {
-    let focusElem: HTMLPreElement;
-    if (col === 0) {
-      if (row === 0) {
-        focusElem = contentEditablePresRef.current[lastRow][lastCol];
+  const shortcutActions = {
+    moveToNextCell: (col: number, row: number) => {
+      let focusElem: HTMLPreElement;
+      if (col === lastCol) {
+        if (row === lastRow) {
+          focusElem = contentEditablePresRef.current[0][0];
+        } else {
+          focusElem = contentEditablePresRef.current[row + 1][0];
+        }
       } else {
-        focusElem = contentEditablePresRef.current[row - 1][lastCol];
+        focusElem = contentEditablePresRef.current[row][col + 1];
       }
-    } else {
-      focusElem = contentEditablePresRef.current[row][col - 1];
-    }
-    focusCaretAtEnd(focusElem, true);
-  };
-  const controlTab = (col: number, row: number) => {
-    let focusElem: HTMLPreElement;
-    if (col === lastCol) {
-      if (row === lastRow) {
-        focusElem = contentEditablePresRef.current[0][0];
+      focusCaretAtEnd(focusElem, true);
+    },
+    moveToPrevCell: (col: number, row: number) => {
+      let focusElem: HTMLPreElement;
+      if (col === 0) {
+        if (row === 0) {
+          focusElem = contentEditablePresRef.current[lastRow][lastCol];
+        } else {
+          focusElem = contentEditablePresRef.current[row - 1][lastCol];
+        }
       } else {
-        focusElem = contentEditablePresRef.current[row + 1][0];
+        focusElem = contentEditablePresRef.current[row][col - 1];
       }
-    } else {
-      focusElem = contentEditablePresRef.current[row][col + 1];
-    }
-    focusCaretAtEnd(focusElem, true);
+      focusCaretAtEnd(focusElem, true);
+    },
+    moveCell: (col: number, row: number, direction: "up" | "down" | "left" | "right") => {
+      let focusRow = row;
+      let focusCol = col;
+      switch (direction) {
+        case "up":
+          if (row !== 0) {
+            focusRow = row - 1;
+          }
+          break;
+        case "down":
+          if (row !== lastRow) {
+            focusRow = row + 1;
+          }
+          break;
+        case "left":
+          if (col !== 0) {
+            focusCol = col - 1;
+          }
+          break;
+        case "right":
+          if (col !== lastCol) {
+            focusCol = col + 1;
+          }
+          break;
+      }
+      const focusElem = contentEditablePresRef.current[focusRow][focusCol] as HTMLPreElement;
+      focusCaretAtEnd(focusElem);
+    },
   };
-  const onArrowKeyOrTabDown = (event: React.KeyboardEvent<HTMLPreElement>) => {
+  const onCheckShortcut = (event: React.KeyboardEvent<HTMLPreElement>) => {
     let row: string | number;
     let col: string | number;
     row = event.target.dataset.row as string;
     col = event.target.dataset.col as string;
     row = parseInt(row);
     col = parseInt(col);
-    if (event.key === "Tab") {
-      event.preventDefault();
-      if (event.shiftKey === true) {
-        controlShiftTab(col, row);
-      } else {
-        controlTab(col, row);
+    const itemString = localStorage.getItem(ITEM_NAME);
+    let shortcutsObj: {
+      [actionName in ActionName]: EventCodeObj;
+    };
+    if (itemString) {
+      const itemObj: {
+        [actionName in ActionName]: EventCodeObj;
+      } = JSON.parse(itemString);
+      shortcutsObj = itemObj;
+    } else {
+      shortcutsObj = defaultShortcutsObj;
+    }
+    let correspondingActionName: ActionName | undefined;
+    for (const key in shortcutsObj) {
+      const actionName = key as ActionName;
+      const { ctrlKey: shortcutObjCtrlKey, shiftKey: shortcutObjShiftKey, altKey: shortcutObjAltKey, code: shortcutObjCode } = shortcutsObj[actionName];
+      if (event.ctrlKey === shortcutObjCtrlKey && event.shiftKey === shortcutObjShiftKey && event.altKey === shortcutObjAltKey && event.code === shortcutObjCode) {
+        correspondingActionName = actionName;
+        break;
       }
+    }
+    if (!correspondingActionName) {
       return;
     }
-    if (event.shiftKey === true && event.ctrlKey === true) {
-      if (event.key === "ArrowLeft" && col !== 0) {
-        event.preventDefault();
-        const focusElem = contentEditablePresRef.current[row][col - 1] as HTMLPreElement;
-        focusCaretAtEnd(focusElem);
-      }
-      if (event.key === "ArrowRight" && col !== lastCol) {
-        event.preventDefault();
-        const focusElem = contentEditablePresRef.current[row][col + 1] as HTMLPreElement;
-        focusCaretAtEnd(focusElem);
-      }
-      if (event.key === "ArrowUp" && row !== 0) {
-        event.preventDefault();
-        const focusElem = contentEditablePresRef.current[row - 1][col] as HTMLPreElement;
-        focusCaretAtEnd(focusElem);
-      }
-      if (event.key === "ArrowDown" && row !== lastRow) {
-        event.preventDefault();
-        const focusElem = contentEditablePresRef.current[row + 1][col] as HTMLPreElement;
-        focusCaretAtEnd(focusElem);
-      }
+    event.preventDefault();
+    switch (correspondingActionName) {
+      case "moveToNextCell":
+        shortcutActions.moveToNextCell(col, row);
+        return;
+      case "moveToPrevCell":
+        shortcutActions.moveToPrevCell(col, row);
+        return;
+      case "moveToUpCell":
+        shortcutActions.moveCell(col, row, "up");
+        return;
+      case "moveToDownCell":
+        shortcutActions.moveCell(col, row, "down");
+        return;
+      case "moveToLeftCell":
+        shortcutActions.moveCell(col, row, "left");
+        return;
+      case "moveToRightCell":
+        shortcutActions.moveCell(col, row, "right");
+        return;
     }
   };
   // 이벤트 끝
@@ -163,8 +197,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
                     contentEditablePresRef.current[row][col] = elem;
                   }
                 }}
-                onInput={onTableContentInput}
-                onKeyDown={onArrowKeyOrTabDown}
+                onKeyDown={onCheckShortcut}
                 data-row={row}
                 data-col={col}
               />
@@ -181,7 +214,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
       dispatch(resetTableList());
     }
   }, [tableList]);
-  console.count("렌더링");
+  console.count("Table렌더링");
   return (
     <>
       {isShowTableSizeModal && <TableSizeModal />}
@@ -190,7 +223,12 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
           <div className="btn btn--delete" onClick={onResetContents}>
             <FontAwesomeIcon icon={faTrash} />
           </div>
-          <button className="btn btn--size-indicator" onClick={onChangeTableSize}>
+          <button
+            className="btn btn--size-indicator"
+            onClick={() => {
+              dispatch(setShowTableSizeModal(true));
+            }}
+          >
             {cols}x{rows}
           </button>
           <div className={"btn-container--top"}>
