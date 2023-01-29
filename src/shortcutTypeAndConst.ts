@@ -95,4 +95,4 @@ type ConfigCheckBoxesRefCurrent = {
   [actionName in ActionName]: HTMLInputElement;
 };
 export { ACTION_NAME, ITEM_NAME, defaultShortcutsObj };
-export type { EventCodeObj, LocalStorageObj, ActionName, ConfigKey, SetConfigKey, ConfigBtnsRefCurrent, ConfigCheckBoxesRefCurrent };
+export type { LocalStorageObj, ActionName, ConfigKey, SetConfigKey, ConfigBtnsRefCurrent, ConfigCheckBoxesRefCurrent };

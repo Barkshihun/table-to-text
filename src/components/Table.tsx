@@ -3,12 +3,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { setCols, setRows, setZero, setOne, resetTableList } from "../store/tableSlice";
-import { setShowTableSizeModal } from "../store/componentRenderSlice";
-import { ITEM_NAME, EventCodeObj, defaultShortcutsObj, ActionName, LocalStorageObj } from "../shortcutTypeAndConst";
+import { setShowAddRowOrColModal, setShowTableSizeModal } from "../store/componentRenderSlice";
+import { ITEM_NAME, defaultShortcutsObj, ActionName, LocalStorageObj } from "../shortcutTypeAndConst";
 import { RootState } from "../store/store";
 import TableSizeModal from "./TableSizeModal";
 import "../scss/Modal.scss";
 import "../scss/Table.scss";
+import AddRowOrColModal from "./AddRowOrColModal";
 
 function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRef: React.RefObject<HTMLDivElement>; contentEditablePresRef: React.MutableRefObject<HTMLPreElement[][]> }) {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
   const lastCol = cols - 1;
   const lastRow = rows - 1;
   const isShowTableSizeModal = useSelector((state: RootState) => state.componentRender.isShowTableSizeModal);
+  const isShowAddRowOrColModal = useSelector((state: RootState) => state.componentRender.isShowAddRowOrColModal);
   const tableList = useSelector((state: RootState) => state.table.originTableList);
 
   // 이벤트 시작
@@ -120,6 +122,9 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
       const focusElem = contentEditablePresRef.current[focusRow][focusCol] as HTMLPreElement;
       focusCaretAtEnd(focusElem);
     },
+    addRowOrCol: (col: number, row: number) => {
+      dispatch(setShowAddRowOrColModal(true));
+    },
   };
   const onCheckShortcut = (event: React.KeyboardEvent<HTMLPreElement>) => {
     let row: string | number;
@@ -175,6 +180,8 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
       case "moveToRightCell":
         shortcutActions.moveCell(col, row, "right");
         return;
+      case "addRowOrCol":
+        shortcutActions.addRowOrCol(col, row);
     }
   };
   // 이벤트 끝
@@ -220,6 +227,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
   console.count("Table렌더링");
   return (
     <>
+      {isShowAddRowOrColModal && <AddRowOrColModal />}
       {isShowTableSizeModal && <TableSizeModal />}
       <main className={"table-system-wrapper"}>
         <div className={"top-container"}>
