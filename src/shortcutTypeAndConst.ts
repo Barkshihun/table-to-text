@@ -15,12 +15,11 @@ interface EventCodeObj {
   altKey: boolean;
   code: string;
 }
-type ACTION_NAME_KEYS = keyof typeof ACTION_NAME;
-type ACTION_NAME_VALUES = typeof ACTION_NAME[ACTION_NAME_KEYS];
-type ConfigingKeyType = { state: false } | { state: true; target: HTMLButtonElement; actionName: ACTION_NAME_VALUES; ctrlKey: boolean; shiftKey: boolean; altKey: boolean; code: string };
-type SetIsConfigKeyType = {
+type ActionName = typeof ACTION_NAME[keyof typeof ACTION_NAME];
+type ConfigKey = { state: false } | { state: true; target: HTMLButtonElement; actionName: ActionName; ctrlKey: boolean; shiftKey: boolean; altKey: boolean; code: string };
+type SetConfigKey = {
   (state: false): void;
-  (state: true, target: HTMLButtonElement, actionName: ACTION_NAME_VALUES): void;
+  (state: true, target: HTMLButtonElement, actionName: ActionName): void;
 };
 export { ACTION_NAME, ITEM_NAME };
-export type { EventCodeObj, ACTION_NAME_KEYS, ACTION_NAME_VALUES, ConfigingKeyType, SetIsConfigKeyType };
+export type { EventCodeObj, ActionName, ConfigKey, SetConfigKey };

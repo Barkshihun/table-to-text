@@ -1,14 +1,14 @@
-import { SetIsConfigKeyType, ACTION_NAME_VALUES } from "../shortcutTypeAndConst";
+import { SetConfigKey, ActionName } from "../shortcutTypeAndConst";
 
 function ConfigShortcutModalBtn({
   koreanActionName,
-  setIsConfigKey,
-  actionNameValue,
+  setConfigKey,
+  actionName,
   shortcutString,
 }: {
   koreanActionName: string;
-  setIsConfigKey: SetIsConfigKeyType;
-  actionNameValue: ACTION_NAME_VALUES;
+  setConfigKey: SetConfigKey;
+  actionName: ActionName;
   shortcutString: string;
 }) {
   return (
@@ -19,7 +19,7 @@ function ConfigShortcutModalBtn({
         onClick={(elem) => {
           const btn = elem.target as HTMLButtonElement;
           btn.innerText = "키 입력중";
-          setIsConfigKey(true, btn, actionNameValue);
+          setConfigKey(true, btn, actionName);
         }}
       >
         {shortcutString}

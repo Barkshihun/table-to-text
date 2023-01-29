@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { ITEM_NAME, EventCodeObj, ACTION_NAME_VALUES, ConfigingKeyType, SetIsConfigKeyType } from "../shortcutTypeAndConst";
+import { ITEM_NAME, EventCodeObj, ActionName, ConfigKey, SetConfigKey } from "../shortcutTypeAndConst";
 import { hideConfigShortcutModal } from "../store/componentRenderSlice";
 import ConfigShortcutModalBtn from "./ConfigShortcutModalBtn";
 
@@ -8,7 +8,7 @@ function ConfigShortcutModal() {
   const dispatch = useDispatch();
 
   const defaultShortcutsObj: {
-    [actionName in ACTION_NAME_VALUES]: EventCodeObj;
+    [actionName in ActionName]: EventCodeObj;
   } = {
     moveToNextCell: {
       ctrlKey: false,
@@ -60,12 +60,16 @@ function ConfigShortcutModal() {
     },
   } as const;
   let shortcutsObj: {
-    [actionName in ACTION_NAME_VALUES]: EventCodeObj;
+    [actionName in ActionName]: EventCodeObj;
   };
+  let configKey: ConfigKey = { state: false };
+  let prevCtrlKey: boolean | undefined;
+  let prevShiftKey: boolean | undefined;
+  let prevAltKey: boolean | undefined;
+  let prevCode: string | undefined;
 
-  let configingKey: ConfigingKeyType = { state: false };
-  const setIsConfigKey: SetIsConfigKeyType = (state: any, target?: any, actionName?: any) => {
-    configingKey = { state, target, actionName };
+  const setConfigKey: SetConfigKey = (state: any, target?: any, actionName?: any) => {
+    configKey = { state, target, actionName };
   };
   const shortcutStringfy = (ctrlKey: boolean, shiftKey: boolean, altKey: boolean, code: string) => {
     const keyList = [];
@@ -84,8 +88,8 @@ function ConfigShortcutModal() {
     const shortcutString = keyList.join(" + ");
     return shortcutString;
   };
-  const getKoreanActionName = (actionNameValue: ACTION_NAME_VALUES) => {
-    switch (actionNameValue) {
+  const getKoreanActionName = (actionName: ActionName) => {
+    switch (actionName) {
       case "moveToNextCell":
         return "다음 셀로 이동";
       case "moveToPrevCell":
@@ -104,42 +108,55 @@ function ConfigShortcutModal() {
         return "행 또는 열 제거";
     }
   };
-
-  let prevCtrlKey: boolean | undefined;
-  let prevShiftKey: boolean | undefined;
-  let prevAltKey: boolean | undefined;
-  let prevCode: string | undefined;
   const setPrevKeys = (ctrlKey: boolean | undefined, shiftKey: boolean | undefined, altKey: boolean | undefined, code: string | undefined) => {
     prevCtrlKey = ctrlKey;
     prevShiftKey = shiftKey;
     prevAltKey = altKey;
     prevCode = code;
   };
+  const checkOverlap = (newActionName: ActionName, newCtrlKey: boolean, newShiftKey: boolean, newAltKey: boolean, newCode: string) => {
+    let actionName: ActionName;
+    for (actionName in shortcutsObj) {
+      const { ctrlKey: shortcutObjCtrlKey, shiftKey: shortcutObjShiftKey, altKey: shortcutObjAltKey, code: shortcutObjCode } = shortcutsObj[actionName];
+      if (newActionName !== actionName && newCtrlKey === shortcutObjCtrlKey && newShiftKey === shortcutObjShiftKey && newAltKey === shortcutObjAltKey && newCode === shortcutObjCode) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   const keydownAtWindowHandler = (event: KeyboardEvent) => {
-    if (configingKey.state) {
+    if (configKey.state) {
       event.preventDefault();
       const { ctrlKey, shiftKey, altKey, code } = event;
       if (ctrlKey === prevCtrlKey && shiftKey === prevShiftKey && altKey === prevAltKey && code === prevCode) {
         return;
       }
       setPrevKeys(ctrlKey, shiftKey, altKey, code);
-      const target = configingKey.target as HTMLButtonElement;
+      const target = configKey.target as HTMLButtonElement;
       target.innerText = shortcutStringfy(ctrlKey, shiftKey, altKey, code);
-      configingKey.ctrlKey = ctrlKey;
-      configingKey.shiftKey = shiftKey;
-      configingKey.altKey = altKey;
-      configingKey.code = code;
+      configKey.ctrlKey = ctrlKey;
+      configKey.shiftKey = shiftKey;
+      configKey.altKey = altKey;
+      configKey.code = code;
     } else if (event.key === "Escape") {
       event.preventDefault();
       dispatch(hideConfigShortcutModal());
     }
   };
   const keyUpAtWindowHandler = (event: KeyboardEvent) => {
-    if (!configingKey.state || event.ctrlKey || event.shiftKey || event.altKey) {
+    if (!configKey.state || event.ctrlKey || event.shiftKey || event.altKey) {
       return;
     }
-    const { ctrlKey, shiftKey, altKey, code } = configingKey;
-    const actionName = configingKey.actionName;
+    const { actionName, target, ctrlKey, shiftKey, altKey, code } = configKey;
+    if (checkOverlap(actionName, ctrlKey, shiftKey, altKey, code)) {
+      setPrevKeys(undefined, undefined, undefined, undefined);
+      setConfigKey(false);
+      const { ctrlKey: orignCtrlKey, shiftKey: orignShiftKey, altKey: orignAltKey, code: orignCode } = shortcutsObj[actionName];
+      target.innerText = shortcutStringfy(orignCtrlKey, orignShiftKey, orignAltKey, orignCode);
+      alert("키가 겹쳐요");
+      return;
+    }
     const eventCodeObj: EventCodeObj = {
       ctrlKey,
       shiftKey,
@@ -147,33 +164,30 @@ function ConfigShortcutModal() {
       code,
     };
     shortcutsObj[actionName] = eventCodeObj;
-    const target = configingKey.target as HTMLButtonElement;
     target.blur();
-    setIsConfigKey(false);
-    setPrevKeys(undefined, undefined, undefined, undefined);
     const shortcutsObjString = JSON.stringify(shortcutsObj);
     localStorage.setItem(ITEM_NAME, shortcutsObjString);
+    setPrevKeys(undefined, undefined, undefined, undefined);
+    setConfigKey(false);
   };
 
   const renderBtns = () => {
     const itemString = localStorage.getItem(ITEM_NAME);
     if (itemString) {
       const itemObj: {
-        [actionName in ACTION_NAME_VALUES]: EventCodeObj;
+        [actionName in ActionName]: EventCodeObj;
       } = JSON.parse(itemString);
       shortcutsObj = itemObj;
     } else {
       shortcutsObj = defaultShortcutsObj;
     }
     const btnsArr = [];
-    let actionNameValue: ACTION_NAME_VALUES;
-    for (actionNameValue in shortcutsObj) {
-      const { ctrlKey, shiftKey, altKey, code } = shortcutsObj[actionNameValue];
+    let actionName: ActionName;
+    for (actionName in shortcutsObj) {
+      const { ctrlKey, shiftKey, altKey, code } = shortcutsObj[actionName];
       const shortcutString = shortcutStringfy(ctrlKey, shiftKey, altKey, code);
-      const koreanActionName = getKoreanActionName(actionNameValue);
-      btnsArr.push(
-        <ConfigShortcutModalBtn key={actionNameValue} koreanActionName={koreanActionName} setIsConfigKey={setIsConfigKey} actionNameValue={actionNameValue} shortcutString={shortcutString} />
-      );
+      const koreanActionName = getKoreanActionName(actionName);
+      btnsArr.push(<ConfigShortcutModalBtn key={actionName} koreanActionName={koreanActionName} setConfigKey={setConfigKey} actionName={actionName} shortcutString={shortcutString} />);
     }
     return btnsArr;
   };
