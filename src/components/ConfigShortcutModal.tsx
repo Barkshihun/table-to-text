@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 import { ITEM_NAME, LocalStorageObj, defaultShortcutsObj, ActionName, ConfigKey, SetConfigKey, ConfigBtnsRefCurrent, ConfigCheckBoxesRefCurrent } from "../shortcutTypeAndConst";
-import { hideConfigShortcutModal } from "../store/componentRenderSlice";
+import { setShowConfigShortcutModal } from "../store/componentRenderSlice";
 import ConfigShortcutModalBtn from "./ConfigShortcutModalBtn";
 
 function ConfigShortcutModal() {
@@ -88,7 +88,7 @@ function ConfigShortcutModal() {
       target.innerText = shortcutStringfy(ctrlKey, shiftKey, altKey, code);
     } else if (event.key === "Escape") {
       event.preventDefault();
-      dispatch(hideConfigShortcutModal());
+      dispatch(setShowConfigShortcutModal(false));
     }
   };
   const keyUpAtWindowHandler = (event: KeyboardEvent) => {
@@ -214,7 +214,7 @@ function ConfigShortcutModal() {
       onMouseDown={(event) => {
         const target = event.target as HTMLDivElement;
         if (target.className === "modal") {
-          dispatch(hideConfigShortcutModal());
+          dispatch(setShowConfigShortcutModal(false));
         }
       }}
     >
@@ -230,7 +230,7 @@ function ConfigShortcutModal() {
           <button
             className="btn btn--modal btn--yes"
             onClick={() => {
-              dispatch(hideConfigShortcutModal());
+              dispatch(setShowConfigShortcutModal(false));
             }}
           >
             닫기

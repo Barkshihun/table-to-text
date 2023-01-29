@@ -40,11 +40,8 @@ const componentRenderSlice = createSlice({
     setDownloadModalText: (state, { payload }: { payload: string }) => {
       state.downloadModalText = payload;
     },
-    showConfigShortcutModal: (state) => {
-      state.isShowConfigShortcutModal = true;
-    },
-    hideConfigShortcutModal: (state) => {
-      state.isShowConfigShortcutModal = false;
+    setShowConfigShortcutModal: (state, { payload }: { payload: boolean }) => {
+      state.isShowConfigShortcutModal = payload;
     },
     setShowAddRowOrColModal: (state, { payload }: { payload: boolean }) => {
       state.isShowAddRowOrColModal = payload;
@@ -52,6 +49,5 @@ const componentRenderSlice = createSlice({
   },
 });
 
-export const { setIsHome, setShowTableSizeModal, showDownloadModal, hideDownloadModal, setDownloadModalText, showConfigShortcutModal, hideConfigShortcutModal, setShowAddRowOrColModal } =
-  componentRenderSlice.actions;
+export const { setIsHome, setShowTableSizeModal, showDownloadModal, hideDownloadModal, setDownloadModalText, setShowConfigShortcutModal, setShowAddRowOrColModal } = componentRenderSlice.actions;
 export default componentRenderSlice;

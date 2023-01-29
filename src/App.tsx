@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useRef } from "react";
-import { setIsHome, showConfigShortcutModal } from "./store/componentRenderSlice";
+import { setIsHome, setShowConfigShortcutModal } from "./store/componentRenderSlice";
 import { setTableListForTransform } from "./store/tableSlice";
 import { RootState } from "./store/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -83,7 +83,7 @@ function App() {
             <div
               className="config-icon"
               onClick={() => {
-                dispatch(showConfigShortcutModal());
+                dispatch(setShowConfigShortcutModal(true));
               }}
             >
               <FontAwesomeIcon icon={faGear} />
