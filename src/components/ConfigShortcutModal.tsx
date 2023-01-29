@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
+import Swal from "sweetalert2";
 import { ITEM_NAME, LocalStorageObj, defaultShortcutsObj, ActionName, ConfigKey, SetConfigKey, ConfigBtnsRefCurrent, ConfigCheckBoxesRefCurrent } from "../shortcutTypeAndConst";
 import { hideConfigShortcutModal } from "../store/componentRenderSlice";
 import ConfigShortcutModalBtn from "./ConfigShortcutModalBtn";
@@ -96,13 +97,25 @@ function ConfigShortcutModal() {
       return;
     }
     const { actionName, target } = configKey;
-    if (checkOverlap(actionName, ctrlKey, shiftKey, altKey, code)) {
+    const isOverlap = checkOverlap(actionName, ctrlKey, shiftKey, altKey, code);
+    if (code === "AltRight" || isOverlap) {
       setPrevKeys(undefined, undefined, undefined, undefined);
       setConfigKey(false);
       const { ctrlKey: orignCtrlKey, shiftKey: orignShiftKey, altKey: orignAltKey, code: orignCode } = shortcutsObj[actionName];
       target.innerText = shortcutStringfy(orignCtrlKey, orignShiftKey, orignAltKey, orignCode);
-      alert("키가 겹쳐요");
-      return;
+      if (code === "AltRight") {
+        Swal.fire({
+          icon: "error",
+          title: "오른쪽 alt키는 단축키로 사용하실 수 없습니다",
+          customClass: { title: "break-keep" },
+          position: "top",
+        });
+        return;
+      }
+      if (isOverlap) {
+        alert("키가 겹쳐요");
+        return;
+      }
     }
     const configCheckBoxesRefCurrent = configCheckBoxesRef.current as ConfigCheckBoxesRefCurrent;
     const isAbled = configCheckBoxesRefCurrent[actionName].checked;
