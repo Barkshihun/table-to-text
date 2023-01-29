@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { ITEM_NAME, LocalStorageObj, defaultShortcutsObj, ActionName, ConfigKey, SetConfigKey, ConfigBtnsRefCurrent, ConfigCheckBoxesRefCurrent } from "../shortcutTypeAndConst";
 import { hideConfigShortcutModal } from "../store/componentRenderSlice";
@@ -85,20 +85,17 @@ function ConfigShortcutModal() {
       setPrevKeys(ctrlKey, shiftKey, altKey, code);
       const target = configKey.target as HTMLButtonElement;
       target.innerText = shortcutStringfy(ctrlKey, shiftKey, altKey, code);
-      configKey.ctrlKey = ctrlKey;
-      configKey.shiftKey = shiftKey;
-      configKey.altKey = altKey;
-      configKey.code = code;
     } else if (event.key === "Escape") {
       event.preventDefault();
       dispatch(hideConfigShortcutModal());
     }
   };
   const keyUpAtWindowHandler = (event: KeyboardEvent) => {
-    if (!configKey.state || event.ctrlKey || event.shiftKey || event.altKey) {
+    const { ctrlKey, shiftKey, altKey, code } = event;
+    if (!configKey.state || ctrlKey || shiftKey) {
       return;
     }
-    const { actionName, target, ctrlKey, shiftKey, altKey, code } = configKey;
+    const { actionName, target } = configKey;
     if (checkOverlap(actionName, ctrlKey, shiftKey, altKey, code)) {
       setPrevKeys(undefined, undefined, undefined, undefined);
       setConfigKey(false);

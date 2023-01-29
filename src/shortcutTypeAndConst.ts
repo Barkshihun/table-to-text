@@ -83,7 +83,7 @@ interface LocalStorageObj {
   isAbled: boolean;
 }
 type ActionName = typeof ACTION_NAME[keyof typeof ACTION_NAME];
-type ConfigKey = { state: false } | { state: true; target: HTMLButtonElement; actionName: ActionName; ctrlKey: boolean; shiftKey: boolean; altKey: boolean; code: string };
+type ConfigKey = { state: false } | { state: true; target: HTMLButtonElement; actionName: ActionName };
 type SetConfigKey = {
   (state: false): void;
   (state: true, target: HTMLButtonElement, actionName: ActionName): void;
