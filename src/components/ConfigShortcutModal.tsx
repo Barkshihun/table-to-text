@@ -127,7 +127,7 @@ function ConfigShortcutModal() {
       } = JSON.parse(itemString);
       shortcutsObj = itemObj;
     } else {
-      shortcutsObj = defaultShortcutsObj;
+      shortcutsObj = { ...defaultShortcutsObj };
     }
     const btnsArr = [];
     for (const key in shortcutsObj) {
