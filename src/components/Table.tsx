@@ -4,7 +4,7 @@ import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { setCols, setRows, setZero, setOne, resetTableList } from "../store/tableSlice";
 import { setShowTableSizeModal } from "../store/componentRenderSlice";
-import { ITEM_NAME, EventCodeObj, defaultShortcutsObj, ActionName } from "../shortcutTypeAndConst";
+import { ITEM_NAME, EventCodeObj, defaultShortcutsObj, ActionName, LocalStorageObj } from "../shortcutTypeAndConst";
 import { RootState } from "../store/store";
 import TableSizeModal from "./TableSizeModal";
 import "../scss/Modal.scss";
@@ -130,11 +130,11 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
     col = parseInt(col);
     const itemString = localStorage.getItem(ITEM_NAME);
     let shortcutsObj: {
-      [actionName in ActionName]: EventCodeObj;
+      [actionName in ActionName]: LocalStorageObj;
     };
     if (itemString) {
       const itemObj: {
-        [actionName in ActionName]: EventCodeObj;
+        [actionName in ActionName]: LocalStorageObj;
       } = JSON.parse(itemString);
       shortcutsObj = itemObj;
     } else {
@@ -143,13 +143,16 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
     let correspondingActionName: ActionName | undefined;
     for (const key in shortcutsObj) {
       const actionName = key as ActionName;
-      const { ctrlKey: shortcutObjCtrlKey, shiftKey: shortcutObjShiftKey, altKey: shortcutObjAltKey, code: shortcutObjCode } = shortcutsObj[actionName];
-      if (event.ctrlKey === shortcutObjCtrlKey && event.shiftKey === shortcutObjShiftKey && event.altKey === shortcutObjAltKey && event.code === shortcutObjCode) {
+      const { ctrlKey: shortcutObjCtrlKey, shiftKey: shortcutObjShiftKey, altKey: shortcutObjAltKey, code: shortcutObjCode, isAbled } = shortcutsObj[actionName];
+      if (event.ctrlKey === shortcutObjCtrlKey && event.shiftKey === shortcutObjShiftKey && event.altKey === shortcutObjAltKey && event.code === shortcutObjCode && isAbled) {
         correspondingActionName = actionName;
         break;
       }
     }
     if (!correspondingActionName) {
+      if (event.code === "Tab" || (event.code === "Tab" && event.shiftKey === true)) {
+        event.preventDefault();
+      }
       return;
     }
     event.preventDefault();

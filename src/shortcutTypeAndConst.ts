@@ -10,55 +10,63 @@ const ACTION_NAME = {
 } as const;
 const ITEM_NAME = "shortcutsObj" as const;
 const defaultShortcutsObj: {
-  [actionName in ActionName]: EventCodeObj;
+  [actionName in ActionName]: LocalStorageObj;
 } = {
   moveToNextCell: {
     ctrlKey: false,
     shiftKey: false,
     altKey: false,
     code: "Tab",
+    isAbled: true,
   },
   moveToPrevCell: {
     ctrlKey: false,
     shiftKey: true,
     altKey: false,
     code: "Tab",
+    isAbled: true,
   },
   moveToUpCell: {
     ctrlKey: true,
     shiftKey: true,
     altKey: false,
     code: "ArrowUp",
+    isAbled: true,
   },
   moveToDownCell: {
     ctrlKey: true,
     shiftKey: true,
     altKey: false,
     code: "ArrowDown",
+    isAbled: true,
   },
   moveToLeftCell: {
     ctrlKey: true,
     shiftKey: true,
     altKey: false,
     code: "ArrowLeft",
+    isAbled: true,
   },
   moveToRightCell: {
     ctrlKey: true,
     shiftKey: true,
     altKey: false,
     code: "ArrowRight",
+    isAbled: true,
   },
   addRowOrCol: {
     ctrlKey: true,
     shiftKey: true,
     altKey: false,
     code: "Equal",
+    isAbled: true,
   },
   removeRowOrCol: {
     ctrlKey: true,
     shiftKey: false,
     altKey: false,
     code: "Minus",
+    isAbled: true,
   },
 } as const;
 interface EventCodeObj {
@@ -67,6 +75,13 @@ interface EventCodeObj {
   altKey: boolean;
   code: string;
 }
+interface LocalStorageObj {
+  ctrlKey: boolean;
+  shiftKey: boolean;
+  altKey: boolean;
+  code: string;
+  isAbled: boolean;
+}
 type ActionName = typeof ACTION_NAME[keyof typeof ACTION_NAME];
 type ConfigKey = { state: false } | { state: true; target: HTMLButtonElement; actionName: ActionName; ctrlKey: boolean; shiftKey: boolean; altKey: boolean; code: string };
 type SetConfigKey = {
@@ -74,10 +89,10 @@ type SetConfigKey = {
   (state: true, target: HTMLButtonElement, actionName: ActionName): void;
 };
 type ConfigBtnsRefCurrent = {
-  [actionName in ActionName]: HTMLButtonElement | undefined;
+  [actionName in ActionName]: HTMLButtonElement;
 };
 type ConfigCheckBoxesRefCurrent = {
-  [actionName in ActionName]: HTMLInputElement | undefined;
+  [actionName in ActionName]: HTMLInputElement;
 };
 export { ACTION_NAME, ITEM_NAME, defaultShortcutsObj };
-export type { EventCodeObj, ActionName, ConfigKey, SetConfigKey, ConfigBtnsRefCurrent, ConfigCheckBoxesRefCurrent };
+export type { EventCodeObj, LocalStorageObj, ActionName, ConfigKey, SetConfigKey, ConfigBtnsRefCurrent, ConfigCheckBoxesRefCurrent };

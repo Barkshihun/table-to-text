@@ -1,32 +1,39 @@
 import { SetConfigKey, ActionName, ConfigBtnsRefCurrent, ConfigCheckBoxesRefCurrent } from "../shortcutTypeAndConst";
 
 function ConfigShortcutModalBtn({
-  configCheckBoxesRef,
+  configCheckBoxesValueRef,
   configBtnsRef,
   koreanActionName,
   setConfigKey,
   actionName,
   shortcutString,
+  isAbled,
+  onCheckboxEvent,
 }: {
-  configCheckBoxesRef: React.MutableRefObject<{} | ConfigCheckBoxesRefCurrent>;
+  configCheckBoxesValueRef: React.MutableRefObject<{} | ConfigCheckBoxesRefCurrent>;
   configBtnsRef: React.MutableRefObject<{} | ConfigBtnsRefCurrent>;
   koreanActionName: string;
   setConfigKey: SetConfigKey;
   actionName: ActionName;
   shortcutString: string;
+  isAbled: boolean;
+  onCheckboxEvent: (actionName: ActionName, checked: boolean) => void;
 }) {
   return (
     <div>
       <input
         type="checkbox"
-        defaultChecked
+        defaultChecked={isAbled}
         ref={(elem) => {
           const checkbox = elem as HTMLInputElement;
-          const configCheckBoxesRefCurrent = configCheckBoxesRef.current as ConfigCheckBoxesRefCurrent;
-          configCheckBoxesRefCurrent[actionName] = checkbox;
+          if (checkbox) {
+            const configCheckBoxesValueRefCurrent = configCheckBoxesValueRef.current as ConfigCheckBoxesRefCurrent;
+            configCheckBoxesValueRefCurrent[actionName] = checkbox;
+          }
         }}
-        onChange={() => {
-          console.log("AAA");
+        onChange={(elem) => {
+          const checked = elem.target.checked;
+          onCheckboxEvent(actionName, checked);
         }}
       />
       <span>{koreanActionName}</span>
