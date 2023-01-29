@@ -107,7 +107,6 @@ function ConfigShortcutModal() {
         Swal.fire({
           icon: "error",
           title: "오른쪽 alt키는 단축키로 사용하실 수 없습니다",
-          customClass: { title: "break-keep" },
           position: "top",
         });
         return;

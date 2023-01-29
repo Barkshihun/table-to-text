@@ -34,9 +34,6 @@ header {
 .malgun-gothic {
   font-family: "맑은 고딕", "NanumGothic", sans-serif;
 }
-.break-keep {
-  word-break: keep-all;
-}
 .no-scroll {
   overflow: hidden !important;
 }
@@ -97,7 +94,6 @@ header {
   border-radius: 10px;
   color: white;
   cursor: auto;
-  word-break: keep-all;
   @extend %shadow;
   &::after {
     content: "";
