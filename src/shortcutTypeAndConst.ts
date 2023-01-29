@@ -74,10 +74,10 @@ type SetConfigKey = {
   (state: true, target: HTMLButtonElement, actionName: ActionName): void;
 };
 type ConfigBtnsRefCurrent = {
-  [actionName in ActionName]: {
-    checkbox: HTMLInputElement | undefined;
-    btn: HTMLButtonElement | undefined;
-  };
+  [actionName in ActionName]: HTMLButtonElement | undefined;
+};
+type ConfigCheckBoxesRefCurrent = {
+  [actionName in ActionName]: HTMLInputElement | undefined;
 };
 export { ACTION_NAME, ITEM_NAME, defaultShortcutsObj };
-export type { EventCodeObj, ActionName, ConfigKey, SetConfigKey, ConfigBtnsRefCurrent };
+export type { EventCodeObj, ActionName, ConfigKey, SetConfigKey, ConfigBtnsRefCurrent, ConfigCheckBoxesRefCurrent };

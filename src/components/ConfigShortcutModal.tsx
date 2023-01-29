@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { ITEM_NAME, EventCodeObj, defaultShortcutsObj, ActionName, ConfigKey, SetConfigKey, ConfigBtnsRefCurrent } from "../shortcutTypeAndConst";
+import { ITEM_NAME, EventCodeObj, defaultShortcutsObj, ActionName, ConfigKey, SetConfigKey, ConfigBtnsRefCurrent, ConfigCheckBoxesRefCurrent } from "../shortcutTypeAndConst";
 import { hideConfigShortcutModal } from "../store/componentRenderSlice";
 import ConfigShortcutModalBtn from "./ConfigShortcutModalBtn";
 
 function ConfigShortcutModal() {
   const dispatch = useDispatch();
   const configBtnsRef: React.MutableRefObject<ConfigBtnsRefCurrent | {}> = useRef({});
+  const configCheckBoxesRef: React.MutableRefObject<ConfigCheckBoxesRefCurrent | {}> = useRef({});
 
   let shortcutsObj: {
     [actionName in ActionName]: EventCodeObj;
@@ -140,6 +141,7 @@ function ConfigShortcutModal() {
         <ConfigShortcutModalBtn
           key={actionName}
           configBtnsRef={configBtnsRef}
+          configCheckBoxesRef={configCheckBoxesRef}
           koreanActionName={koreanActionName}
           setConfigKey={setConfigKey}
           actionName={actionName}
@@ -185,7 +187,7 @@ function ConfigShortcutModal() {
                 const actionName = key as ActionName;
                 const { ctrlKey, shiftKey, altKey, code } = defaultShortcutsObj[actionName];
                 const defaultShortcutString = shortcutStringfy(ctrlKey, shiftKey, altKey, code);
-                const btnElem = configBtnsRefCurrent[actionName].btn as HTMLButtonElement;
+                const btnElem = configBtnsRefCurrent[actionName] as HTMLButtonElement;
                 btnElem.innerText = defaultShortcutString;
               }
             }}

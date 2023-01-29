@@ -1,20 +1,20 @@
-import { SetConfigKey, ActionName, ConfigBtnsRefCurrent } from "../shortcutTypeAndConst";
+import { SetConfigKey, ActionName, ConfigBtnsRefCurrent, ConfigCheckBoxesRefCurrent } from "../shortcutTypeAndConst";
 
 function ConfigShortcutModalBtn({
+  configCheckBoxesRef,
   configBtnsRef,
   koreanActionName,
   setConfigKey,
   actionName,
   shortcutString,
 }: {
+  configCheckBoxesRef: React.MutableRefObject<{} | ConfigCheckBoxesRefCurrent>;
   configBtnsRef: React.MutableRefObject<{} | ConfigBtnsRefCurrent>;
   koreanActionName: string;
   setConfigKey: SetConfigKey;
   actionName: ActionName;
   shortcutString: string;
 }) {
-  const configBtnsRefCurrent = configBtnsRef.current as ConfigBtnsRefCurrent;
-  configBtnsRefCurrent[actionName] = { checkbox: undefined, btn: undefined };
   return (
     <div>
       <input
@@ -22,7 +22,8 @@ function ConfigShortcutModalBtn({
         defaultChecked
         ref={(elem) => {
           const checkbox = elem as HTMLInputElement;
-          configBtnsRefCurrent[actionName].checkbox = checkbox;
+          const configCheckBoxesRefCurrent = configCheckBoxesRef.current as ConfigCheckBoxesRefCurrent;
+          configCheckBoxesRefCurrent[actionName] = checkbox;
         }}
         onChange={() => {
           console.log("AAA");
@@ -32,7 +33,8 @@ function ConfigShortcutModalBtn({
       <button
         ref={(elem) => {
           const btn = elem as HTMLButtonElement;
-          configBtnsRefCurrent[actionName].btn = btn;
+          const configBtnsRefCurrent = configBtnsRef.current as ConfigBtnsRefCurrent;
+          configBtnsRefCurrent[actionName] = btn;
         }}
         onClick={(elem) => {
           const btn = elem.target as HTMLButtonElement;
