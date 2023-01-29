@@ -6,8 +6,8 @@ import ConfigShortcutModalBtn from "./ConfigShortcutModalBtn";
 
 function ConfigShortcutModal() {
   const dispatch = useDispatch();
-  const configBtnsRef: React.MutableRefObject<ConfigBtnsRefCurrent | {}> = useRef({});
-  const configCheckBoxesRef: React.MutableRefObject<ConfigCheckBoxesRefCurrent | {}> = useRef({});
+  const configBtnsRef = useRef<ConfigBtnsRefCurrent | {}>({});
+  const configCheckBoxesRef = useRef<ConfigCheckBoxesRefCurrent | {}>({});
 
   let shortcutsObj: {
     [actionName in ActionName]: LocalStorageObj;
