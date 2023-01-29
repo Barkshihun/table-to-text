@@ -128,6 +128,20 @@ function ConfigShortcutModal() {
     const shortcutsObjString = JSON.stringify(shortcutsObj);
     localStorage.setItem(ITEM_NAME, shortcutsObjString);
   };
+  const onReset = () => {
+    localStorage.removeItem(ITEM_NAME);
+    const configBtnsRefCurrent = configBtnsRef.current as ConfigBtnsRefCurrent;
+    const configCheckBoxesRefCurrent = configCheckBoxesRef.current as ConfigCheckBoxesRefCurrent;
+    for (const key in configBtnsRef.current) {
+      const actionName = key as ActionName;
+      const { ctrlKey, shiftKey, altKey, code } = defaultShortcutsObj[actionName];
+      const defaultShortcutString = shortcutStringfy(ctrlKey, shiftKey, altKey, code);
+      const btn = configBtnsRefCurrent[actionName];
+      const checkbox = configCheckBoxesRefCurrent[actionName];
+      btn.innerText = defaultShortcutString;
+      checkbox.checked = true;
+    }
+  };
 
   const renderBtns = () => {
     const itemString = localStorage.getItem(ITEM_NAME);
@@ -189,24 +203,7 @@ function ConfigShortcutModal() {
         <div>
           <input type="checkbox" defaultChecked />
           <span>전체 선택</span>
-          <button
-            onClick={() => {
-              localStorage.removeItem(ITEM_NAME);
-              const configBtnsRefCurrent = configBtnsRef.current as ConfigBtnsRefCurrent;
-              const configCheckBoxesRefCurrent = configCheckBoxesRef.current as ConfigCheckBoxesRefCurrent;
-              for (const key in configBtnsRef.current) {
-                const actionName = key as ActionName;
-                const { ctrlKey, shiftKey, altKey, code } = defaultShortcutsObj[actionName];
-                const defaultShortcutString = shortcutStringfy(ctrlKey, shiftKey, altKey, code);
-                const btn = configBtnsRefCurrent[actionName];
-                const checkbox = configCheckBoxesRefCurrent[actionName];
-                btn.innerText = defaultShortcutString;
-                checkbox.checked = true;
-              }
-            }}
-          >
-            초기화
-          </button>
+          <button onClick={onReset}>초기화</button>
         </div>
         {renderBtns()}
         <div className="config-shortcut-btn-container">
