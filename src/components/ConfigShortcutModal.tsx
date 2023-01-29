@@ -128,11 +128,22 @@ function ConfigShortcutModal() {
     const shortcutsObjString = JSON.stringify(shortcutsObj);
     localStorage.setItem(ITEM_NAME, shortcutsObjString);
   };
+  const onSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const configCheckBoxesRefCurrent = configCheckBoxesRef.current as ConfigCheckBoxesRefCurrent;
+    for (const key in configCheckBoxesRefCurrent) {
+      const actionName = key as ActionName;
+      const checkbox = configCheckBoxesRefCurrent[actionName];
+      checkbox.checked = event.target.checked ? true : false;
+      shortcutsObj[actionName].isAbled = event.target.checked ? true : false;
+    }
+    const shortcutsObjString = JSON.stringify(shortcutsObj);
+    localStorage.setItem(ITEM_NAME, shortcutsObjString);
+  };
   const onReset = () => {
     localStorage.removeItem(ITEM_NAME);
     const configBtnsRefCurrent = configBtnsRef.current as ConfigBtnsRefCurrent;
     const configCheckBoxesRefCurrent = configCheckBoxesRef.current as ConfigCheckBoxesRefCurrent;
-    for (const key in configBtnsRef.current) {
+    for (const key in configBtnsRefCurrent) {
       const actionName = key as ActionName;
       const { ctrlKey, shiftKey, altKey, code } = defaultShortcutsObj[actionName];
       const defaultShortcutString = shortcutStringfy(ctrlKey, shiftKey, altKey, code);
@@ -201,7 +212,7 @@ function ConfigShortcutModal() {
       <div className="modal__content modal__content--config-shortcut">
         <h1>단축키 설정</h1>
         <div>
-          <input type="checkbox" defaultChecked />
+          <input type="checkbox" onChange={onSelectAll} />
           <span>전체 선택</span>
           <button onClick={onReset}>초기화</button>
         </div>
