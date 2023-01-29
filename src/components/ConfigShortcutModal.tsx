@@ -1,11 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { ITEM_NAME, EventCodeObj, defaultShortcutsObj, ActionName, ConfigKey, SetConfigKey } from "../shortcutTypeAndConst";
+import { ITEM_NAME, EventCodeObj, defaultShortcutsObj, ActionName, ConfigKey, SetConfigKey, ConfigBtnsRefCurrent } from "../shortcutTypeAndConst";
 import { hideConfigShortcutModal } from "../store/componentRenderSlice";
 import ConfigShortcutModalBtn from "./ConfigShortcutModalBtn";
 
 function ConfigShortcutModal() {
   const dispatch = useDispatch();
+  const configBtnsRef: React.MutableRefObject<ConfigBtnsRefCurrent | {}> = useRef({});
 
   let shortcutsObj: {
     [actionName in ActionName]: EventCodeObj;
@@ -135,7 +136,16 @@ function ConfigShortcutModal() {
       const { ctrlKey, shiftKey, altKey, code } = shortcutsObj[actionName];
       const shortcutString = shortcutStringfy(ctrlKey, shiftKey, altKey, code);
       const koreanActionName = getKoreanActionName(actionName);
-      btnsArr.push(<ConfigShortcutModalBtn key={actionName} koreanActionName={koreanActionName} setConfigKey={setConfigKey} actionName={actionName} shortcutString={shortcutString} />);
+      btnsArr.push(
+        <ConfigShortcutModalBtn
+          key={actionName}
+          configBtnsRef={configBtnsRef}
+          koreanActionName={koreanActionName}
+          setConfigKey={setConfigKey}
+          actionName={actionName}
+          shortcutString={shortcutString}
+        />
+      );
     }
     return btnsArr;
   };
@@ -151,6 +161,7 @@ function ConfigShortcutModal() {
     };
   }, []);
 
+  console.count("모달렌더");
   return (
     <div
       className="modal"
@@ -166,7 +177,21 @@ function ConfigShortcutModal() {
         <div>
           <input type="checkbox" defaultChecked />
           <span>전체 선택</span>
-          <button>초기화</button>
+          <button
+            onClick={() => {
+              localStorage.removeItem(ITEM_NAME);
+              const configBtnsRefCurrent = configBtnsRef.current as ConfigBtnsRefCurrent;
+              for (const key in configBtnsRef.current) {
+                const actionName = key as ActionName;
+                const { ctrlKey, shiftKey, altKey, code } = defaultShortcutsObj[actionName];
+                const defaultShortcutString = shortcutStringfy(ctrlKey, shiftKey, altKey, code);
+                const btnElem = configBtnsRefCurrent[actionName].btn as HTMLButtonElement;
+                btnElem.innerText = defaultShortcutString;
+              }
+            }}
+          >
+            초기화
+          </button>
         </div>
         {renderBtns()}
         <div className="config-shortcut-btn-container">
