@@ -4,7 +4,7 @@ import chardet from "chardet";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { setZero, importCsv } from "../store/tableSlice";
+import { setZero, setTableList } from "../store/tableSlice";
 import { showDownloadModal, setDownloadModalText } from "../store/componentRenderSlice";
 import DownloadModal from "../modals/DownloadModal";
 import TransformingModal from "../modals/TransformingModal";
@@ -67,7 +67,7 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
       }
       let isInQuotation = false;
       let startIndex = 0;
-      const rawDataTableList: string[][] = [[]];
+      const tableList: string[][] = [[]];
       let rawDataTableListRow = 0;
       for (let i = 0; i < csvTextData.length; i++) {
         switch (csvTextData[i]) {
@@ -82,7 +82,7 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
             if (!isInQuotation) {
               let text = csvTextData.substring(startIndex, i);
               text = transFormQuotation(text);
-              rawDataTableList[rawDataTableListRow].push(text);
+              tableList[rawDataTableListRow].push(text);
               startIndex = i + 1;
             }
             break;
@@ -90,8 +90,8 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
             if (!isInQuotation) {
               let text = csvTextData.substring(startIndex, i);
               text = transFormQuotation(text);
-              rawDataTableList[rawDataTableListRow].push(text);
-              rawDataTableList.push([]);
+              tableList[rawDataTableListRow].push(text);
+              tableList.push([]);
               startIndex = i + 1;
               rawDataTableListRow++;
             }
@@ -102,15 +102,15 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
         if (i === csvTextData.length - 1 && !(csvTextData[i] === "\n")) {
           let text = csvTextData.substring(startIndex, i + 1);
           text = transFormQuotation(text);
-          rawDataTableList[rawDataTableListRow].push(text);
+          tableList[rawDataTableListRow].push(text);
         }
       }
-      if (rawDataTableList[rawDataTableList.length - 1].length === 0) {
-        rawDataTableList.pop();
+      if (tableList[tableList.length - 1].length === 0) {
+        tableList.pop();
       }
-      const rows = rawDataTableList.length;
-      const cols = rawDataTableList[0].length;
-      dispatch(importCsv({ cols, rows, rawDataTableList }));
+      const rows = tableList.length;
+      const cols = tableList[0].length;
+      dispatch(setTableList({ cols, rows, tableList }));
       if (csvFile.name[0] !== ".") {
         const fileName = csvFile.name.slice(0, -4);
         dispatch(setDownloadModalText(fileName));

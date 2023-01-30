@@ -51,13 +51,13 @@ const tableSlice = createSlice({
     resetTableList: (state) => {
       state.originTableList = [];
     },
-    importCsv: (state, { payload: { cols, rows, rawDataTableList } }: { payload: { cols: number; rows: number; rawDataTableList: string[][] } }) => {
+    setTableList: (state, { payload: { cols, rows, tableList } }: { payload: { cols: number; rows: number; tableList: string[][] } }) => {
       state.originCols = cols;
       state.originRows = rows;
-      state.originTableList = rawDataTableList;
+      state.originTableList = tableList;
     },
   },
 });
 
-export const { setCols, setRows, setZero, setOne, setTableListForTransform, resetTableList, importCsv } = tableSlice.actions;
+export const { setCols, setRows, setZero, setOne, setTableListForTransform, resetTableList, setTableList } = tableSlice.actions;
 export default tableSlice;
