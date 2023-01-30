@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { setCols, setRows, setZero, setOne, resetTableList } from "../store/tableSlice";
-import { setDisplayAddRowOrColModal, setDisplayTableSizeModal } from "../store/componentRenderSlice";
+import { showAddRowOrColModal, setDisplayTableSizeModal } from "../store/componentRenderSlice";
 import { ActionName, ShortcutsObj } from "../types/shortcutTypes";
 import { ITEM_NAME, defaultShortcutsObj } from "../shortcutConsts";
 import { RootState } from "../store/store";
@@ -126,7 +126,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
     },
     addRowOrCol: (col: number, row: number) => {
       focusCellRef.current = { col, row };
-      dispatch(setDisplayAddRowOrColModal(true));
+      dispatch(showAddRowOrColModal());
     },
   };
   const onCheckShortcut = (event: React.KeyboardEvent<HTMLPreElement>) => {

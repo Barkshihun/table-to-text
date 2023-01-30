@@ -1,10 +1,10 @@
-import { useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { AddRowOrColCheckBoxObj, NoYesBtns } from "../types/addRowOrColModalTypes";
-import { setDisplayAddRowOrColModal } from "../store/componentRenderSlice";
+import { hideAddRowOrColModal, showAddRowOrColModal } from "../store/componentRenderSlice";
 import AddRowOrColCheckBox from "../components/AddRowOrColCheckBox";
+import { RootState } from "../store/store";
 
-let prevCheckIndex = 0;
 function AddRowOrColModal() {
   const dispatch = useDispatch();
   const addRowOrColCheckBoxObjListRef = useRef<AddRowOrColCheckBoxObj[]>([
@@ -21,47 +21,56 @@ function AddRowOrColModal() {
       text: "오른쪽 열 추가",
     },
   ]);
-  const checkIndexRef = useRef(prevCheckIndex);
+  const defaultCheckIndex = useSelector((state: RootState) => state.componentRender.defaultCheckIndex);
+  const checkIndexRef = useRef(defaultCheckIndex);
   const noYesBtnsRef = useRef<NoYesBtns | { currentBtn: "yes" }>({ currentBtn: "yes" });
   const maxCheckIndex = 3;
 
+  const arrowKeyControl = (key: "ArrowUp" | "ArrowDown") => {
+    const addRowOrColCheckBoxObjList = addRowOrColCheckBoxObjListRef.current;
+    const prevCheckIndex = checkIndexRef.current;
+    const addRowOrColCheckBoxObj = addRowOrColCheckBoxObjList[prevCheckIndex];
+    const { checkboxElem: prevCheckboxElem } = addRowOrColCheckBoxObj;
+    let nextCheckIndex = 0;
+    if (key === "ArrowUp") {
+      nextCheckIndex = prevCheckIndex !== 0 ? prevCheckIndex - 1 : maxCheckIndex;
+    } else {
+      nextCheckIndex = prevCheckIndex === maxCheckIndex ? 0 : prevCheckIndex + 1;
+    }
+    const nextAddRowOrColCheckBoxObj = addRowOrColCheckBoxObjList[nextCheckIndex];
+    const { labelElem: nextLabelElem, checkboxElem: nextCheckboxElem } = nextAddRowOrColCheckBoxObj;
+    if (prevCheckboxElem && nextLabelElem && nextCheckboxElem) {
+      prevCheckboxElem.checked = false;
+      nextCheckboxElem.checked = true;
+      nextLabelElem.focus();
+    }
+    checkIndexRef.current = nextCheckIndex;
+  };
   const windowKeyDownHandler = (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      event.preventDefault();
-      prevCheckIndex = checkIndexRef.current;
-      dispatch(setDisplayAddRowOrColModal(false));
-    }
-    if (event.key === "Tab") {
-      event.preventDefault();
-      const noYesBtns = noYesBtnsRef.current as NoYesBtns;
-      if (noYesBtns.currentBtn === "yes") {
-        noYesBtns.yesBtn.focus();
-        noYesBtns.currentBtn = "no";
-      } else {
-        noYesBtns.noBtn.focus();
-        noYesBtns.currentBtn = "yes";
-      }
-    }
-    if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-      event.preventDefault();
-      const addRowOrColCheckBoxObjList = addRowOrColCheckBoxObjListRef.current;
-      const prevCheckIndex = checkIndexRef.current;
-      const addRowOrColCheckBoxObj = addRowOrColCheckBoxObjList[prevCheckIndex];
-      const { checkboxElem: prevCheckboxElem } = addRowOrColCheckBoxObj;
-      let nextCheckIndex = 0;
-      if (event.key === "ArrowUp") {
-        nextCheckIndex = prevCheckIndex !== 0 ? prevCheckIndex - 1 : maxCheckIndex;
-      } else {
-        nextCheckIndex = prevCheckIndex === maxCheckIndex ? 0 : prevCheckIndex + 1;
-      }
-      const nextAddRowOrColCheckBoxObj = addRowOrColCheckBoxObjList[nextCheckIndex];
-      const { labelElem: nextLabelElem, checkboxElem: nextCheckboxElem } = nextAddRowOrColCheckBoxObj;
-      if (prevCheckboxElem && nextLabelElem && nextCheckboxElem) {
-        prevCheckboxElem.checked = false;
-        nextCheckboxElem.checked = true;
-        nextLabelElem.focus();
-      }
-      checkIndexRef.current = nextCheckIndex;
+    switch (event.key) {
+      case "Escape":
+        event.preventDefault();
+        dispatch(hideAddRowOrColModal(checkIndexRef.current));
+        return;
+      case "Tab":
+        event.preventDefault();
+        const noYesBtns = noYesBtnsRef.current as NoYesBtns;
+        if (noYesBtns.currentBtn === "yes") {
+          noYesBtns.yesBtn.focus();
+          noYesBtns.currentBtn = "no";
+        } else {
+          noYesBtns.noBtn.focus();
+          noYesBtns.currentBtn = "yes";
+        }
+        return;
+      case "ArrowUp":
+        event.preventDefault();
+        arrowKeyControl("ArrowUp");
+        return;
+      case "ArrowDown":
+        event.preventDefault();
+        arrowKeyControl("ArrowDown");
+        return;
     }
   };
   useEffect(() => {
@@ -95,8 +104,7 @@ function AddRowOrColModal() {
       onMouseDown={(event) => {
         const target = event.target as HTMLDivElement;
         if (target.className === "modal") {
-          prevCheckIndex = checkIndexRef.current;
-          dispatch(setDisplayAddRowOrColModal(false));
+          hideAddRowOrColModal(checkIndexRef.current);
         }
       }}
     >
@@ -113,8 +121,7 @@ function AddRowOrColModal() {
               }
             }}
             onClick={() => {
-              prevCheckIndex = checkIndexRef.current;
-              dispatch(setDisplayAddRowOrColModal(false));
+              hideAddRowOrColModal(checkIndexRef.current);
             }}
           >
             취소
@@ -128,8 +135,7 @@ function AddRowOrColModal() {
               }
             }}
             onClick={() => {
-              prevCheckIndex = checkIndexRef.current;
-              dispatch(setDisplayAddRowOrColModal(false));
+              hideAddRowOrColModal(checkIndexRef.current);
             }}
           >
             확인

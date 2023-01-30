@@ -8,6 +8,7 @@ interface initialState {
   isShowAddRowOrColModal: boolean;
   downloadModalExtension: "csv" | "png" | undefined;
   downloadModalText: string;
+  defaultCheckIndex: number;
 }
 
 const initialState: initialState = {
@@ -18,6 +19,7 @@ const initialState: initialState = {
   isShowAddRowOrColModal: false,
   downloadModalExtension: undefined,
   downloadModalText: "",
+  defaultCheckIndex: 0,
 };
 
 const componentRenderSlice = createSlice({
@@ -43,12 +45,16 @@ const componentRenderSlice = createSlice({
     setDisplayConfigShortcutModal: (state, { payload }: { payload: boolean }) => {
       state.isShowConfigShortcutModal = payload;
     },
-    setDisplayAddRowOrColModal: (state, { payload }: { payload: boolean }) => {
-      state.isShowAddRowOrColModal = payload;
+    showAddRowOrColModal: (state) => {
+      state.isShowAddRowOrColModal = true;
+    },
+    hideAddRowOrColModal: (state, { payload }: { payload: number }) => {
+      state.isShowAddRowOrColModal = false;
+      state.defaultCheckIndex = payload;
     },
   },
 });
 
-export const { setIsHome, setDisplayTableSizeModal, showDownloadModal, hideDownloadModal, setDownloadModalText, setDisplayConfigShortcutModal, setDisplayAddRowOrColModal } =
+export const { setIsHome, setDisplayTableSizeModal, showDownloadModal, hideDownloadModal, setDownloadModalText, setDisplayConfigShortcutModal, showAddRowOrColModal, hideAddRowOrColModal } =
   componentRenderSlice.actions;
 export default componentRenderSlice;
