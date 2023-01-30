@@ -1,9 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
+import { LabelsRefCurrent, defaultCheckBoxes, DefaultCheckBoxesKey, CheckBoxesRefCurrent } from "../addRowOrColModalTypeAndConst";
 import { setShowAddRowOrColModal } from "../store/componentRenderSlice";
+import AddRowOrColCheckBox from "./AddRowOrColCheckBox";
 
 function AddRowOrColModal() {
   const dispatch = useDispatch();
+  const labelsRef = useRef<LabelsRefCurrent | {}>({});
+  const checkBoxRef = useRef<CheckBoxesRefCurrent | {}>({});
+
   const onEsc = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
       event.preventDefault();
@@ -18,6 +23,16 @@ function AddRowOrColModal() {
       document.body.classList.remove("no-scroll");
     };
   }, []);
+
+  const renderCheckBoxes = () => {
+    const checkBoxesArr = [];
+    for (const key in defaultCheckBoxes) {
+      const defaultCheckBoxesKey = key as DefaultCheckBoxesKey;
+      const { text, checked } = defaultCheckBoxes[defaultCheckBoxesKey];
+      checkBoxesArr.push(<AddRowOrColCheckBox labelsRef={labelsRef} text={text} checked={checked} defaultCheckBoxesKey={defaultCheckBoxesKey} checkBoxRef={checkBoxRef} />);
+    }
+    return checkBoxesArr;
+  };
   return (
     <div
       className="modal"
@@ -30,32 +45,24 @@ function AddRowOrColModal() {
     >
       <div className="modal__content modal__content--config-shortcut">
         <h1>행 또는 열 추가</h1>
-        <div>
-          <input type="checkbox" />
-          <span>위쪽 행 추가</span>
-        </div>
-        <div>
-          <input type="checkbox" />
-          <span>아래쪽 행 추가</span>
-        </div>
-        <div>
-          <input type="checkbox" />
-          <span>왼쪽 열 추가</span>
-        </div>
-        <div>
-          <input type="checkbox" />
-          <span>오른쪽 열 추가</span>
-        </div>
+        {renderCheckBoxes()}
         <div className="config-shortcut-btn-container">
           <button
-            className="btn btn--modal btn--yes"
+            className="btn btn--modal btn--no"
             onClick={() => {
               dispatch(setShowAddRowOrColModal(false));
             }}
           >
             취소
           </button>
-          <button className="btn btn--modal btn--yes">확인</button>
+          <button
+            className="btn btn--modal btn--yes"
+            onClick={() => {
+              dispatch(setShowAddRowOrColModal(false));
+            }}
+          >
+            확인
+          </button>
         </div>
       </div>
     </div>
