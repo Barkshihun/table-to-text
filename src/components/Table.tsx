@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { setCols, setRows, setZero, setOne, resetTableList } from "../store/tableSlice";
+import { setCols, setRows, setZero, setOne, resetTableList, setFocusCell } from "../store/tableSlice";
 import { showAddRowOrColModal, setDisplayTableSizeModal } from "../store/componentRenderSlice";
 import { ActionName, ShortcutsObj } from "../types/shortcutTypes";
 import { ITEM_NAME, defaultShortcutsObj } from "../shortcutConsts";
@@ -21,7 +21,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
   const isShowTableSizeModal = useSelector((state: RootState) => state.componentRender.isShowTableSizeModal);
   const isShowAddRowOrColModal = useSelector((state: RootState) => state.componentRender.isShowAddRowOrColModal);
   const tableList = useSelector((state: RootState) => state.table.originTableList);
-  const focusCellRef = useRef({ col: 0, row: 0 });
+  const focusCell = useSelector((state: RootState) => state.table.focusCell);
 
   // 이벤트 시작
   const onPlus = (target: "row" | "col") => {
@@ -125,7 +125,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
       focusCaretAtEnd(focusElem);
     },
     addRowOrCol: (col: number, row: number) => {
-      focusCellRef.current = { col, row };
+      dispatch(setFocusCell({ col, row }));
       dispatch(showAddRowOrColModal());
     },
   };
@@ -201,7 +201,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
                 ref={(elem: HTMLPreElement) => {
                   if (elem) {
                     if (tableList[row]) {
-                      elem.innerText = tableList[row][col];
+                      elem.innerText = tableList[row][col] ? tableList[row][col] : "";
                     }
                     contentEditablePresRef.current[row][col] = elem;
                   }
@@ -225,8 +225,8 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
   }, [tableList]);
   useEffect(() => {
     if (!isShowAddRowOrColModal) {
-      const col = focusCellRef.current.col;
-      const row = focusCellRef.current.row;
+      const col = focusCell.col;
+      const row = focusCell.row;
       if (contentEditablePresRef.current[row]) {
         if (contentEditablePresRef.current[row][col]) {
           contentEditablePresRef.current[row][col].focus();
@@ -239,7 +239,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
   console.count("Table렌더링");
   return (
     <>
-      {isShowAddRowOrColModal && <AddRowOrColModal />}
+      {isShowAddRowOrColModal && <AddRowOrColModal contentEditablePresRef={contentEditablePresRef} />}
       {isShowTableSizeModal && <TableSizeModal />}
       <main className={"table-system-wrapper"}>
         <div className={"top-container"}>

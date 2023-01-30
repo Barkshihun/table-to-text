@@ -7,6 +7,7 @@ interface initialState {
   colsForTransform: number;
   rowsForTransform: number;
   tableListForTransform: string[][];
+  focusCell: { col: number; row: number };
 }
 
 const initialState: initialState = {
@@ -16,6 +17,7 @@ const initialState: initialState = {
   colsForTransform: 3,
   rowsForTransform: 4,
   tableListForTransform: [],
+  focusCell: { col: 0, row: 0 },
 };
 
 const tableSlice = createSlice({
@@ -56,8 +58,11 @@ const tableSlice = createSlice({
       state.originRows = rows;
       state.originTableList = tableList;
     },
+    setFocusCell: (state, { payload: { col, row } }: { payload: { col: number; row: number } }) => {
+      state.focusCell = { col, row };
+    },
   },
 });
 
-export const { setCols, setRows, setZero, setOne, setTableListForTransform, resetTableList, setTableList } = tableSlice.actions;
+export const { setCols, setRows, setZero, setOne, setTableListForTransform, resetTableList, setTableList, setFocusCell } = tableSlice.actions;
 export default tableSlice;

@@ -4,8 +4,9 @@ import { AddRowOrColCheckBoxObj, NoYesBtns } from "../types/addRowOrColModalType
 import { hideAddRowOrColModal } from "../store/componentRenderSlice";
 import AddRowOrColCheckBox from "../components/AddRowOrColCheckBox";
 import { RootState } from "../store/store";
+import { setFocusCell, setTableList } from "../store/tableSlice";
 
-function AddRowOrColModal() {
+function AddRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef: React.MutableRefObject<HTMLPreElement[][]> }) {
   const dispatch = useDispatch();
   const addRowOrColCheckBoxObjListRef = useRef<AddRowOrColCheckBoxObj[]>([
     {
@@ -22,10 +23,52 @@ function AddRowOrColModal() {
     },
   ]);
   const defaultCheckIndex = useSelector((state: RootState) => state.componentRender.defaultCheckIndex);
+  const cols = useSelector((state: RootState) => state.table.originCols);
+  const rows = useSelector((state: RootState) => state.table.originRows);
   const checkIndexRef = useRef(defaultCheckIndex);
   const noYesBtnsRef = useRef<NoYesBtns | { currentBtn: "yes" }>({ currentBtn: "yes" });
   const maxCheckIndex = 3;
+  const focusCell = useSelector((state: RootState) => state.table.focusCell);
 
+  const transformToTableList = (contentEditablePres: HTMLPreElement[][]) => {
+    let tempTableList: string[][] = new Array(rows);
+    for (let row = 0; row < rows; row++) {
+      tempTableList[row] = new Array(cols);
+      for (let col = 0; col < cols; col++) {
+        tempTableList[row][col] = contentEditablePres[row][col].innerText;
+      }
+    }
+    return tempTableList;
+  };
+  const AddRowOrCol = (checkIndex: number) => {
+    const tableList = transformToTableList(contentEditablePresRef.current);
+    switch (checkIndex) {
+      case 0:
+        tableList.splice(focusCell.row, 0, new Array(cols));
+        dispatch(setTableList({ cols, rows: rows + 1, tableList }));
+        dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row + 1 }));
+        break;
+      case 1:
+        tableList.splice(focusCell.row + 1, 0, new Array(cols));
+        dispatch(setTableList({ cols, rows: rows + 1, tableList }));
+        dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
+        break;
+      case 2:
+        for (let row = 0; row < tableList.length; row++) {
+          tableList[row].splice(focusCell.col, 0, "");
+        }
+        dispatch(setTableList({ cols: cols + 1, rows, tableList }));
+        dispatch(setFocusCell({ col: focusCell.col + 1, row: focusCell.row }));
+        break;
+      case 3:
+        for (let row = 0; row < tableList.length; row++) {
+          tableList[row].splice(focusCell.col + 1, 0, "");
+        }
+        dispatch(setTableList({ cols: cols + 1, rows, tableList }));
+        dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
+        break;
+    }
+  };
   const arrowKeyControl = (key: "ArrowUp" | "ArrowDown") => {
     const addRowOrColCheckBoxObjList = addRowOrColCheckBoxObjListRef.current;
     const prevCheckIndex = checkIndexRef.current;
@@ -65,6 +108,7 @@ function AddRowOrColModal() {
         return;
       case "Enter":
         event.preventDefault();
+        AddRowOrCol(checkIndexRef.current);
         dispatch(hideAddRowOrColModal(checkIndexRef.current));
         return;
       case "ArrowUp":
@@ -108,7 +152,7 @@ function AddRowOrColModal() {
       onMouseDown={(event) => {
         const target = event.target as HTMLDivElement;
         if (target.className === "modal") {
-          hideAddRowOrColModal(checkIndexRef.current);
+          dispatch(hideAddRowOrColModal(checkIndexRef.current));
         }
       }}
     >
@@ -125,7 +169,7 @@ function AddRowOrColModal() {
               }
             }}
             onClick={() => {
-              hideAddRowOrColModal(checkIndexRef.current);
+              dispatch(hideAddRowOrColModal(checkIndexRef.current));
             }}
           >
             취소
@@ -139,7 +183,8 @@ function AddRowOrColModal() {
               }
             }}
             onClick={() => {
-              hideAddRowOrColModal(checkIndexRef.current);
+              AddRowOrCol(checkIndexRef.current);
+              dispatch(hideAddRowOrColModal(checkIndexRef.current));
             }}
           >
             확인
