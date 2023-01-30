@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AddRowOrColCheckBoxObj, NoYesBtns } from "../types/addRowOrColModalTypes";
-import { hideAddRowOrColModal, showAddRowOrColModal } from "../store/componentRenderSlice";
+import { hideAddRowOrColModal } from "../store/componentRenderSlice";
 import AddRowOrColCheckBox from "../components/AddRowOrColCheckBox";
 import { RootState } from "../store/store";
 
@@ -62,6 +62,10 @@ function AddRowOrColModal() {
           noYesBtns.noBtn.focus();
           noYesBtns.currentBtn = "yes";
         }
+        return;
+      case "Enter":
+        event.preventDefault();
+        dispatch(hideAddRowOrColModal(checkIndexRef.current));
         return;
       case "ArrowUp":
         event.preventDefault();
