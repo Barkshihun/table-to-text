@@ -92,10 +92,13 @@ function ConfigShortcutModal() {
     }
   };
   const keyUpAtWindowHandler = (event: KeyboardEvent) => {
-    const { ctrlKey, shiftKey, altKey, code } = event;
-    if (!configKey.state || ctrlKey || shiftKey) {
+    if (!configKey.state || event.ctrlKey || event.shiftKey || event.altKey) {
       return;
     }
+    const ctrlKey = prevCtrlKey as boolean;
+    const shiftKey = prevShiftKey as boolean;
+    const altKey = prevAltKey as boolean;
+    const code = prevCode as string;
     const { actionName, target } = configKey;
     const isOverlap = checkOverlap(actionName, ctrlKey, shiftKey, altKey, code);
     if (code === "AltRight" || isOverlap) {
