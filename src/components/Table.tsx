@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,6 +21,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
   const isShowTableSizeModal = useSelector((state: RootState) => state.componentRender.isShowTableSizeModal);
   const isShowAddRowOrColModal = useSelector((state: RootState) => state.componentRender.isShowAddRowOrColModal);
   const tableList = useSelector((state: RootState) => state.table.originTableList);
+  const focusCellRef = useRef({ col: 0, row: 0 });
 
   // 이벤트 시작
   const onPlus = (target: "row" | "col") => {
@@ -222,6 +223,19 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
       dispatch(resetTableList());
     }
   }, [tableList]);
+  useEffect(() => {
+    if (!isShowAddRowOrColModal) {
+      const col = focusCellRef.current.col;
+      const row = focusCellRef.current.row;
+      if (contentEditablePresRef.current[row]) {
+        if (contentEditablePresRef.current[row][col]) {
+          contentEditablePresRef.current[row][col].focus();
+          return;
+        }
+      }
+      contentEditablePresRef.current[0][0];
+    }
+  }, [isShowAddRowOrColModal]);
   console.count("Table렌더링");
   return (
     <>
