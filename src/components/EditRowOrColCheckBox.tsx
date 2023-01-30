@@ -1,6 +1,6 @@
 import { AddRowOrColCheckBoxObj } from "../types/addRowOrColModalTypes";
 
-function AddRowOrColCheckBox({
+function EditRowOrColCheckBox({
   addRowOrColCheckBoxObjList,
   checkIndexRef,
   index,
@@ -55,4 +55,4 @@ function AddRowOrColCheckBox({
     </label>
   );
 }
-export default AddRowOrColCheckBox;
+export default EditRowOrColCheckBox;

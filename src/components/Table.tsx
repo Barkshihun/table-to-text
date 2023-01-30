@@ -3,14 +3,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { setCols, setRows, setZero, setOne, resetTableList, setFocusCell } from "../store/tableSlice";
-import { showAddRowOrColModal, setDisplayTableSizeModal } from "../store/componentRenderSlice";
+import { showEditRowOrColModal, setDisplayTableSizeModal } from "../store/componentRenderSlice";
 import { ActionName, ShortcutsObj } from "../types/shortcutTypes";
 import { ITEM_NAME, defaultShortcutsObj } from "../shortcutConsts";
 import { RootState } from "../store/store";
 import TableSizeModal from "../modals/TableSizeModal";
 import "../scss/Modal.scss";
 import "../scss/Table.scss";
-import AddRowOrColModal from "../modals/AddRowOrColModal";
+import AddRowOrColModal from "../modals/EditRowOrColModal";
 
 function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRef: React.RefObject<HTMLDivElement>; contentEditablePresRef: React.MutableRefObject<HTMLPreElement[][]> }) {
   const dispatch = useDispatch();
@@ -126,7 +126,11 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
     },
     addRowOrCol: (col: number, row: number) => {
       dispatch(setFocusCell({ col, row }));
-      dispatch(showAddRowOrColModal());
+      dispatch(showEditRowOrColModal("add"));
+    },
+    removeRowOrCol: (col: number, row: number) => {
+      dispatch(setFocusCell({ col, row }));
+      dispatch(showEditRowOrColModal("remove"));
     },
   };
   const onCheckShortcut = (event: React.KeyboardEvent<HTMLPreElement>) => {
@@ -181,6 +185,10 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
         return;
       case "addRowOrCol":
         shortcutActions.addRowOrCol(col, row);
+        return;
+      case "removeRowOrCol":
+        shortcutActions.removeRowOrCol(col, row);
+        return;
     }
   };
   // 이벤트 끝

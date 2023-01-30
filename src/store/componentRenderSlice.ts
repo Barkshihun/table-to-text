@@ -8,7 +8,9 @@ interface initialState {
   isShowAddRowOrColModal: boolean;
   downloadModalExtension: "csv" | "png" | undefined;
   downloadModalText: string;
-  defaultCheckIndex: number;
+  defaultAddCheckIndex: number;
+  defaultRemoveCheckIndex: number;
+  editRowOrColMode: "add" | "remove" | undefined;
 }
 
 const initialState: initialState = {
@@ -19,7 +21,9 @@ const initialState: initialState = {
   isShowAddRowOrColModal: false,
   downloadModalExtension: undefined,
   downloadModalText: "",
-  defaultCheckIndex: 0,
+  defaultAddCheckIndex: 0,
+  defaultRemoveCheckIndex: 0,
+  editRowOrColMode: undefined,
 };
 
 const componentRenderSlice = createSlice({
@@ -45,16 +49,24 @@ const componentRenderSlice = createSlice({
     setDisplayConfigShortcutModal: (state, { payload }: { payload: boolean }) => {
       state.isShowConfigShortcutModal = payload;
     },
-    showAddRowOrColModal: (state) => {
+    showEditRowOrColModal: (state, { payload }: { payload: "add" | "remove" }) => {
+      state.editRowOrColMode = payload;
       state.isShowAddRowOrColModal = true;
     },
-    hideAddRowOrColModal: (state, { payload }: { payload: number }) => {
+    hideEditRowOrColModal: (state, { payload }: { payload: { checkIndex: number; mode: "add" | "remove" } }) => {
       state.isShowAddRowOrColModal = false;
-      state.defaultCheckIndex = payload;
+      switch (payload.mode) {
+        case "add":
+          state.defaultAddCheckIndex = payload.checkIndex;
+          break;
+        case "remove":
+          state.defaultRemoveCheckIndex = payload.checkIndex;
+          break;
+      }
     },
   },
 });
 
-export const { setIsHome, setDisplayTableSizeModal, showDownloadModal, hideDownloadModal, setDownloadModalText, setDisplayConfigShortcutModal, showAddRowOrColModal, hideAddRowOrColModal } =
+export const { setIsHome, setDisplayTableSizeModal, showDownloadModal, hideDownloadModal, setDownloadModalText, setDisplayConfigShortcutModal, showEditRowOrColModal, hideEditRowOrColModal } =
   componentRenderSlice.actions;
 export default componentRenderSlice;
