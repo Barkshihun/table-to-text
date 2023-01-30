@@ -56,7 +56,7 @@ const defaultShortcutsObj: ShortcutsObj = {
   },
   addRowOrCol: {
     ctrlKey: true,
-    shiftKey: true,
+    shiftKey: false,
     altKey: false,
     code: "Equal",
     isAbled: true,
