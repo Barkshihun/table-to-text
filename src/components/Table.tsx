@@ -4,7 +4,8 @@ import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { setCols, setRows, setZero, setOne, resetTableList } from "../store/tableSlice";
 import { setShowAddRowOrColModal, setShowTableSizeModal } from "../store/componentRenderSlice";
-import { ITEM_NAME, defaultShortcutsObj, ActionName, LocalStorageObj } from "../shortcutTypeAndConst";
+import { ActionName, ShortcutsObj } from "../types/shortcutTypes";
+import { ITEM_NAME, defaultShortcutsObj } from "../shortcutConsts";
 import { RootState } from "../store/store";
 import TableSizeModal from "../modals/TableSizeModal";
 import "../scss/Modal.scss";
@@ -134,13 +135,9 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
     row = parseInt(row);
     col = parseInt(col);
     const itemString = localStorage.getItem(ITEM_NAME);
-    let shortcutsObj: {
-      [actionName in ActionName]: LocalStorageObj;
-    };
+    let shortcutsObj: ShortcutsObj;
     if (itemString) {
-      const itemObj: {
-        [actionName in ActionName]: LocalStorageObj;
-      } = JSON.parse(itemString);
+      const itemObj: ShortcutsObj = JSON.parse(itemString);
       shortcutsObj = itemObj;
     } else {
       shortcutsObj = defaultShortcutsObj;

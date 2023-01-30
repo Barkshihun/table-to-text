@@ -1,3 +1,5 @@
+import { ShortcutsObj } from "./types/shortcutTypes";
+
 const ACTION_NAME = {
   MOVE_TO_NEXT_CELL: "moveToNextCell",
   MOVE_TO_PREV_CELL: "moveToPrevCell",
@@ -9,9 +11,7 @@ const ACTION_NAME = {
   REMOVE_ROW_OR_COL: "removeRowOrCol",
 } as const;
 const ITEM_NAME = "shortcutsObj" as const;
-const defaultShortcutsObj: {
-  [actionName in ActionName]: LocalStorageObj;
-} = {
+const defaultShortcutsObj: ShortcutsObj = {
   moveToNextCell: {
     ctrlKey: false,
     shiftKey: false,
@@ -69,30 +69,4 @@ const defaultShortcutsObj: {
     isAbled: true,
   },
 } as const;
-interface EventCodeObj {
-  ctrlKey: boolean;
-  shiftKey: boolean;
-  altKey: boolean;
-  code: string;
-}
-interface LocalStorageObj {
-  ctrlKey: boolean;
-  shiftKey: boolean;
-  altKey: boolean;
-  code: string;
-  isAbled: boolean;
-}
-type ActionName = typeof ACTION_NAME[keyof typeof ACTION_NAME];
-type ConfigKey = { state: false } | { state: true; target: HTMLButtonElement; actionName: ActionName };
-type SetConfigKey = {
-  (state: false): void;
-  (state: true, target: HTMLButtonElement, actionName: ActionName): void;
-};
-type ConfigBtnsRefCurrent = {
-  [actionName in ActionName]: HTMLButtonElement;
-};
-type ConfigCheckBoxesRefCurrent = {
-  [actionName in ActionName]: HTMLInputElement;
-};
 export { ACTION_NAME, ITEM_NAME, defaultShortcutsObj };
-export type { LocalStorageObj, ActionName, ConfigKey, SetConfigKey, ConfigBtnsRefCurrent, ConfigCheckBoxesRefCurrent };

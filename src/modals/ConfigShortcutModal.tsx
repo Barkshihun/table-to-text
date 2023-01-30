@@ -1,17 +1,17 @@
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
-import { ITEM_NAME, LocalStorageObj, defaultShortcutsObj, ActionName, ConfigKey, SetConfigKey, ConfigBtnsRefCurrent, ConfigCheckBoxesRefCurrent } from "../shortcutTypeAndConst";
+import { SingleConfigShortcutDivElems, ActionName, ConfigKey, SetConfigKey, SingleShortcutObj, ShortcutsObj } from "../types/shortcutTypes";
+import { ITEM_NAME, defaultShortcutsObj } from "../shortcutConsts";
 import { setShowConfigShortcutModal } from "../store/componentRenderSlice";
-import ConfigShortcutModalBtn from "../components/ConfigShortcutModalBtn";
+import SingleConfigShortcutDiv from "../components/SingleConfigShortcutDiv";
 
 function ConfigShortcutModal() {
   const dispatch = useDispatch();
-  const configBtnsRef = useRef<ConfigBtnsRefCurrent | {}>({});
-  const configCheckBoxesRef = useRef<ConfigCheckBoxesRefCurrent | {}>({});
+  const singleConfigShortcutDivElemsRef = useRef<SingleConfigShortcutDivElems | {}>({});
 
   let shortcutsObj: {
-    [actionName in ActionName]: LocalStorageObj;
+    [actionName in ActionName]: SingleShortcutObj;
   };
   let configKey: ConfigKey = { state: false };
   let prevCtrlKey: boolean | undefined;
@@ -116,16 +116,16 @@ function ConfigShortcutModal() {
         return;
       }
     }
-    const configCheckBoxesRefCurrent = configCheckBoxesRef.current as ConfigCheckBoxesRefCurrent;
-    const isAbled = configCheckBoxesRefCurrent[actionName].checked;
-    const localStorageObj: LocalStorageObj = {
+    const singleConfigShortcutDivElems = singleConfigShortcutDivElemsRef.current as SingleConfigShortcutDivElems;
+    const isAbled = singleConfigShortcutDivElems[actionName].checkBoxElem?.checked as boolean;
+    const singleShortcutObj: SingleShortcutObj = {
       ctrlKey,
       shiftKey,
       altKey,
       code,
       isAbled,
     };
-    shortcutsObj[actionName] = localStorageObj;
+    shortcutsObj[actionName] = singleShortcutObj;
     target.blur();
     const shortcutsObjString = JSON.stringify(shortcutsObj);
     localStorage.setItem(ITEM_NAME, shortcutsObjString);
@@ -138,11 +138,11 @@ function ConfigShortcutModal() {
     localStorage.setItem(ITEM_NAME, shortcutsObjString);
   };
   const onSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const configCheckBoxesRefCurrent = configCheckBoxesRef.current as ConfigCheckBoxesRefCurrent;
-    for (const key in configCheckBoxesRefCurrent) {
+    const singleConfigShortcutDivElems = singleConfigShortcutDivElemsRef.current as SingleConfigShortcutDivElems;
+    for (const key in singleConfigShortcutDivElems) {
       const actionName = key as ActionName;
-      const checkbox = configCheckBoxesRefCurrent[actionName];
-      checkbox.checked = event.target.checked ? true : false;
+      const checkboxElem = singleConfigShortcutDivElems[actionName].checkBoxElem as HTMLInputElement;
+      checkboxElem.checked = event.target.checked ? true : false;
       shortcutsObj[actionName].isAbled = event.target.checked ? true : false;
     }
     const shortcutsObjString = JSON.stringify(shortcutsObj);
@@ -150,25 +150,22 @@ function ConfigShortcutModal() {
   };
   const onReset = () => {
     localStorage.removeItem(ITEM_NAME);
-    const configBtnsRefCurrent = configBtnsRef.current as ConfigBtnsRefCurrent;
-    const configCheckBoxesRefCurrent = configCheckBoxesRef.current as ConfigCheckBoxesRefCurrent;
-    for (const key in configBtnsRefCurrent) {
+    const singleConfigShortcutDivElems = singleConfigShortcutDivElemsRef.current as SingleConfigShortcutDivElems;
+    for (const key in singleConfigShortcutDivElems) {
       const actionName = key as ActionName;
       const { ctrlKey, shiftKey, altKey, code } = defaultShortcutsObj[actionName];
       const defaultShortcutString = shortcutStringfy(ctrlKey, shiftKey, altKey, code);
-      const btn = configBtnsRefCurrent[actionName];
-      const checkbox = configCheckBoxesRefCurrent[actionName];
-      btn.innerText = defaultShortcutString;
-      checkbox.checked = true;
+      const btnElem = singleConfigShortcutDivElems[actionName].btnElem as HTMLButtonElement;
+      const checkboxElem = singleConfigShortcutDivElems[actionName] as HTMLInputElement;
+      btnElem.innerText = defaultShortcutString;
+      checkboxElem.checked = true;
     }
   };
 
-  const renderBtns = () => {
+  const renderConfigShortcutCheckBoxes = () => {
     const itemString = localStorage.getItem(ITEM_NAME);
     if (itemString) {
-      const itemObj: {
-        [actionName in ActionName]: LocalStorageObj;
-      } = JSON.parse(itemString);
+      const itemObj: ShortcutsObj = JSON.parse(itemString);
       shortcutsObj = itemObj;
     } else {
       shortcutsObj = { ...defaultShortcutsObj };
@@ -180,10 +177,9 @@ function ConfigShortcutModal() {
       const shortcutString = shortcutStringfy(ctrlKey, shiftKey, altKey, code);
       const koreanActionName = getKoreanActionName(actionName);
       btnsArr.push(
-        <ConfigShortcutModalBtn
+        <SingleConfigShortcutDiv
           key={actionName}
-          configBtnsRef={configBtnsRef}
-          configCheckBoxesValueRef={configCheckBoxesRef}
+          singleConfigShortcutDivElemsRef={singleConfigShortcutDivElemsRef}
           koreanActionName={koreanActionName}
           setConfigKey={setConfigKey}
           actionName={actionName}
@@ -225,7 +221,7 @@ function ConfigShortcutModal() {
           <span>전체 선택</span>
           <button onClick={onReset}>초기화</button>
         </div>
-        {renderBtns()}
+        {renderConfigShortcutCheckBoxes()}
         <div className="config-shortcut-btn-container">
           <button
             className="btn btn--modal btn--yes"

@@ -1,4 +1,4 @@
-import { AddRowOrColCheckBoxObj } from "../addRowOrColModalTypes";
+import { AddRowOrColCheckBoxObj } from "../types/addRowOrColModalTypes";
 
 function AddRowOrColCheckBox({
   addRowOrColCheckBoxObjList,
