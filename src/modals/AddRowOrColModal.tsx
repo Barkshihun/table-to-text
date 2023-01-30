@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { AddRowOrColCheckBoxObj, NoYesBtns } from "../addRowOrColModalTypes";
 import { setShowAddRowOrColModal } from "../store/componentRenderSlice";
-import AddRowOrColCheckBox from "./AddRowOrColCheckBox";
+import AddRowOrColCheckBox from "../components/AddRowOrColCheckBox";
 
 let prevCheckIndex = 0;
 function AddRowOrColModal() {

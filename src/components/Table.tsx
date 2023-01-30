@@ -6,10 +6,10 @@ import { setCols, setRows, setZero, setOne, resetTableList } from "../store/tabl
 import { setShowAddRowOrColModal, setShowTableSizeModal } from "../store/componentRenderSlice";
 import { ITEM_NAME, defaultShortcutsObj, ActionName, LocalStorageObj } from "../shortcutTypeAndConst";
 import { RootState } from "../store/store";
-import TableSizeModal from "./TableSizeModal";
+import TableSizeModal from "../modals/TableSizeModal";
 import "../scss/Modal.scss";
 import "../scss/Table.scss";
-import AddRowOrColModal from "./AddRowOrColModal";
+import AddRowOrColModal from "../modals/AddRowOrColModal";
 
 function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRef: React.RefObject<HTMLDivElement>; contentEditablePresRef: React.MutableRefObject<HTMLPreElement[][]> }) {
   const dispatch = useDispatch();

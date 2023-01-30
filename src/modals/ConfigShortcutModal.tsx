@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 import { ITEM_NAME, LocalStorageObj, defaultShortcutsObj, ActionName, ConfigKey, SetConfigKey, ConfigBtnsRefCurrent, ConfigCheckBoxesRefCurrent } from "../shortcutTypeAndConst";
 import { setShowConfigShortcutModal } from "../store/componentRenderSlice";
-import ConfigShortcutModalBtn from "./ConfigShortcutModalBtn";
+import ConfigShortcutModalBtn from "../components/ConfigShortcutModalBtn";
 
 function ConfigShortcutModal() {
   const dispatch = useDispatch();

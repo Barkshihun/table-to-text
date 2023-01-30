@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { setZero, importCsv } from "../store/tableSlice";
 import { showDownloadModal, setDownloadModalText } from "../store/componentRenderSlice";
-import DownloadModal from "../components/DownloadModal";
-import TransformingModal from "../components/TransformingModal";
+import DownloadModal from "../modals/DownloadModal";
+import TransformingModal from "../modals/TransformingModal";
 import Table from "../components/Table";
 import "../scss/Home.scss";
 

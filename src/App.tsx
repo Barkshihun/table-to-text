@@ -5,7 +5,7 @@ import { setTableListForTransform } from "./store/tableSlice";
 import { RootState } from "./store/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faQuestion } from "@fortawesome/free-solid-svg-icons";
-import ConfigShortcutModal from "./components/ConfigShortcutModal";
+import ConfigShortcutModal from "./modals/ConfigShortcutModal";
 import Output from "./pages/Output";
 import Home from "./pages/Home";
 import "./scss/App.scss";
