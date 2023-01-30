@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { setCols, setRows, setZero, setOne, resetTableList } from "../store/tableSlice";
-import { setShowAddRowOrColModal, setShowTableSizeModal } from "../store/componentRenderSlice";
+import { setDisplayAddRowOrColModal, setDisplayTableSizeModal } from "../store/componentRenderSlice";
 import { ActionName, ShortcutsObj } from "../types/shortcutTypes";
 import { ITEM_NAME, defaultShortcutsObj } from "../shortcutConsts";
 import { RootState } from "../store/store";
@@ -124,7 +124,8 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
       focusCaretAtEnd(focusElem);
     },
     addRowOrCol: (col: number, row: number) => {
-      dispatch(setShowAddRowOrColModal(true));
+      focusCellRef.current = { col, row };
+      dispatch(setDisplayAddRowOrColModal(true));
     },
   };
   const onCheckShortcut = (event: React.KeyboardEvent<HTMLPreElement>) => {
@@ -234,7 +235,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
           <button
             className="btn btn--size-indicator"
             onClick={() => {
-              dispatch(setShowTableSizeModal(true));
+              dispatch(setDisplayTableSizeModal(true));
             }}
           >
             {cols}x{rows}

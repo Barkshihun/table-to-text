@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store/store";
-import { setShowTableSizeModal } from "../store/componentRenderSlice";
+import { setDisplayTableSizeModal } from "../store/componentRenderSlice";
 import { setCols, setRows } from "../store/tableSlice";
 
 function TableSizeModal() {
@@ -14,7 +14,7 @@ function TableSizeModal() {
   const onEsc = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
       event.preventDefault();
-      dispatch(setShowTableSizeModal(false));
+      dispatch(setDisplayTableSizeModal(false));
     }
   };
   const onTableSizeConfig = (event: React.FormEvent) => {
@@ -25,7 +25,7 @@ function TableSizeModal() {
     const inputtedRows = parseInt(rowsInput.value);
     dispatch(setCols(inputtedCols));
     dispatch(setRows(inputtedRows));
-    dispatch(setShowTableSizeModal(false));
+    dispatch(setDisplayTableSizeModal(false));
   };
   useEffect(() => {
     window.addEventListener("keydown", onEsc);
@@ -42,7 +42,7 @@ function TableSizeModal() {
       onMouseDown={(event) => {
         const target = event.target as HTMLDivElement;
         if (target.className === "modal") {
-          dispatch(setShowTableSizeModal(false));
+          dispatch(setDisplayTableSizeModal(false));
         }
       }}
     >

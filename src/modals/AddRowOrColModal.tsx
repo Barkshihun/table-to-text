@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { AddRowOrColCheckBoxObj, NoYesBtns } from "../types/addRowOrColModalTypes";
-import { setShowAddRowOrColModal } from "../store/componentRenderSlice";
+import { setDisplayAddRowOrColModal } from "../store/componentRenderSlice";
 import AddRowOrColCheckBox from "../components/AddRowOrColCheckBox";
 
 let prevCheckIndex = 0;
@@ -29,7 +29,7 @@ function AddRowOrColModal() {
     if (event.key === "Escape") {
       event.preventDefault();
       prevCheckIndex = checkIndexRef.current;
-      dispatch(setShowAddRowOrColModal(false));
+      dispatch(setDisplayAddRowOrColModal(false));
     }
     if (event.key === "Tab") {
       event.preventDefault();
@@ -96,7 +96,7 @@ function AddRowOrColModal() {
         const target = event.target as HTMLDivElement;
         if (target.className === "modal") {
           prevCheckIndex = checkIndexRef.current;
-          dispatch(setShowAddRowOrColModal(false));
+          dispatch(setDisplayAddRowOrColModal(false));
         }
       }}
     >
@@ -114,7 +114,7 @@ function AddRowOrColModal() {
             }}
             onClick={() => {
               prevCheckIndex = checkIndexRef.current;
-              dispatch(setShowAddRowOrColModal(false));
+              dispatch(setDisplayAddRowOrColModal(false));
             }}
           >
             취소
@@ -129,7 +129,7 @@ function AddRowOrColModal() {
             }}
             onClick={() => {
               prevCheckIndex = checkIndexRef.current;
-              dispatch(setShowAddRowOrColModal(false));
+              dispatch(setDisplayAddRowOrColModal(false));
             }}
           >
             확인
