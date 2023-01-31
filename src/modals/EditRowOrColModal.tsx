@@ -47,6 +47,12 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
     case "remove":
       editRowOrColCheckBoxObjListRef.current = [
         {
+          text: "셀을 왼쪽으로 밀기",
+        },
+        {
+          text: "셀을 위로 밀기",
+        },
+        {
           text: "위쪽 행 전체",
         },
         {
@@ -95,12 +101,16 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
       case "remove":
         switch (checkIndex) {
           case 0:
-            return "removeUpRow";
+            return "removeMoveToCellLeft";
           case 1:
-            return "removeDownRow";
+            return "removeMoveToCellUp";
           case 2:
-            return "removeLeftCol";
+            return "removeUpRow";
           case 3:
+            return "removeDownRow";
+          case 4:
+            return "removeLeftCol";
+          case 5:
             return "removeRightCol";
         }
         break;
@@ -209,6 +219,24 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
           tableList[row].splice(focusCell.col + 1, 0, "");
         }
         dispatch(setTableList({ cols: cols + 1, rows, tableList }));
+        dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
+        return;
+      case "removeMoveToCellLeft":
+        tableList[focusCell.row].splice(focusCell.col, 1);
+        dispatch(setTableList({ cols, rows, tableList }));
+        dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
+        return;
+      case "removeMoveToCellUp":
+        for (let row = 0; row < tableList.length; row++) {
+          if (row === focusCell.row) {
+            continue;
+          }
+          focusColList.push(tableList[row][focusCell.col]);
+        }
+        for (let row = 0; row < tableList.length; row++) {
+          tableList[row][focusCell.col] = focusColList[row];
+        }
+        dispatch(setTableList({ cols, rows, tableList }));
         dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
         return;
       case "removeUpRow":
