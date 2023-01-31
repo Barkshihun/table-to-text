@@ -18,6 +18,18 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
     case "add":
       editRowOrColCheckBoxObjListRef.current = [
         {
+          text: "셀을 오른쪽으로 밀기",
+        },
+        {
+          text: "셀을 왼쪽으로 밀기",
+        },
+        {
+          text: "셀을 위로 밀기",
+        },
+        {
+          text: "셀을 아래로 밀기",
+        },
+        {
           text: "위쪽 행 전체",
         },
         {
@@ -53,20 +65,29 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
   const cols = useSelector((state: RootState) => state.table.originCols);
   const rows = useSelector((state: RootState) => state.table.originRows);
   const noYesBtnsRef = useRef<NoYesBtns | { currentBtn: "yes" }>({ currentBtn: "yes" });
-  const maxCheckIndex = 3;
+  const maxCheckIndex = 7;
   const focusCell = useSelector((state: RootState) => state.table.focusCell);
+  const lastRow = rows - 1;
 
   const checkIndexToActionName = (checkIndex: number) => {
     switch (mode) {
       case "add":
         switch (checkIndex) {
           case 0:
-            return "addUpRow";
+            return "moveToCellRight";
           case 1:
-            return "addDownRow";
+            return "moveToCellLeft";
           case 2:
-            return "addLeftCol";
+            return "moveToCellUp";
           case 3:
+            return "moveToCellDown";
+          case 4:
+            return "addUpRow";
+          case 5:
+            return "addDownRow";
+          case 6:
+            return "addLeftCol";
+          case 7:
             return "addRightCol";
         }
         break;
@@ -85,33 +106,133 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
     }
   };
   const editRowOrCol = (checkIndex: number) => {
-    const tableList = transformToTableList(contentEditablePresRef.current);
+    let tableList = transformToTableList(contentEditablePresRef.current);
     const actionName = checkIndexToActionName(checkIndex);
+    const focusColList = [];
     switch (actionName) {
+      case "moveToCellRight":
+        let isLastColCellEmpty = false;
+        for (let row = 0; row < tableList.length; row++) {
+          if (row === focusCell.row) {
+            tableList[row].splice(focusCell.col, 0, "");
+            if (!tableList[row][cols]) {
+              isLastColCellEmpty = true;
+              tableList[row].pop();
+            }
+          }
+        }
+        switch (isLastColCellEmpty) {
+          case true:
+            dispatch(setTableList({ cols, rows, tableList }));
+            break;
+          case false:
+            dispatch(setTableList({ cols: cols + 1, rows, tableList }));
+            break;
+        }
+        dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
+        return;
+      case "moveToCellLeft":
+        let isFirstColCellEmpty = false;
+        if (!tableList[focusCell.row][0]) {
+          isFirstColCellEmpty = true;
+          tableList[focusCell.row].shift();
+        }
+        switch (isFirstColCellEmpty) {
+          case true:
+            dispatch(setTableList({ cols, rows, tableList }));
+            break;
+          case false:
+            for (let row = 0; row < tableList.length; row++) {
+              if (row !== focusCell.row) {
+                tableList[row].unshift("");
+              }
+            }
+            dispatch(setTableList({ cols: cols + 1, rows, tableList }));
+            break;
+        }
+        dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
+        return;
+      case "moveToCellUp":
+        let isFirstRowCellEmpty = true;
+        if (tableList[0][focusCell.col]) {
+          focusColList.push(tableList[0][focusCell.col]);
+          isFirstRowCellEmpty = false;
+        }
+        for (let row = 1; row < tableList.length; row++) {
+          focusColList.push(tableList[row][focusCell.col]);
+        }
+        switch (isFirstRowCellEmpty) {
+          case true:
+            for (let row = 0; row < tableList.length - 1; row++) {
+              tableList[row][focusCell.col] = focusColList[row];
+            }
+            tableList[lastRow][focusCell.col] = "";
+            dispatch(setTableList({ cols, rows, tableList }));
+            break;
+          case false:
+            tableList.unshift(new Array(cols));
+            for (let row = 0; row < tableList.length - 1; row++) {
+              tableList[row][focusCell.col] = focusColList[row];
+            }
+            tableList[lastRow + 1][focusCell.col] = "";
+            dispatch(setTableList({ cols, rows: rows + 1, tableList }));
+            break;
+        }
+        dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
+        return;
+      case "moveToCellDown":
+        let isLastRowCellEmpty = true;
+        for (let row = 0; row < tableList.length; row++) {
+          if (row === lastRow && tableList[lastRow][focusCell.col]) {
+            focusColList.push(tableList[lastRow][focusCell.col]);
+            isLastRowCellEmpty = false;
+            continue;
+          }
+          focusColList.push(tableList[row][focusCell.col]);
+        }
+        switch (isLastRowCellEmpty) {
+          case true:
+            tableList[0][focusCell.col] = "";
+            for (let row = 1; row < tableList.length; row++) {
+              tableList[row][focusCell.col] = focusColList[row - 1];
+            }
+            dispatch(setTableList({ cols, rows, tableList }));
+            break;
+          case false:
+            tableList.push(new Array(cols));
+            tableList[0][focusCell.col] = "";
+            for (let row = 1; row < tableList.length; row++) {
+              tableList[row][focusCell.col] = focusColList[row - 1];
+            }
+            dispatch(setTableList({ cols, rows: rows + 1, tableList }));
+            break;
+        }
+        dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
+        return;
       case "addUpRow":
         tableList.splice(focusCell.row, 0, new Array(cols));
         dispatch(setTableList({ cols, rows: rows + 1, tableList }));
         dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row + 1 }));
-        break;
+        return;
       case "addDownRow":
         tableList.splice(focusCell.row + 1, 0, new Array(cols));
         dispatch(setTableList({ cols, rows: rows + 1, tableList }));
         dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
-        break;
+        return;
       case "addLeftCol":
         for (let row = 0; row < tableList.length; row++) {
           tableList[row].splice(focusCell.col, 0, "");
         }
         dispatch(setTableList({ cols: cols + 1, rows, tableList }));
         dispatch(setFocusCell({ col: focusCell.col + 1, row: focusCell.row }));
-        break;
+        return;
       case "addRightCol":
         for (let row = 0; row < tableList.length; row++) {
           tableList[row].splice(focusCell.col + 1, 0, "");
         }
         dispatch(setTableList({ cols: cols + 1, rows, tableList }));
         dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
-        break;
+        return;
       case "removeUpRow":
         if (focusCell.row === 0) {
           Swal.fire({
@@ -126,7 +247,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
         tableList.splice(focusCell.row - 1, 1);
         dispatch(setTableList({ cols, rows: rows - 1, tableList }));
         dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row - 1 }));
-        break;
+        return;
       case "removeDownRow":
         if (focusCell.row === rows - 1) {
           Swal.fire({
@@ -141,7 +262,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
         tableList.splice(focusCell.row + 1, 1);
         dispatch(setTableList({ cols, rows: rows - 1, tableList }));
         dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
-        break;
+        return;
       case "removeLeftCol":
         if (focusCell.col === 0) {
           Swal.fire({
@@ -158,7 +279,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
         }
         dispatch(setTableList({ cols: cols - 1, rows, tableList }));
         dispatch(setFocusCell({ col: focusCell.col - 1, row: focusCell.row }));
-        break;
+        return;
       case "removeRightCol":
         if (focusCell.col === cols - 1) {
           Swal.fire({
@@ -175,7 +296,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
         }
         dispatch(setTableList({ cols: cols - 1, rows, tableList }));
         dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
-        break;
+        return;
     }
   };
   const transformToTableList = (contentEditablePres: HTMLPreElement[][]) => {
