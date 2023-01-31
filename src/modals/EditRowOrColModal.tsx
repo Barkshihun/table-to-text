@@ -68,19 +68,20 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
   const maxCheckIndex = 7;
   const focusCell = useSelector((state: RootState) => state.table.focusCell);
   const lastRow = rows - 1;
+  const lastCol = cols - 1;
 
   const checkIndexToActionName = (checkIndex: number) => {
     switch (mode) {
       case "add":
         switch (checkIndex) {
           case 0:
-            return "moveToCellRight";
+            return "addMoveToCellRight";
           case 1:
-            return "moveToCellLeft";
+            return "addMoveToCellLeft";
           case 2:
-            return "moveToCellUp";
+            return "addMoveToCellUp";
           case 3:
-            return "moveToCellDown";
+            return "addMoveToCellDown";
           case 4:
             return "addUpRow";
           case 5:
@@ -110,102 +111,79 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
     const actionName = checkIndexToActionName(checkIndex);
     const focusColList = [];
     switch (actionName) {
-      case "moveToCellRight":
-        let isLastColCellEmpty = false;
-        for (let row = 0; row < tableList.length; row++) {
-          if (row === focusCell.row) {
-            tableList[row].splice(focusCell.col, 0, "");
-            if (!tableList[row][cols]) {
-              isLastColCellEmpty = true;
-              tableList[row].pop();
+      case "addMoveToCellRight":
+        tableList[focusCell.row].splice(focusCell.col, 0, "");
+        if (tableList[focusCell.row][lastCol + 1]) {
+          dispatch(setTableList({ cols: cols + 1, rows, tableList }));
+        } else {
+          tableList[focusCell.row].pop();
+          dispatch(setTableList({ cols, rows, tableList }));
+        }
+        dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
+        return;
+      case "addMoveToCellLeft":
+        tableList[focusCell.row].splice(focusCell.col + 1, 0, "");
+        if (tableList[focusCell.row][0]) {
+          for (let row = 0; row < tableList.length; row++) {
+            if (row !== focusCell.row) {
+              tableList[row].unshift("");
             }
           }
-        }
-        switch (isLastColCellEmpty) {
-          case true:
-            dispatch(setTableList({ cols, rows, tableList }));
-            break;
-          case false:
-            dispatch(setTableList({ cols: cols + 1, rows, tableList }));
-            break;
-        }
-        dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
-        return;
-      case "moveToCellLeft":
-        let isFirstColCellEmpty = false;
-        if (!tableList[focusCell.row][0]) {
-          isFirstColCellEmpty = true;
+          dispatch(setTableList({ cols: cols + 1, rows, tableList }));
+          dispatch(setFocusCell({ col: focusCell.col + 1, row: focusCell.row }));
+        } else {
           tableList[focusCell.row].shift();
+          dispatch(setTableList({ cols: cols, rows, tableList }));
+          dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
         }
-        switch (isFirstColCellEmpty) {
-          case true:
-            dispatch(setTableList({ cols, rows, tableList }));
-            break;
-          case false:
-            for (let row = 0; row < tableList.length; row++) {
-              if (row !== focusCell.row) {
-                tableList[row].unshift("");
-              }
-            }
-            dispatch(setTableList({ cols: cols + 1, rows, tableList }));
-            break;
-        }
-        dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
         return;
-      case "moveToCellUp":
-        let isFirstRowCellEmpty = true;
-        if (tableList[0][focusCell.col]) {
-          focusColList.push(tableList[0][focusCell.col]);
-          isFirstRowCellEmpty = false;
-        }
-        for (let row = 1; row < tableList.length; row++) {
-          focusColList.push(tableList[row][focusCell.col]);
-        }
-        switch (isFirstRowCellEmpty) {
-          case true:
-            for (let row = 0; row < tableList.length - 1; row++) {
-              tableList[row][focusCell.col] = focusColList[row];
-            }
-            tableList[lastRow][focusCell.col] = "";
-            dispatch(setTableList({ cols, rows, tableList }));
-            break;
-          case false:
-            tableList.unshift(new Array(cols));
-            for (let row = 0; row < tableList.length - 1; row++) {
-              tableList[row][focusCell.col] = focusColList[row];
-            }
-            tableList[lastRow + 1][focusCell.col] = "";
-            dispatch(setTableList({ cols, rows: rows + 1, tableList }));
-            break;
-        }
-        dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
-        return;
-      case "moveToCellDown":
-        let isLastRowCellEmpty = true;
+      case "addMoveToCellUp":
         for (let row = 0; row < tableList.length; row++) {
-          if (row === lastRow && tableList[lastRow][focusCell.col]) {
-            focusColList.push(tableList[lastRow][focusCell.col]);
-            isLastRowCellEmpty = false;
+          if (row === focusCell.row) {
+            focusColList.push(tableList[row][focusCell.col]);
+            focusColList.push("");
             continue;
           }
           focusColList.push(tableList[row][focusCell.col]);
         }
-        switch (isLastRowCellEmpty) {
-          case true:
-            tableList[0][focusCell.col] = "";
-            for (let row = 1; row < tableList.length; row++) {
-              tableList[row][focusCell.col] = focusColList[row - 1];
-            }
-            dispatch(setTableList({ cols, rows, tableList }));
-            break;
-          case false:
-            tableList.push(new Array(cols));
-            tableList[0][focusCell.col] = "";
-            for (let row = 1; row < tableList.length; row++) {
-              tableList[row][focusCell.col] = focusColList[row - 1];
-            }
-            dispatch(setTableList({ cols, rows: rows + 1, tableList }));
-            break;
+        if (tableList[0][focusCell.col]) {
+          tableList.unshift(new Array(cols));
+          for (let row = 0; row < tableList.length; row++) {
+            tableList[row][focusCell.col] = focusColList[row];
+          }
+          dispatch(setTableList({ cols, rows: rows + 1, tableList }));
+          dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row + 1 }));
+        } else {
+          focusColList.shift();
+          for (let row = 0; row < tableList.length; row++) {
+            tableList[row][focusCell.col] = focusColList[row];
+          }
+          dispatch(setTableList({ cols, rows, tableList }));
+          dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
+        }
+        return;
+      case "addMoveToCellDown":
+        for (let row = 0; row < tableList.length; row++) {
+          if (row === focusCell.row) {
+            focusColList.push("");
+            focusColList.push(tableList[row][focusCell.col]);
+            continue;
+          }
+          focusColList.push(tableList[row][focusCell.col]);
+        }
+        if (tableList[lastRow][focusCell.col]) {
+          for (let row = 0; row < tableList.length; row++) {
+            tableList[row][focusCell.col] = focusColList[row];
+          }
+          tableList.push(new Array(cols));
+          tableList[lastRow + 1][focusCell.col] = focusColList[lastRow + 1];
+          dispatch(setTableList({ cols, rows: rows + 1, tableList }));
+        } else {
+          focusColList.pop();
+          for (let row = 0; row < tableList.length; row++) {
+            tableList[row][focusCell.col] = focusColList[row];
+          }
+          dispatch(setTableList({ cols, rows, tableList }));
         }
         dispatch(setFocusCell({ col: focusCell.col, row: focusCell.row }));
         return;
