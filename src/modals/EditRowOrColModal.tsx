@@ -18,16 +18,16 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
     case "add":
       editRowOrColCheckBoxObjListRef.current = [
         {
-          text: "위쪽 행 추가",
+          text: "위쪽 행 전체",
         },
         {
-          text: "아래쪽 행 추가",
+          text: "아래쪽 행 전체",
         },
         {
-          text: "왼쪽 열 추가",
+          text: "왼쪽 열 전체",
         },
         {
-          text: "오른쪽 열 추가",
+          text: "오른쪽 열 전체",
         },
       ];
       checkIndexRef.current = defaultAddCheckIndex;
@@ -35,16 +35,16 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
     case "remove":
       editRowOrColCheckBoxObjListRef.current = [
         {
-          text: "위쪽 행 제거",
+          text: "위쪽 행 전체",
         },
         {
-          text: "아래쪽 행 제거",
+          text: "아래쪽 행 전체",
         },
         {
-          text: "왼쪽 열 제거",
+          text: "왼쪽 열 전체",
         },
         {
-          text: "오른쪽 열 제거",
+          text: "오른쪽 열 전체",
         },
       ];
       checkIndexRef.current = defaultRemoveCheckIndex;
@@ -276,7 +276,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
       }}
     >
       <div className="modal__content modal__content--config-shortcut">
-        <h1>행 또는 열 {mode === "add" ? "추가" : "제거"}</h1>
+        <h1>{mode === "add" ? "삽입" : "삭제"}</h1>
         {renderCheckBoxes()}
         <div className="config-shortcut-btn-container">
           <button
