@@ -54,9 +54,9 @@ function ConfigShortcutModal() {
       case "moveToRightCell":
         return "오른쪽 셀로 이동";
       case "addRowOrCol":
-        return "행 또는 열 추가";
+        return "삽입";
       case "removeRowOrCol":
-        return "행 또는 열 제거";
+        return "삭제";
     }
   };
   const setPrevKeys = (ctrlKey: boolean | undefined, shiftKey: boolean | undefined, altKey: boolean | undefined, code: string | undefined) => {
