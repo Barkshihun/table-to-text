@@ -22,6 +22,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
   const isShowAddRowOrColModal = useSelector((state: RootState) => state.componentRender.isShowAddRowOrColModal);
   const tableList = useSelector((state: RootState) => state.table.originTableList);
   const focusCell = useSelector((state: RootState) => state.table.focusCell);
+  const SET_TIMEOUT_TIME = 5;
 
   // 이벤트 시작
   const onPlus = (target: "row" | "col") => {
@@ -60,23 +61,25 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
     }
   };
   const focusCaretAtEnd = (elem: HTMLPreElement, isCollapsed = true) => {
-    const selection = getSelection() as Selection;
-    selection.removeAllRanges();
     if (!elem.innerText) {
       elem.focus();
       return;
     }
+    const selection = getSelection() as Selection;
+    selection.removeAllRanges();
+    const textNode = elem.childNodes[0];
+    const textContent = textNode.textContent as string;
     switch (isCollapsed) {
       case true:
-        selection.setBaseAndExtent(elem, 1, elem, 1);
+        selection.setBaseAndExtent(textNode, textContent.length, textNode, textContent.length);
         break;
       case false:
-        selection.setBaseAndExtent(elem, 0, elem, 1);
+        selection.setBaseAndExtent(textNode, 0, textNode, textContent.length);
         break;
     }
   };
   const shortcutActions = {
-    moveToNextCell: (col: number, row: number) => {
+    moveToNextCell: (col: number, row: number, isProcess: boolean) => {
       let focusElem: HTMLPreElement;
       if (col === lastCol) {
         if (row === lastRow) {
@@ -87,9 +90,18 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
       } else {
         focusElem = contentEditablePresRef.current[row][col + 1];
       }
-      focusCaretAtEnd(focusElem, false);
+      if (isProcess) {
+        const innerText = focusElem.innerText;
+        focusElem.focus();
+        setTimeout(() => {
+          focusElem.innerText = innerText;
+          focusCaretAtEnd(focusElem, false);
+        }, SET_TIMEOUT_TIME);
+      } else {
+        focusCaretAtEnd(focusElem, false);
+      }
     },
-    moveToPrevCell: (col: number, row: number) => {
+    moveToPrevCell: (col: number, row: number, isProcess: boolean) => {
       let focusElem: HTMLPreElement;
       if (col === 0) {
         if (row === 0) {
@@ -100,9 +112,18 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
       } else {
         focusElem = contentEditablePresRef.current[row][col - 1];
       }
-      focusCaretAtEnd(focusElem, false);
+      if (isProcess) {
+        const innerText = focusElem.innerText;
+        focusElem.focus();
+        setTimeout(() => {
+          focusElem.innerText = innerText;
+          focusCaretAtEnd(focusElem, false);
+        }, SET_TIMEOUT_TIME);
+      } else {
+        focusCaretAtEnd(focusElem, false);
+      }
     },
-    moveCell: (col: number, row: number, direction: "up" | "down" | "left" | "right") => {
+    moveCell: (col: number, row: number, isProcess: boolean, direction: "up" | "down" | "left" | "right") => {
       let focusRow = row;
       let focusCol = col;
       switch (direction) {
@@ -128,24 +149,37 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
           break;
       }
       const focusElem = contentEditablePresRef.current[focusRow][focusCol] as HTMLPreElement;
-      focusCaretAtEnd(focusElem);
-    },
-    addRowOrCol: (col: number, row: number) => {
-      const section = getSelection();
-      if (section) {
-        const anchorOffset = section.anchorOffset;
-        const focusOffset = section.focusOffset;
-        dispatch(setFocusCell({ col, row, anchorOffset, focusOffset }));
-        dispatch(showEditRowOrColModal("add"));
+      if (isProcess) {
+        const innerText = focusElem.innerText;
+        focusElem.focus();
+        setTimeout(() => {
+          focusElem.innerText = innerText;
+          focusCaretAtEnd(focusElem);
+        }, SET_TIMEOUT_TIME);
+      } else {
+        focusCaretAtEnd(focusElem);
       }
     },
-    removeRowOrCol: (col: number, row: number) => {
-      const section = getSelection();
-      if (section) {
-        const anchorOffset = section.anchorOffset;
-        const focusOffset = section.focusOffset;
+    editRowOrCol: (col: number, row: number, isProcess: boolean, mode: "add" | "remove") => {
+      const selection = getSelection() as Selection;
+      const anchorOffset = selection.anchorOffset;
+      const focusOffset = selection.focusOffset;
+      if (isProcess) {
+        const elem = contentEditablePresRef.current[row][col] as HTMLPreElement;
+        const innerText = elem.innerText;
+        elem.innerText = innerText;
+        if (innerText) {
+          elem.blur();
+        } else {
+          selection.removeAllRanges();
+        }
+        setTimeout(() => {
+          dispatch(setFocusCell({ col, row, anchorOffset, focusOffset }));
+          dispatch(showEditRowOrColModal(mode));
+        }, SET_TIMEOUT_TIME);
+      } else {
         dispatch(setFocusCell({ col, row, anchorOffset, focusOffset }));
-        dispatch(showEditRowOrColModal("remove"));
+        dispatch(showEditRowOrColModal(mode));
       }
     },
   };
@@ -180,30 +214,31 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
       return;
     }
     event.preventDefault();
+    const isProcess = event.key === "Process" ? true : false;
     switch (correspondingActionName) {
       case "moveToNextCell":
-        shortcutActions.moveToNextCell(col, row);
+        shortcutActions.moveToNextCell(col, row, isProcess);
         return;
       case "moveToPrevCell":
-        shortcutActions.moveToPrevCell(col, row);
+        shortcutActions.moveToPrevCell(col, row, isProcess);
         return;
       case "moveToUpCell":
-        shortcutActions.moveCell(col, row, "up");
+        shortcutActions.moveCell(col, row, isProcess, "up");
         return;
       case "moveToDownCell":
-        shortcutActions.moveCell(col, row, "down");
+        shortcutActions.moveCell(col, row, isProcess, "down");
         return;
       case "moveToLeftCell":
-        shortcutActions.moveCell(col, row, "left");
+        shortcutActions.moveCell(col, row, isProcess, "left");
         return;
       case "moveToRightCell":
-        shortcutActions.moveCell(col, row, "right");
+        shortcutActions.moveCell(col, row, isProcess, "right");
         return;
       case "addRowOrCol":
-        shortcutActions.addRowOrCol(col, row);
+        shortcutActions.editRowOrCol(col, row, isProcess, "add");
         return;
       case "removeRowOrCol":
-        shortcutActions.removeRowOrCol(col, row);
+        shortcutActions.editRowOrCol(col, row, isProcess, "remove");
         return;
     }
   };
