@@ -59,15 +59,21 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
       }
     }
   };
-  const focusCaretAtEnd = (elem: HTMLPreElement, select?: boolean) => {
-    const selection = window.getSelection() as Selection;
-    const range = document.createRange();
+  const focusCaretAtEnd = (elem: HTMLPreElement, isCollapsed = true) => {
+    const selection = getSelection() as Selection;
     selection.removeAllRanges();
-    range.selectNodeContents(elem);
-    if (!select) {
-      range.collapse(false);
+    if (!elem.innerText) {
+      elem.focus();
+      return;
     }
-    selection.addRange(range);
+    switch (isCollapsed) {
+      case true:
+        selection.setBaseAndExtent(elem, 1, elem, 1);
+        break;
+      case false:
+        selection.setBaseAndExtent(elem, 0, elem, 1);
+        break;
+    }
   };
   const shortcutActions = {
     moveToNextCell: (col: number, row: number) => {
@@ -81,7 +87,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
       } else {
         focusElem = contentEditablePresRef.current[row][col + 1];
       }
-      focusCaretAtEnd(focusElem, true);
+      focusCaretAtEnd(focusElem, false);
     },
     moveToPrevCell: (col: number, row: number) => {
       let focusElem: HTMLPreElement;
@@ -94,7 +100,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
       } else {
         focusElem = contentEditablePresRef.current[row][col - 1];
       }
-      focusCaretAtEnd(focusElem, true);
+      focusCaretAtEnd(focusElem, false);
     },
     moveCell: (col: number, row: number, direction: "up" | "down" | "left" | "right") => {
       let focusRow = row;
