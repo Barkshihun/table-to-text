@@ -71,7 +71,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
   const cols = useSelector((state: RootState) => state.table.originCols);
   const rows = useSelector((state: RootState) => state.table.originRows);
   const noYesBtnsRef = useRef<NoYesBtns | { currentBtn: "yes" }>({ currentBtn: "yes" });
-  const maxCheckIndex = 7;
+  const maxCheckIndex = mode === "add" ? 7 : 5;
   const focusCell = useSelector((state: RootState) => state.table.focusCell);
   const lastRow = rows - 1;
   const lastCol = cols - 1;
