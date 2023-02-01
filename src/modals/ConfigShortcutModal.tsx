@@ -152,6 +152,7 @@ function ConfigShortcutModal() {
     localStorage.setItem(ITEM_NAME, shortcutsObjString);
   };
   const onReset = () => {
+    shortcutsObj = { ...defaultShortcutsObj };
     localStorage.removeItem(ITEM_NAME);
     const singleConfigShortcutDivElems = singleConfigShortcutDivElemsRef.current as SingleConfigShortcutDivElems;
     for (const key in singleConfigShortcutDivElems) {
