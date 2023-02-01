@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AddRowOrColCheckBoxObj, NoYesBtns, RemoveRowOrColCheckBoxObj } from "../types/addRowOrColModalTypes";
+import { AddRowOrColCheckBoxObj, RemoveRowOrColCheckBoxObj, NoYesBtns } from "../types/addRowOrColModalTypes";
 import { hideEditRowOrColModal } from "../store/componentRenderSlice";
 import AddRowOrColCheckBox from "../components/EditRowOrColCheckBox";
 import { RootState } from "../store/store";
@@ -12,11 +12,11 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
   const mode = useSelector((state: RootState) => state.componentRender.editRowOrColMode) as "add" | "remove";
   const defaultAddCheckIndex = useSelector((state: RootState) => state.componentRender.defaultAddCheckIndex);
   const defaultRemoveCheckIndex = useSelector((state: RootState) => state.componentRender.defaultRemoveCheckIndex);
-  const editRowOrColCheckBoxObjListRef = useRef<any>();
-  const checkIndexRef = useRef<any>();
+  let defaultCheckIndex: number;
+  let defaultEditRowOrColCheckBoxObjList: AddRowOrColCheckBoxObj[] | RemoveRowOrColCheckBoxObj[];
   switch (mode) {
     case "add":
-      editRowOrColCheckBoxObjListRef.current = [
+      defaultEditRowOrColCheckBoxObjList = [
         {
           text: "셀을 오른쪽으로 밀기",
         },
@@ -42,10 +42,10 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
           text: "오른쪽 열 전체",
         },
       ];
-      checkIndexRef.current = defaultAddCheckIndex;
+      defaultCheckIndex = defaultAddCheckIndex;
       break;
     case "remove":
-      editRowOrColCheckBoxObjListRef.current = [
+      defaultEditRowOrColCheckBoxObjList = [
         {
           text: "셀을 왼쪽으로 밀기",
         },
@@ -65,9 +65,11 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
           text: "오른쪽 열 전체",
         },
       ];
-      checkIndexRef.current = defaultRemoveCheckIndex;
+      defaultCheckIndex = defaultRemoveCheckIndex;
       break;
   }
+  const editRowOrColCheckBoxObjListRef = useRef<AddRowOrColCheckBoxObj[] | RemoveRowOrColCheckBoxObj[]>(defaultEditRowOrColCheckBoxObjList);
+  const checkIndexRef = useRef<number>(defaultCheckIndex);
   const cols = useSelector((state: RootState) => state.table.originCols);
   const rows = useSelector((state: RootState) => state.table.originRows);
   const noYesBtnsRef = useRef<NoYesBtns | { currentBtn: "yes" }>({ currentBtn: "yes" });
@@ -306,18 +308,18 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
     return tempTableList;
   };
   const arrowKeyControl = (key: "ArrowUp" | "ArrowDown") => {
-    const addRowOrColCheckBoxObjList = editRowOrColCheckBoxObjListRef.current;
+    const editRowOrColCheckBoxObjList = editRowOrColCheckBoxObjListRef.current;
     const prevCheckIndex = checkIndexRef.current;
-    const addRowOrColCheckBoxObj = addRowOrColCheckBoxObjList[prevCheckIndex];
-    const { checkboxElem: prevCheckboxElem } = addRowOrColCheckBoxObj;
+    const editRowOrColCheckBoxObj = editRowOrColCheckBoxObjList[prevCheckIndex];
+    const { checkboxElem: prevCheckboxElem } = editRowOrColCheckBoxObj;
     let nextCheckIndex = 0;
     if (key === "ArrowUp") {
       nextCheckIndex = prevCheckIndex !== 0 ? prevCheckIndex - 1 : maxCheckIndex;
     } else {
       nextCheckIndex = prevCheckIndex === maxCheckIndex ? 0 : prevCheckIndex + 1;
     }
-    const nextAddRowOrColCheckBoxObj = addRowOrColCheckBoxObjList[nextCheckIndex];
-    const { labelElem: nextLabelElem, checkboxElem: nextCheckboxElem } = nextAddRowOrColCheckBoxObj;
+    const nextEditRowOrColCheckBoxObj = editRowOrColCheckBoxObjList[nextCheckIndex];
+    const { labelElem: nextLabelElem, checkboxElem: nextCheckboxElem } = nextEditRowOrColCheckBoxObj;
     if (prevCheckboxElem && nextLabelElem && nextCheckboxElem) {
       prevCheckboxElem.checked = false;
       nextCheckboxElem.checked = true;
@@ -361,8 +363,8 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
     window.addEventListener("keydown", windowKeyDownHandler);
     document.body.classList.add("no-scroll");
     const checkIndex = checkIndexRef.current;
-    const addRowOrColCheckBoxObjList = editRowOrColCheckBoxObjListRef.current as AddRowOrColCheckBoxObj[];
-    const labelElem = addRowOrColCheckBoxObjList[checkIndex].labelElem;
+    const editRowOrColCheckBoxObjList = editRowOrColCheckBoxObjListRef.current;
+    const labelElem = editRowOrColCheckBoxObjList[checkIndex].labelElem;
     if (labelElem) {
       labelElem.focus();
     }
@@ -374,11 +376,11 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
 
   const renderCheckBoxes = () => {
     const checkBoxesArr = [];
-    const addRowOrColCheckBoxObjList = editRowOrColCheckBoxObjListRef.current as AddRowOrColCheckBoxObj[];
-    for (let i = 0; i < addRowOrColCheckBoxObjList.length; i++) {
+    const editRowOrColCheckBoxObjList = editRowOrColCheckBoxObjListRef.current;
+    for (let i = 0; i < editRowOrColCheckBoxObjList.length; i++) {
       const checkboxIndex = checkIndexRef.current;
       const focused = i === checkboxIndex ? true : false;
-      checkBoxesArr.push(<AddRowOrColCheckBox key={i} addRowOrColCheckBoxObjList={addRowOrColCheckBoxObjList} checkIndexRef={checkIndexRef} index={i} focused={focused} />);
+      checkBoxesArr.push(<AddRowOrColCheckBox key={i} addRowOrColCheckBoxObjList={editRowOrColCheckBoxObjList} checkIndexRef={checkIndexRef} index={i} focused={focused} />);
     }
     return checkBoxesArr;
   };
