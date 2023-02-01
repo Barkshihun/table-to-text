@@ -125,12 +125,22 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
       focusCaretAtEnd(focusElem);
     },
     addRowOrCol: (col: number, row: number) => {
-      dispatch(setFocusCell({ col, row }));
-      dispatch(showEditRowOrColModal("add"));
+      const section = getSelection();
+      if (section) {
+        const anchorOffset = section.anchorOffset;
+        const focusOffset = section.focusOffset;
+        dispatch(setFocusCell({ col, row, anchorOffset, focusOffset }));
+        dispatch(showEditRowOrColModal("add"));
+      }
     },
     removeRowOrCol: (col: number, row: number) => {
-      dispatch(setFocusCell({ col, row }));
-      dispatch(showEditRowOrColModal("remove"));
+      const section = getSelection();
+      if (section) {
+        const anchorOffset = section.anchorOffset;
+        const focusOffset = section.focusOffset;
+        dispatch(setFocusCell({ col, row, anchorOffset, focusOffset }));
+        dispatch(showEditRowOrColModal("remove"));
+      }
     },
   };
   const onCheckShortcut = (event: React.KeyboardEvent<HTMLPreElement>) => {
@@ -236,12 +246,17 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
       const col = focusCell.col;
       const row = focusCell.row;
       if (contentEditablePresRef.current[row]) {
-        if (contentEditablePresRef.current[row][col]) {
+        const contentEditablePreTextNode = contentEditablePresRef.current[row][col].childNodes[0];
+        if (contentEditablePreTextNode) {
+          const selection = getSelection();
+          selection?.removeAllRanges();
+          selection?.setBaseAndExtent(contentEditablePreTextNode, focusCell.anchorOffset, contentEditablePreTextNode, focusCell.focusOffset);
+        } else {
           contentEditablePresRef.current[row][col].focus();
-          return;
         }
+        return;
       }
-      contentEditablePresRef.current[0][0];
+      contentEditablePresRef.current[0][0].focus();
     }
   }, [isShowAddRowOrColModal]);
   console.count("Table렌더링");
