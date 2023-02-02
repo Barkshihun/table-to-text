@@ -345,6 +345,9 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
         }
         return;
       case "Enter":
+        if ((event.target as HTMLElement).id === "noBtn") {
+          return;
+        }
         event.preventDefault();
         editRowOrCol(checkIndexRef.current);
         dispatch(hideEditRowOrColModal({ checkIndex: checkIndexRef.current, mode }));
@@ -399,6 +402,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
         {renderCheckBoxes()}
         <div className="modal__no-yes-btn-container modal__no-yes-btn-container--edit">
           <button
+            id="noBtn"
             className="btn btn--modal btn--no btn--edit-modal"
             role="button"
             ref={(elem) => {
