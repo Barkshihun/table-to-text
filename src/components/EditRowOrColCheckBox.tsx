@@ -41,8 +41,10 @@ function EditRowOrColCheckBox({
       onClick={(event) => {
         event.preventDefault();
       }}
+      className="modal__checkbox-container"
     >
       <input
+        className="modal__checkbox"
         type="checkbox"
         defaultChecked={focused}
         ref={(elem) => {
@@ -51,7 +53,7 @@ function EditRowOrColCheckBox({
           }
         }}
       />
-      {text}
+      <span className="modal__checkbox-text">{text}</span>
     </label>
   );
 }

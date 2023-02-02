@@ -394,12 +394,13 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
         }
       }}
     >
-      <div className="modal__content modal__content--config-shortcut">
+      <div className="modal__content modal__content--edit">
         <h1>{mode === "add" ? "삽입" : "삭제"}</h1>
         {renderCheckBoxes()}
-        <div className="config-shortcut-btn-container">
+        <div className="modal__no-yes-btn-container modal__no-yes-btn-container--edit">
           <button
-            className="btn btn--modal btn--no"
+            className="btn btn--modal btn--no btn--edit-modal"
+            role="button"
             ref={(elem) => {
               if (elem) {
                 const noYesBtnsRefCurrent = noYesBtnsRef.current as NoYesBtns;
@@ -413,7 +414,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
             취소
           </button>
           <button
-            className="btn btn--modal btn--yes"
+            className="btn btn--modal btn--yes btn--edit-modal"
             ref={(elem) => {
               if (elem) {
                 const noYesBtnsRefCurrent = noYesBtnsRef.current as NoYesBtns;

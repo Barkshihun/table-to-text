@@ -21,7 +21,7 @@ function SingleConfigShortcutDiv({
   singleConfigShortcutDivElems[actionName] = {};
   return (
     <div>
-      <label>
+      <label className="">
         <input
           type="checkbox"
           defaultChecked={isAbled}

@@ -43,10 +43,16 @@
   }
   animation: 0.2s ease-in-out popup;
 }
-.modal__content--config-shortcut {
+.modal__content--config {
   height: max-content;
   width: max-content;
   padding: 40px 50px;
+  align-items: flex-start;
+}
+.modal__content--edit {
+  height: max-content;
+  width: 370px;
+  padding: 40px 40px;
   align-items: flex-start;
 }
 .modal__table-size-wrapper {
@@ -122,13 +128,31 @@
   justify-content: space-evenly;
   margin-top: 13px;
 }
+.modal__no-yes-btn-container--edit {
+  margin-top: 5px;
+}
 .config-shortcut-btn-container {
   width: 100%;
   display: flex;
   justify-content: center;
 }
-label {
+.modal__checkbox-container {
+  display: flex;
+  align-items: center;
+  font-size: 40px;
+  width: 100%;
+  height: 40px;
+  padding: 5px 10px;
+  margin-bottom: 5px;
   &:focus {
+    outline: none;
     border: 2px solid black;
   }
+}
+.modal__checkbox-text {
+  padding-bottom: 0.1em;
+}
+.modal__checkbox {
+  margin: 0;
+  margin-right: 7px;
 }

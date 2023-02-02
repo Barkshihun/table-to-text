@@ -104,6 +104,9 @@
     outline: 3px solid rgb(237 155 160);
   }
 }
+.btn--edit-modal {
+  width: 45%;
+}
 
 .btn--textarea-left {
   @extend %border;
