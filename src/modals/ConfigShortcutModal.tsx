@@ -76,6 +76,9 @@ function ConfigShortcutModal() {
 
   const keydownAtWindowHandler = (event: KeyboardEvent) => {
     if (configKeyRef.current.state) {
+      if (event.code === "AltRight") {
+        return;
+      }
       event.preventDefault();
       const { ctrlKey, shiftKey, altKey, code } = event;
       const { prevCtrlKey, prevShiftKey, prevAltKey, prevCode } = prevKeyRef.current;
@@ -91,7 +94,7 @@ function ConfigShortcutModal() {
     }
   };
   const keyUpAtWindowHandler = (event: KeyboardEvent) => {
-    if (!configKeyRef.current.state || event.ctrlKey || event.shiftKey || event.altKey) {
+    if (!configKeyRef.current.state || event.ctrlKey || event.shiftKey || event.altKey || event.code === "AltRight") {
       return;
     }
     const ctrlKey = prevKeyRef.current.prevCtrlKey as boolean;
@@ -101,23 +104,13 @@ function ConfigShortcutModal() {
     const { actionName, target } = configKeyRef.current;
     const isOverlap = checkOverlap(actionName, ctrlKey, shiftKey, altKey, code);
     const shortcutsObj = shortcutsObjRef.current as ShortcutsObj;
-    if (code === "AltRight" || isOverlap) {
+    if (isOverlap) {
       setPrevKeys(undefined, undefined, undefined, undefined);
       setConfigKey(false);
       const { ctrlKey: orignCtrlKey, shiftKey: orignShiftKey, altKey: orignAltKey, code: orignCode } = shortcutsObj[actionName];
       target.innerText = shortcutStringfy(orignCtrlKey, orignShiftKey, orignAltKey, orignCode);
-      if (code === "AltRight") {
-        Swal.fire({
-          icon: "error",
-          title: "오른쪽 alt키는 단축키로 사용하실 수 없습니다",
-          position: "top",
-        });
-        return;
-      }
-      if (isOverlap) {
-        alert("키가 겹쳐요");
-        return;
-      }
+      alert("키가 겹쳐요");
+      return;
     }
     const singleConfigShortcutDivElems = singleConfigShortcutDivElemsRef.current as SingleConfigShortcutDivElems;
     const isAbled = singleConfigShortcutDivElems[actionName].checkBoxElem?.checked as boolean;
