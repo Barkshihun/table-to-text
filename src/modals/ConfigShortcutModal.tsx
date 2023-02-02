@@ -229,13 +229,17 @@ function ConfigShortcutModal() {
     >
       <div className="modal__content modal__content--config">
         <h1>단축키 설정</h1>
-        <div>
-          <input type="checkbox" onChange={onSelectAll} ref={selectAllBtnRef} />
-          <span>전체 선택</span>
-          <button onClick={onReset}>초기화</button>
+        <div className="modal__shortcut-container">
+          <label className="modal__checkbox-container modal__checkbox-container--shortcut">
+            <input className="modal__checkbox" type="checkbox" onChange={onSelectAll} ref={selectAllBtnRef} />
+            <span className="modal__checkbox-text">전체 선택</span>
+          </label>
+          <button className="btn btn--no btn--reset" onClick={onReset}>
+            초기화
+          </button>
         </div>
         {reset ? renderSingleConfigShortcutDivs(reset) : renderSingleConfigShortcutDivs(reset)}
-        <div className="config-shortcut-btn-container">
+        <div className="modal__config-shortcut-btn-container">
           <button
             className="btn btn--modal btn--yes"
             onClick={() => {

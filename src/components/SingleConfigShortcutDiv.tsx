@@ -20,9 +20,10 @@ function SingleConfigShortcutDiv({
   const singleConfigShortcutDivElems = singleConfigShortcutDivElemsRef.current as SingleConfigShortcutDivElems;
   singleConfigShortcutDivElems[actionName] = {};
   return (
-    <div>
-      <label className="">
+    <div className="modal__shortcut-container">
+      <label className="modal__checkbox-container modal__checkbox-container--shortcut">
         <input
+          className="modal__checkbox"
           type="checkbox"
           defaultChecked={isAbled}
           ref={(elem) => {
@@ -35,9 +36,10 @@ function SingleConfigShortcutDiv({
             onCheckEvent(actionName, checked);
           }}
         />
-        {koreanActionName}
+        <span className="modal__checkbox-text">{koreanActionName}</span>
       </label>
       <button
+        className="btn btn-shortcut"
         ref={(elem) => {
           if (elem) {
             singleConfigShortcutDivElems[actionName].btnElem = elem;
