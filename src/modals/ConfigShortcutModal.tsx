@@ -1,26 +1,23 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
-import { SingleConfigShortcutDivElems, ActionName, ConfigKey, SetConfigKey, SingleShortcutObj, ShortcutsObj } from "../types/shortcutTypes";
+import { SingleConfigShortcutDivElems, ActionName, ConfigKey, SetConfigKey, SingleShortcutObj, ShortcutsObj, PrevKey } from "../types/shortcutTypes";
 import { ITEM_NAME, defaultShortcutsObj } from "../shortcutConsts";
 import { setDisplayConfigShortcutModal } from "../store/componentRenderSlice";
 import SingleConfigShortcutDiv from "../components/SingleConfigShortcutDiv";
 
 function ConfigShortcutModal() {
   const dispatch = useDispatch();
+  const [reset, setReset] = useState(false);
   const singleConfigShortcutDivElemsRef = useRef<SingleConfigShortcutDivElems | {}>({});
-
-  let shortcutsObj: {
-    [actionName in ActionName]: SingleShortcutObj;
-  };
-  let configKey: ConfigKey = { state: false };
-  let prevCtrlKey: boolean | undefined;
-  let prevShiftKey: boolean | undefined;
-  let prevAltKey: boolean | undefined;
-  let prevCode: string | undefined;
+  const selectAllBtnRef = useRef<HTMLInputElement>(null);
+  const configKeyRef = useRef<ConfigKey>({ state: false });
+  const prevKeyRef = useRef<PrevKey>({});
+  const shortcutsObjRef = useRef<ShortcutsObj>();
+  let isSelectAll = true;
 
   const setConfigKey: SetConfigKey = (state: any, target?: any, actionName?: any) => {
-    configKey = { state, target, actionName };
+    configKeyRef.current = { state, target, actionName };
   };
   const shortcutStringfy = (ctrlKey: boolean, shiftKey: boolean, altKey: boolean, code: string) => {
     const keyList = [];
@@ -60,13 +57,14 @@ function ConfigShortcutModal() {
     }
   };
   const setPrevKeys = (ctrlKey: boolean | undefined, shiftKey: boolean | undefined, altKey: boolean | undefined, code: string | undefined) => {
-    prevCtrlKey = ctrlKey;
-    prevShiftKey = shiftKey;
-    prevAltKey = altKey;
-    prevCode = code;
+    prevKeyRef.current.prevCtrlKey = ctrlKey;
+    prevKeyRef.current.prevShiftKey = shiftKey;
+    prevKeyRef.current.prevAltKey = altKey;
+    prevKeyRef.current.prevCode = code;
   };
   const checkOverlap = (newActionName: ActionName, newCtrlKey: boolean, newShiftKey: boolean, newAltKey: boolean, newCode: string) => {
     let actionName: ActionName;
+    const shortcutsObj = shortcutsObjRef.current as ShortcutsObj;
     for (actionName in shortcutsObj) {
       const { ctrlKey: shortcutObjCtrlKey, shiftKey: shortcutObjShiftKey, altKey: shortcutObjAltKey, code: shortcutObjCode } = shortcutsObj[actionName];
       if (newActionName !== actionName && newCtrlKey === shortcutObjCtrlKey && newShiftKey === shortcutObjShiftKey && newAltKey === shortcutObjAltKey && newCode === shortcutObjCode) {
@@ -77,14 +75,15 @@ function ConfigShortcutModal() {
   };
 
   const keydownAtWindowHandler = (event: KeyboardEvent) => {
-    if (configKey.state) {
+    if (configKeyRef.current.state) {
       event.preventDefault();
       const { ctrlKey, shiftKey, altKey, code } = event;
+      const { prevCtrlKey, prevShiftKey, prevAltKey, prevCode } = prevKeyRef.current;
       if (ctrlKey === prevCtrlKey && shiftKey === prevShiftKey && altKey === prevAltKey && code === prevCode) {
         return;
       }
       setPrevKeys(ctrlKey, shiftKey, altKey, code);
-      const target = configKey.target as HTMLButtonElement;
+      const target = configKeyRef.current.target as HTMLButtonElement;
       target.innerText = shortcutStringfy(ctrlKey, shiftKey, altKey, code);
     } else if (event.key === "Escape") {
       event.preventDefault();
@@ -92,15 +91,16 @@ function ConfigShortcutModal() {
     }
   };
   const keyUpAtWindowHandler = (event: KeyboardEvent) => {
-    if (!configKey.state || event.ctrlKey || event.shiftKey || event.altKey) {
+    if (!configKeyRef.current.state || event.ctrlKey || event.shiftKey || event.altKey) {
       return;
     }
-    const ctrlKey = prevCtrlKey as boolean;
-    const shiftKey = prevShiftKey as boolean;
-    const altKey = prevAltKey as boolean;
-    const code = prevCode as string;
-    const { actionName, target } = configKey;
+    const ctrlKey = prevKeyRef.current.prevCtrlKey as boolean;
+    const shiftKey = prevKeyRef.current.prevShiftKey as boolean;
+    const altKey = prevKeyRef.current.prevAltKey as boolean;
+    const code = prevKeyRef.current.prevCode as string;
+    const { actionName, target } = configKeyRef.current;
     const isOverlap = checkOverlap(actionName, ctrlKey, shiftKey, altKey, code);
+    const shortcutsObj = shortcutsObjRef.current as ShortcutsObj;
     if (code === "AltRight" || isOverlap) {
       setPrevKeys(undefined, undefined, undefined, undefined);
       setConfigKey(false);
@@ -135,71 +135,80 @@ function ConfigShortcutModal() {
     setPrevKeys(undefined, undefined, undefined, undefined);
     setConfigKey(false);
   };
-  const onCheckboxEvent = (actionName: ActionName, checked: boolean) => {
+  const onCheckEvent = (actionName: ActionName, checked: boolean) => {
+    const shortcutsObj = shortcutsObjRef.current as ShortcutsObj;
     shortcutsObj[actionName].isAbled = checked;
     const shortcutsObjString = JSON.stringify(shortcutsObj);
     localStorage.setItem(ITEM_NAME, shortcutsObjString);
+    const selectAllBtn = selectAllBtnRef.current as HTMLInputElement;
+    for (const key in shortcutsObj) {
+      const actionName = key as ActionName;
+      const { isAbled } = shortcutsObj[actionName];
+      if (!isAbled) {
+        selectAllBtn.checked = false;
+        return;
+      }
+    }
+    selectAllBtn.checked = true;
   };
-  const onSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onSelectAll = () => {
     const singleConfigShortcutDivElems = singleConfigShortcutDivElemsRef.current as SingleConfigShortcutDivElems;
+    const shortcutsObj = shortcutsObjRef.current as ShortcutsObj;
+    const selectAllBtn = selectAllBtnRef.current as HTMLInputElement;
     for (const key in singleConfigShortcutDivElems) {
       const actionName = key as ActionName;
       const checkboxElem = singleConfigShortcutDivElems[actionName].checkBoxElem as HTMLInputElement;
-      checkboxElem.checked = event.target.checked ? true : false;
-      shortcutsObj[actionName].isAbled = event.target.checked ? true : false;
+      checkboxElem.checked = selectAllBtn.checked;
+      shortcutsObj[actionName].isAbled = selectAllBtn.checked;
     }
     const shortcutsObjString = JSON.stringify(shortcutsObj);
     localStorage.setItem(ITEM_NAME, shortcutsObjString);
   };
   const onReset = () => {
-    shortcutsObj = { ...defaultShortcutsObj };
     localStorage.removeItem(ITEM_NAME);
-    const singleConfigShortcutDivElems = singleConfigShortcutDivElemsRef.current as SingleConfigShortcutDivElems;
-    for (const key in singleConfigShortcutDivElems) {
-      const actionName = key as ActionName;
-      const { ctrlKey, shiftKey, altKey, code } = defaultShortcutsObj[actionName];
-      const defaultShortcutString = shortcutStringfy(ctrlKey, shiftKey, altKey, code);
-      const btnElem = singleConfigShortcutDivElems[actionName].btnElem as HTMLButtonElement;
-      const checkboxElem = singleConfigShortcutDivElems[actionName] as HTMLInputElement;
-      btnElem.innerText = defaultShortcutString;
-      checkboxElem.checked = true;
-    }
+    const selectAllBtn = selectAllBtnRef.current as HTMLInputElement;
+    selectAllBtn.checked = true;
+    setReset((reset) => !reset);
   };
-
-  const renderConfigShortcutCheckBoxes = () => {
+  const renderSingleConfigShortcutDivs = (reset: boolean) => {
     const itemString = localStorage.getItem(ITEM_NAME);
     if (itemString) {
       const itemObj: ShortcutsObj = JSON.parse(itemString);
-      shortcutsObj = itemObj;
+      shortcutsObjRef.current = itemObj;
     } else {
-      shortcutsObj = { ...defaultShortcutsObj };
+      shortcutsObjRef.current = JSON.parse(JSON.stringify(defaultShortcutsObj));
     }
-    const btnsArr = [];
+    const divsArr = [];
+    const shortcutsObj = shortcutsObjRef.current as ShortcutsObj;
     for (const key in shortcutsObj) {
       const actionName = key as ActionName;
       const { ctrlKey, shiftKey, altKey, code, isAbled } = shortcutsObj[actionName];
       const shortcutString = shortcutStringfy(ctrlKey, shiftKey, altKey, code);
       const koreanActionName = getKoreanActionName(actionName);
-      btnsArr.push(
+      if (isSelectAll) {
+        isSelectAll = isAbled;
+      }
+      divsArr.push(
         <SingleConfigShortcutDiv
-          key={actionName}
+          key={`${reset}${actionName}`}
           singleConfigShortcutDivElemsRef={singleConfigShortcutDivElemsRef}
           koreanActionName={koreanActionName}
           setConfigKey={setConfigKey}
           actionName={actionName}
           shortcutString={shortcutString}
           isAbled={isAbled}
-          onCheckboxEvent={onCheckboxEvent}
+          onCheckEvent={onCheckEvent}
         />
       );
     }
-    return btnsArr;
+    return divsArr;
   };
-
   useEffect(() => {
     window.addEventListener("keydown", keydownAtWindowHandler);
     window.addEventListener("keyup", keyUpAtWindowHandler);
     document.body.classList.add("no-scroll");
+    const selectAllBtn = selectAllBtnRef.current as HTMLInputElement;
+    selectAllBtn.checked = isSelectAll;
     return () => {
       window.removeEventListener("keydown", keydownAtWindowHandler);
       window.removeEventListener("keyup", keyUpAtWindowHandler);
@@ -221,11 +230,11 @@ function ConfigShortcutModal() {
       <div className="modal__content modal__content--config-shortcut">
         <h1>단축키 설정</h1>
         <div>
-          <input type="checkbox" onChange={onSelectAll} />
+          <input type="checkbox" onChange={onSelectAll} ref={selectAllBtnRef} />
           <span>전체 선택</span>
           <button onClick={onReset}>초기화</button>
         </div>
-        {renderConfigShortcutCheckBoxes()}
+        {reset ? renderSingleConfigShortcutDivs(reset) : renderSingleConfigShortcutDivs(reset)}
         <div className="config-shortcut-btn-container">
           <button
             className="btn btn--modal btn--yes"

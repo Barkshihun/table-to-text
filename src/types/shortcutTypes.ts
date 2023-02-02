@@ -7,6 +7,12 @@ interface SingleShortcutObj {
   code: string;
   isAbled: boolean;
 }
+interface PrevKey {
+  prevCtrlKey?: boolean;
+  prevShiftKey?: boolean;
+  prevAltKey?: boolean;
+  prevCode?: string;
+}
 type ShortcutsObj = {
   [actionName in ActionName]: SingleShortcutObj;
 };
@@ -18,4 +24,4 @@ type SetConfigKey = {
 };
 type SingleConfigShortcutDivElems = { [actionName in ActionName]: { checkBoxElem?: HTMLInputElement; btnElem?: HTMLButtonElement } };
 
-export type { SingleShortcutObj, ActionName, ConfigKey, SetConfigKey, SingleConfigShortcutDivElems, ShortcutsObj };
+export type { SingleShortcutObj, PrevKey, ActionName, ConfigKey, SetConfigKey, SingleConfigShortcutDivElems, ShortcutsObj };

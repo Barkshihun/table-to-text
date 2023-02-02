@@ -7,7 +7,7 @@ function SingleConfigShortcutDiv({
   actionName,
   shortcutString,
   isAbled,
-  onCheckboxEvent,
+  onCheckEvent,
 }: {
   singleConfigShortcutDivElemsRef: React.MutableRefObject<SingleConfigShortcutDivElems | {}>;
   koreanActionName: string;
@@ -15,7 +15,7 @@ function SingleConfigShortcutDiv({
   actionName: ActionName;
   shortcutString: string;
   isAbled: boolean;
-  onCheckboxEvent: (actionName: ActionName, checked: boolean) => void;
+  onCheckEvent: (actionName: ActionName, checked: boolean) => void;
 }) {
   const singleConfigShortcutDivElems = singleConfigShortcutDivElemsRef.current as SingleConfigShortcutDivElems;
   singleConfigShortcutDivElems[actionName] = {};
@@ -32,7 +32,7 @@ function SingleConfigShortcutDiv({
           }}
           onChange={(elem) => {
             const checked = elem.target.checked;
-            onCheckboxEvent(actionName, checked);
+            onCheckEvent(actionName, checked);
           }}
         />
         {koreanActionName}
