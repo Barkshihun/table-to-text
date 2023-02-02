@@ -62,16 +62,15 @@ function ConfigShortcutModal() {
     prevKeyRef.current.prevAltKey = altKey;
     prevKeyRef.current.prevCode = code;
   };
-  const checkOverlap = (newActionName: ActionName, newCtrlKey: boolean, newShiftKey: boolean, newAltKey: boolean, newCode: string) => {
+  const getOverlapActionName = (newActionName: ActionName, newCtrlKey: boolean, newShiftKey: boolean, newAltKey: boolean, newCode: string) => {
     let actionName: ActionName;
     const shortcutsObj = shortcutsObjRef.current as ShortcutsObj;
     for (actionName in shortcutsObj) {
       const { ctrlKey: shortcutObjCtrlKey, shiftKey: shortcutObjShiftKey, altKey: shortcutObjAltKey, code: shortcutObjCode } = shortcutsObj[actionName];
       if (newActionName !== actionName && newCtrlKey === shortcutObjCtrlKey && newShiftKey === shortcutObjShiftKey && newAltKey === shortcutObjAltKey && newCode === shortcutObjCode) {
-        return true;
+        return actionName;
       }
     }
-    return false;
   };
 
   const keydownAtWindowHandler = (event: KeyboardEvent) => {
@@ -102,14 +101,19 @@ function ConfigShortcutModal() {
     const altKey = prevKeyRef.current.prevAltKey as boolean;
     const code = prevKeyRef.current.prevCode as string;
     const { actionName, target } = configKeyRef.current;
-    const isOverlap = checkOverlap(actionName, ctrlKey, shiftKey, altKey, code);
+    const overlapActionName = getOverlapActionName(actionName, ctrlKey, shiftKey, altKey, code);
     const shortcutsObj = shortcutsObjRef.current as ShortcutsObj;
-    if (isOverlap) {
+    if (overlapActionName) {
       setPrevKeys(undefined, undefined, undefined, undefined);
       setConfigKey(false);
       const { ctrlKey: orignCtrlKey, shiftKey: orignShiftKey, altKey: orignAltKey, code: orignCode } = shortcutsObj[actionName];
       target.innerText = shortcutStringfy(orignCtrlKey, orignShiftKey, orignAltKey, orignCode);
-      alert("키가 겹쳐요");
+      Swal.fire({
+        icon: "error",
+        title: `'${shortcutStringfy(ctrlKey, shiftKey, altKey, code)}'은\n'${getKoreanActionName(overlapActionName)}'에\n이미 할당된 단축키입니다`,
+        position: "top",
+        customClass: "swal-min-width",
+      });
       return;
     }
     const singleConfigShortcutDivElems = singleConfigShortcutDivElemsRef.current as SingleConfigShortcutDivElems;
