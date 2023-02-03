@@ -20,14 +20,13 @@
 }
 .btn--main-tranform {
   border-radius: 20px;
+  width: 100%;
   @include mobile {
-    width: 50%;
     font-size: $mobile-font-size + 10px;
     border-radius: 12px;
     padding-top: 0.2em;
   }
   @include desktop {
-    width: 30%;
     min-width: 340px;
     font-size: $desktop-font-size + 10px;
   }

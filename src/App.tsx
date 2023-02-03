@@ -63,35 +63,33 @@ function App() {
   return (
     <>
       {isShowConfigShortcutModal && <ConfigShortcutModal />}
-      <header>
-        <div className="relative">
-          <button
-            className="btn btn--main-tranform btn--emphasize"
+      <header className="relative-header">
+        <button
+          className="btn btn--main-tranform btn--emphasize"
+          onClick={() => {
+            if (isHome) {
+              const { colsForTransform, rowsForTransform, tableListForTransform } = transformToTableListForTransform(contentEditablePresRef.current);
+              const originTableList = transformToOriginTableList(contentEditablePresRef.current);
+              dispatch(setTableListForTransform({ colsForTransform, rowsForTransform, tableListForTransform, originTableList }));
+            }
+            dispatch(setIsHome(!isHome));
+          }}
+          type={"button"}
+        >
+          {isHome === true ? "텍스트로 변환" : "표로 가기"}
+        </button>
+        <div className="sub-icon-container">
+          <div
+            className="config-icon"
             onClick={() => {
-              if (isHome) {
-                const { colsForTransform, rowsForTransform, tableListForTransform } = transformToTableListForTransform(contentEditablePresRef.current);
-                const originTableList = transformToOriginTableList(contentEditablePresRef.current);
-                dispatch(setTableListForTransform({ colsForTransform, rowsForTransform, tableListForTransform, originTableList }));
-              }
-              dispatch(setIsHome(!isHome));
+              dispatch(setDisplayConfigShortcutModal(true));
             }}
-            type={"button"}
           >
-            {isHome === true ? "텍스트로 변환" : "표로 가기"}
-          </button>
-          <div className="sub-icon-container">
-            <div
-              className="config-icon"
-              onClick={() => {
-                dispatch(setDisplayConfigShortcutModal(true));
-              }}
-            >
-              <FontAwesomeIcon icon={faGear} />
-            </div>
-            <div className="toolTip">
-              <FontAwesomeIcon icon={faQuestion} />
-              <div className="toolTip__text">글자마다 크기가 다 다르기 때문에 변환이 잘 안 될 수 있습니다</div>
-            </div>
+            <FontAwesomeIcon icon={faGear} />
+          </div>
+          <div className="toolTip">
+            <FontAwesomeIcon icon={faQuestion} />
+            <div className="toolTip__text">글자마다 크기가 다 다르기 때문에 변환이 잘 안 될 수 있습니다</div>
           </div>
         </div>
       </header>

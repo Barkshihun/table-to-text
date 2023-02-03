@@ -37,8 +37,9 @@ header {
 .no-scroll {
   overflow: hidden !important;
 }
-.relative {
+.relative-header {
   position: relative;
+  width: 30%;
 }
 .swal-min-width {
   min-width: 670px;
