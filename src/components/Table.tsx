@@ -20,6 +20,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
   const isShowEditRowOrColModal = useSelector((state: RootState) => state.componentRender.isShowAddRowOrColModal);
   const tableList = useSelector((state: RootState) => state.table.originTableList);
   const focusCell = useSelector((state: RootState) => state.table.focusCell);
+  const isAutoFocusRef = useRef(false);
   const SET_TIMEOUT_TIME = 5;
 
   // 이벤트 시작
@@ -172,10 +173,12 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
           selection.removeAllRanges();
         }
         setTimeout(() => {
+          isAutoFocusRef.current = true;
           dispatch(setFocusCell({ col, row, anchorOffset, focusOffset }));
           dispatch(showEditRowOrColModal(mode));
         }, SET_TIMEOUT_TIME);
       } else {
+        isAutoFocusRef.current = true;
         dispatch(setFocusCell({ col, row, anchorOffset, focusOffset }));
         dispatch(showEditRowOrColModal(mode));
       }
@@ -281,21 +284,18 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
     }
   }, [tableList]);
   useEffect(() => {
-    if (!isShowEditRowOrColModal) {
+    if (!isShowEditRowOrColModal && isAutoFocusRef.current) {
       const col = focusCell.col;
       const row = focusCell.row;
-      if (contentEditablePresRef.current[row]) {
-        const contentEditablePreTextNode = contentEditablePresRef.current[row][col].childNodes[0];
-        if (contentEditablePreTextNode) {
-          const selection = getSelection();
-          selection?.removeAllRanges();
-          selection?.setBaseAndExtent(contentEditablePreTextNode, focusCell.anchorOffset, contentEditablePreTextNode, focusCell.focusOffset);
-        } else {
-          contentEditablePresRef.current[row][col].focus();
-        }
-        return;
+      const contentEditablePreTextNode = contentEditablePresRef.current[row][col].childNodes[0];
+      if (contentEditablePreTextNode) {
+        const selection = getSelection();
+        selection?.removeAllRanges();
+        selection?.setBaseAndExtent(contentEditablePreTextNode, focusCell.anchorOffset, contentEditablePreTextNode, focusCell.focusOffset);
+      } else {
+        contentEditablePresRef.current[row][col].focus();
       }
-      contentEditablePresRef.current[0][0].focus();
+      isAutoFocusRef.current = false;
     }
   }, [isShowEditRowOrColModal]);
   console.count("Table렌더링");
