@@ -3,6 +3,10 @@
 textarea {
   @extend %border;
   @extend %shadow;
+  font-size: 25px;
+  @include mobile {
+    font-size: 13px;
+  }
 }
 .output-container {
   display: flex;
@@ -11,17 +15,22 @@ textarea {
   margin-top: 50px;
   box-sizing: border-box;
   padding: 0 50px;
+  @include mobile {
+    padding: 0 10px;
+  }
 }
 .btn-container--textarea-left {
+  background-color: $black;
+  @extend %border;
+  gap: 2px;
+  width: 150px;
+  min-width: 150px;
   @include mobile {
-    width: 100px;
+    width: 90px;
+    min-width: 90px;
+    gap: 1px;
   }
-  @include desktop {
-    width: 150px;
-  }
-  display: flex;
+  display: grid;
   height: 100%;
-  flex-direction: column;
-  justify-content: flex-start;
   margin-right: 10px;
 }

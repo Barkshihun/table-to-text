@@ -129,16 +129,12 @@
 }
 
 .btn--textarea-left {
-  @extend %border;
   line-height: 1;
-  &:first-child {
-    padding: 0.2em 0;
-    border-bottom: unset;
-  }
-  &:last-child {
-    padding: 0.5em 0;
-  }
   text-align: center;
+  padding: 10px 0;
+  @include mobile {
+    padding: 5px 0;
+  }
 }
 .btn-shortcut {
   font-size: 20px;
