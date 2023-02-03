@@ -3,17 +3,21 @@
 .sub-btn-container {
   display: flex;
   justify-content: space-between;
-  @include mobile {
-    width: 50%;
-  }
   width: 40%;
   margin: 20px 0px;
   padding: 0px 2%;
   box-sizing: border-box;
+  @include mobile {
+    width: 50%;
+    margin: 10px 0px;
+  }
 }
 .sub-btn-container__btn {
-  font-size: 20px;
   border-radius: 10px;
+  font-size: 20px;
+  @include middle {
+    font-size: 15px;
+  }
   @include mobile {
     font-size: 10px;
     border-radius: 5px;
@@ -22,4 +26,8 @@
 }
 .input--file {
   display: none;
+}
+.importCsv__text {
+  text-align: center;
+  padding: 0 10px;
 }

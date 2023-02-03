@@ -8,8 +8,6 @@ import { ActionName, ShortcutsObj } from "../types/shortcutTypes";
 import { ITEM_NAME, defaultShortcutsObj } from "../shortcutConsts";
 import { RootState } from "../store/store";
 import TableSizeModal from "../modals/TableSizeModal";
-import "../scss/Modal.scss";
-import "../scss/Table.scss";
 import AddRowOrColModal from "../modals/EditRowOrColModal";
 
 function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRef: React.RefObject<HTMLDivElement>; contentEditablePresRef: React.MutableRefObject<HTMLPreElement[][]> }) {
@@ -316,7 +314,9 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
               dispatch(setDisplayTableSizeModal(true));
             }}
           >
-            {cols}x{rows}
+            <span>
+              {cols}x{rows}
+            </span>
           </button>
           <div className={"btn-container--top"}>
             <button className="btn" onClick={() => onPlus("col")}>

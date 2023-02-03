@@ -5,8 +5,8 @@ $desktop: $mobile + 1px;
 $desktop-font-size: 25px;
 $mobile-font-size: 13px;
 
-@mixin mobile {
-  @media (max-width: $mobile) {
+@mixin desktop {
+  @media (min-width: ($desktop)) {
     @content;
   }
 }
@@ -15,17 +15,15 @@ $mobile-font-size: 13px;
     @content;
   }
 }
-@mixin desktop {
-  @media (min-width: ($desktop)) {
+@mixin mobile {
+  @media (max-width: $mobile) {
     @content;
   }
 }
 %border {
+  border: 2px solid $black;
   @include mobile {
     border: 1px solid $black;
-  }
-  @include desktop {
-    border: 2px solid $black;
   }
 }
 %border-radius {

@@ -8,8 +8,12 @@ import { faGear, faQuestion } from "@fortawesome/free-solid-svg-icons";
 import ConfigShortcutModal from "./modals/ConfigShortcutModal";
 import Output from "./pages/Output";
 import Home from "./pages/Home";
-import "./scss/App.scss";
 import "./scss/Btn.scss";
+import "./scss/App.scss";
+import "./scss/Modal.scss";
+import "./scss/Home.scss";
+import "./scss/Table.scss";
+import "./scss/Output.scss";
 
 function App() {
   const isHome = useSelector((state: RootState) => state.componentRender.isHome);

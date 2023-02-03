@@ -1,14 +1,6 @@
 @import "./reset";
 @import "./utils";
 
-* {
-  @include mobile {
-    font-size: $mobile-font-size;
-  }
-  @include desktop {
-    font-size: $desktop-font-size;
-  }
-}
 #root {
   width: 100%;
   display: flex;
@@ -24,7 +16,6 @@ body {
   background-attachment: fixed;
 }
 header {
-  width: 100%;
   margin-top: 40px;
   display: flex;
   flex-direction: column;
@@ -40,6 +31,7 @@ header {
 .relative-header {
   position: relative;
   width: 30%;
+  min-width: 140px;
 }
 .swal-min-width {
   min-width: 670px;
@@ -49,27 +41,39 @@ header {
   bottom: 0;
   right: -35px;
   width: 30px;
+  padding: 5px 0;
+  @include mobile {
+    right: -20px;
+    width: 15px;
+    padding: 3px 0;
+  }
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
-  padding: 5px 0;
 }
 .config-icon {
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   svg {
     font-size: 20px;
+    @include middle {
+      font-size: 15px;
+    }
+    @include mobile {
+      font-size: 10px;
+    }
   }
   &:hover {
     transform: rotate(30deg);
   }
 }
 .toolTip {
-  width: 15px;
-  height: 15px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -79,8 +83,18 @@ header {
   @extend %border;
   border-radius: 50%;
   position: relative;
-  svg {
-    font-size: 10px;
+  font-size: 10px;
+  width: 15px;
+  height: 15px;
+  @include middle {
+    font-size: 7px;
+    width: 10px;
+    height: 10px;
+  }
+  @include mobile {
+    font-size: 5px;
+    width: 7px;
+    height: 7px;
   }
 }
 .toolTip__text {
@@ -98,6 +112,14 @@ header {
   border-radius: 10px;
   color: white;
   cursor: auto;
+  font-size: 15px;
+  @include mobile {
+    top: 20px;
+    width: 80px;
+    height: 50px;
+    padding: 10px;
+    font-size: 10px;
+  }
   @extend %shadow;
   &::after {
     content: "";

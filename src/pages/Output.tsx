@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import Swal from "sweetalert2";
-import "../scss/Output.scss";
 
 let globalSpace: " " | "\u3000" = " ";
 function Output() {

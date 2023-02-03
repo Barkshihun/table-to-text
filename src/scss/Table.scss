@@ -22,49 +22,55 @@
   position: absolute;
   width: 50%;
   display: flex;
-  @include mobile {
-    left: 60px;
-  }
-  @include desktop {
-    left: 20px;
-  }
+  left: 10px;
 }
 .btn-container--top {
-  display: flex;
-  top: -35px;
+  display: grid;
+  width: 70px;
+  min-height: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  background-color: $black;
+  gap: 2px;
   @extend %border;
+  @include mobile {
+    width: 50px;
+    gap: 1px;
+  }
   button {
     color: red;
-    &:first-child {
-      @include mobile {
-        border-right: 1px solid $black;
-      }
-      @include desktop {
-        border-right: 2px solid $black;
-      }
+    @include mobile {
+      padding: 0;
+      font-size: 15px;
     }
   }
 }
 .bottom-container {
+  margin-top: 60px;
   @include mobile {
-    margin-top: 40px;
-  }
-  @include desktop {
-    margin-top: 60px;
+    margin-top: 30px;
   }
   display: flex;
   width: 100%;
 }
 .btn-container--table-left {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  height: 70px;
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  background-color: $black;
+  gap: 2px;
   margin-right: 20px;
+  @extend %border;
+  @include mobile {
+    height: 50px;
+    gap: 1px;
+    margin-right: 10px;
+    min-width: 20px;
+  }
   button {
     color: blue;
-    @extend %border;
-    &:first-child {
-      border-bottom: unset;
+    @include mobile {
+      padding: 0;
+      font-size: 15px;
     }
   }
 }
@@ -101,14 +107,16 @@
 .contentEditable-div-container__div {
   width: max-content;
   height: max-content;
-  &:focus {
-    outline: 2px solid gray;
-    outline-offset: 10px;
-  }
+  min-width: 90px;
   @include mobile {
     min-width: 50px;
   }
-  @include desktop {
-    min-width: 90px;
+  &:focus {
+    outline: 2px solid gray;
+    outline-offset: 10px;
+    @include mobile {
+      outline: 1px solid gray;
+      outline-offset: 4px;
+    }
   }
 }

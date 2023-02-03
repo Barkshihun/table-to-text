@@ -9,7 +9,6 @@ import { showDownloadModal, setDownloadModalText } from "../store/componentRende
 import DownloadModal from "../modals/DownloadModal";
 import TransformingModal from "../modals/TransformingModal";
 import Table from "../components/Table";
-import "../scss/Home.scss";
 
 function Home({ contentEditablePresRef }: { contentEditablePresRef: React.MutableRefObject<HTMLPreElement[][]> }) {
   const dispatch = useDispatch();
@@ -174,7 +173,7 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
       {showTransformingModal && <TransformingModal />}
       <div className="sub-btn-container">
         <label className="btn sub-btn-container__btn btn--emphasize" htmlFor="importCsv">
-          csv 불러오기
+          <span className="importCsv__text">csv 불러오기</span>
           <input type={"file"} id="importCsv" className="input--file" accept=".csv" onChange={onImportCsv}></input>
         </label>
         <button
