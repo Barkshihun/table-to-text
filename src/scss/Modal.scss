@@ -10,22 +10,24 @@
   z-index: 2;
   top: 0;
   color: rgb(84 84 84);
+  overflow-y: auto;
 }
 .modal__content {
-  @include desktop {
-    width: 50%;
-    font-size: 50px;
-  }
-  width: 80%;
+  width: 50%;
+  font-size: 50px;
   height: 30vh;
-  margin-top: 10px;
+  @include mobile {
+    width: 80%;
+    font-size: 30px;
+    height: 30vh;
+  }
+  margin: 10px 0;
   background-color: white;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 30px;
   font-family: "Do Hyeon", sans-serif;
   @extend %shadow;
   @keyframes popup {
@@ -43,16 +45,29 @@
   }
   animation: 0.2s ease-in-out popup;
 }
+.modal__content--download {
+  height: max-content;
+  padding: 30px 0;
+}
 .modal__content--config {
   height: max-content;
   width: max-content;
   padding: 40px 50px;
+  @include middle {
+    padding: 30px;
+  }
+  @include mobile {
+    padding: 20px;
+  }
   align-items: flex-start;
 }
 .modal__content--edit {
   height: max-content;
-  width: 370px;
-  padding: 40px 40px;
+  width: max-content;
+  padding: 40px 50px;
+  @include mobile {
+    padding: 20px 40px;
+  }
   align-items: flex-start;
 }
 .modal__table-size-wrapper {
@@ -82,13 +97,22 @@
 }
 .modal__input--table-size {
   font-size: 30px;
+  @include mobile {
+    font-size: 20px;
+  }
   width: 30%;
   color: rgb(84 84 84);
 }
 .modal__input--download {
   width: 80%;
   font-size: 20px;
-  padding: 5px 0;
+  @include middle {
+    font-size: 15px;
+  }
+  @include mobile {
+    font-size: 10px;
+  }
+  padding: 5px 10px;
   &::placeholder {
     color: gray;
   }
@@ -109,18 +133,24 @@
 }
 .modal__download-question {
   font-size: 40px;
+  @include mobile {
+    font-size: 25px;
+  }
+  text-align: center;
 }
 .modal__file-name-indicator {
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 25px;
-  margin-bottom: 5px;
+  text-align: center;
+  margin-bottom: 10px;
+  @include mobile {
+    font-size: 15px;
+  }
   color: gray;
-  width: 70%;
-  height: 23%;
-  overflow-x: auto;
-  white-space: pre;
+  word-break: break-all;
+  white-space: break-spaces;
 }
 .modal__no-yes-btn-container {
   width: 100%;
@@ -144,6 +174,11 @@
   height: 40px;
   padding: 5px 10px;
   margin-bottom: 5px;
+  @include mobile {
+    height: 30px;
+    padding: 0px 5px;
+    margin-bottom: 0;
+  }
   &:focus {
     outline: none;
     border: 2px solid black;
@@ -151,13 +186,31 @@
 }
 .modal__checkbox-container--shortcut {
   margin-bottom: 0;
+  padding: 0;
+  padding-right: 10px;
+  padding: 5px 10px;
+  height: max-content;
 }
 .modal__checkbox-text {
-  padding-bottom: 0.1em;
+  line-height: 1;
+  @include middle {
+    font-size: 30px;
+  }
+  @include mobile {
+    font-size: 15px;
+  }
 }
 .modal__checkbox {
   margin: 0;
   margin-right: 7px;
+}
+.modal__title {
+  @include middle {
+    font-size: 40px;
+  }
+  @include mobile {
+    font-size: 25px;
+  }
 }
 .modal__shortcut-container {
   display: flex;

@@ -8,7 +8,7 @@ import { ActionName, ShortcutsObj } from "../types/shortcutTypes";
 import { ITEM_NAME, defaultShortcutsObj } from "../shortcutConsts";
 import { RootState } from "../store/store";
 import TableSizeModal from "../modals/TableSizeModal";
-import AddRowOrColModal from "../modals/EditRowOrColModal";
+import EditRowOrColModal from "../modals/EditRowOrColModal";
 
 function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRef: React.RefObject<HTMLDivElement>; contentEditablePresRef: React.MutableRefObject<HTMLPreElement[][]> }) {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
   const lastCol = cols - 1;
   const lastRow = rows - 1;
   const isShowTableSizeModal = useSelector((state: RootState) => state.componentRender.isShowTableSizeModal);
-  const isShowAddRowOrColModal = useSelector((state: RootState) => state.componentRender.isShowAddRowOrColModal);
+  const isShowEditRowOrColModal = useSelector((state: RootState) => state.componentRender.isShowAddRowOrColModal);
   const tableList = useSelector((state: RootState) => state.table.originTableList);
   const focusCell = useSelector((state: RootState) => state.table.focusCell);
   const SET_TIMEOUT_TIME = 5;
@@ -281,7 +281,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
     }
   }, [tableList]);
   useEffect(() => {
-    if (!isShowAddRowOrColModal) {
+    if (!isShowEditRowOrColModal) {
       const col = focusCell.col;
       const row = focusCell.row;
       if (contentEditablePresRef.current[row]) {
@@ -297,11 +297,11 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
       }
       contentEditablePresRef.current[0][0].focus();
     }
-  }, [isShowAddRowOrColModal]);
+  }, [isShowEditRowOrColModal]);
   console.count("Table렌더링");
   return (
     <>
-      {isShowAddRowOrColModal && <AddRowOrColModal contentEditablePresRef={contentEditablePresRef} />}
+      {isShowEditRowOrColModal && <EditRowOrColModal contentEditablePresRef={contentEditablePresRef} />}
       {isShowTableSizeModal && <TableSizeModal />}
       <main className={"table-system-wrapper"}>
         <div className={"top-container"}>

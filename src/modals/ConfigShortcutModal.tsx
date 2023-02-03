@@ -225,7 +225,7 @@ function ConfigShortcutModal() {
       }}
     >
       <div className="modal__content modal__content--config">
-        <h1>단축키 설정</h1>
+        <h1 className="modal__title">단축키 설정</h1>
         <div className="modal__shortcut-container">
           <label className="modal__checkbox-container modal__checkbox-container--shortcut">
             <input className="modal__checkbox" type="checkbox" onChange={onSelectAll} ref={selectAllBtnRef} />

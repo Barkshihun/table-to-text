@@ -3,9 +3,6 @@
 textarea {
   @extend %border;
   @extend %shadow;
-  @include mobile {
-    resize: none;
-  }
 }
 .output-container {
   display: flex;

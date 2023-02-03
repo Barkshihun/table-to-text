@@ -35,7 +35,7 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
     if (csvFile.type !== "text/csv") {
       Swal.fire({
         icon: "error",
-        title: "csv 파일만 불러올 수 있습니다",
+        title: "csv 파일만\n불러올 수 있습니다",
         position: "top",
       });
       return;

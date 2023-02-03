@@ -17,6 +17,7 @@
   font-size: 20px;
   @include middle {
     font-size: 15px;
+    border-radius: 7px;
   }
   @include mobile {
     font-size: 10px;

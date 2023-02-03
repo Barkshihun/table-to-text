@@ -398,7 +398,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
       }}
     >
       <div className="modal__content modal__content--edit">
-        <h1>{mode === "add" ? "삽입" : "삭제"}</h1>
+        <h1 className="modal__title">{mode === "add" ? "삽입" : "삭제"}</h1>
         {renderCheckBoxes()}
         <div className="modal__no-yes-btn-container modal__no-yes-btn-container--edit">
           <button
