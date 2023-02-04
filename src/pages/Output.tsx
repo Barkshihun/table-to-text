@@ -8,7 +8,7 @@ function Output() {
   const cols = useSelector((state: RootState) => state.table.colsForTransform);
   const rows = useSelector((state: RootState) => state.table.rowsForTransform);
   const tableList = useSelector((state: RootState) => state.table.tableListForTransform);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const preRef = useRef<HTMLPreElement>(null);
   const changeSpaceBtnRef = useRef<HTMLInputElement>(null);
 
   // 정규표현식 시작
@@ -98,34 +98,22 @@ function Output() {
     }
     return textList.join("");
   };
-  const getHorizontalWidth = () => {
-    let textList: string[] = [];
-    const row = 0;
-    for (let col = 0; col < cols; col++) {
-      let text = computeText(row, col);
-      if (col === 0) {
-        text = `${" ".repeat(2)}${text}`;
-      }
-      textList.push(`${text}${" ".repeat(2)}`);
-    }
-    return textList.join("").length;
-  };
   const onChangeSpaceClick = () => {
     const findSpaces = new RegExp(`${globalSpace}`, "g");
-    const textarea = textareaRef.current as HTMLTextAreaElement;
+    const pre = preRef.current as HTMLPreElement;
     const changeSpaceBtn = changeSpaceBtnRef.current as HTMLInputElement;
     if (globalSpace === " ") {
-      textarea.value = textarea.value.replace(findSpaces, "\u3000");
+      pre.innerText = pre.innerText.replace(findSpaces, "\u3000");
       changeSpaceBtn.value = "전각 띄어쓰기\nU+3000\n|\u3000|";
       globalSpace = "\u3000";
     } else {
-      textarea.value = textarea.value.replace(findSpaces, " ");
+      pre.innerText = pre.innerText.replace(findSpaces, " ");
       changeSpaceBtn.value = "반각 띄어쓰기\nU+0020\n| |";
       globalSpace = " ";
     }
   };
   const onCopy = () => {
-    const text = textareaRef.current?.value as string;
+    const text = preRef.current?.innerText as string;
     navigator.clipboard.writeText(text);
     Swal.fire({
       title: "복사 성공",
@@ -140,17 +128,19 @@ function Output() {
   console.count("Output렌더링");
   return (
     <main className={"output-container"}>
-      <div className={"btn-container--textarea-left"}>
-        <input className="btn btn--textarea-left" type={"button"} onClick={onCopy} value={"COPY"} />
+      <div className={"sub-btn-container"}>
+        <input className="btn btn--emphasize sub-btn-container__btn sub-btn-container__btn--output" type={"button"} onClick={onCopy} value={"COPY"} />
         <input
-          className="btn btn--textarea-left"
+          className="btn btn--emphasize sub-btn-container__btn sub-btn-container__btn--output"
           type={"button"}
           ref={changeSpaceBtnRef}
           value={globalSpace === " " ? "반각 띄어쓰기\nU+0020\n| |" : "전각 띄어쓰기\nU+3000\n|\u3000|"}
           onClick={onChangeSpaceClick}
         />
       </div>
-      <textarea className="malgun-gothic" ref={textareaRef} defaultValue={tableListToText()} style={{ height: `${rows + 3}em`, width: `${getHorizontalWidth()}em` }} spellCheck={false}></textarea>
+      <pre contentEditable className="malgun-gothic output-container__output" ref={preRef} spellCheck={false}>
+        {tableListToText()}
+      </pre>
     </main>
   );
 }
