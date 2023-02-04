@@ -75,7 +75,9 @@
   }
 }
 .table-container--padding {
+  height: max-content;
   padding-right: 30px;
+  padding-bottom: 30px;
 }
 .table-container {
   display: flex;

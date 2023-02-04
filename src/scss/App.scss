@@ -1,17 +1,19 @@
 @import "./reset";
 @import "./utils";
 
-#root {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  padding-bottom: 30px;
-}
 body {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+}
+#root {
+  width: 100%;
+  min-height: max-content;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  overflow-y: auto;
   background: linear-gradient(#e66465, #9198e5);
   background-attachment: fixed;
 }
