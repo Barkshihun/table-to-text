@@ -58,9 +58,11 @@ function DownloadModal({ onDownloadToCsv, onDownloadToPng }: { onDownloadToCsv: 
       <div className="modal__content modal__content--download">
         <div className="modal__download-wrapper">
           <h1 className="modal__download-question">다운로드 하시겠습니까?</h1>
-          <h2 className="malgun-gothic modal__file-name-indicator">
-            파일명: {downloadModalText ? downloadModalText : "표"}.{extension}
-          </h2>
+          <div className="malgun-gothic modal__file-name-indicator">
+            <span>
+              파일명: {downloadModalText ? downloadModalText : "표"}.{extension}
+            </span>
+          </div>
           <form className="modal__download-form-wrapper" onSubmit={onSave}>
             <input
               className="modal__input malgun-gothic modal__input--download"
