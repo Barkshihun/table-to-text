@@ -138,9 +138,11 @@ function Output() {
           onClick={onChangeSpaceClick}
         />
       </div>
-      <pre contentEditable className="malgun-gothic output-container__output" ref={preRef} spellCheck={false}>
-        {tableListToText()}
-      </pre>
+      <div className="output-container__pre-container">
+        <pre contentEditable className="malgun-gothic output-container__pre" ref={preRef} spellCheck={false} suppressContentEditableWarning={true}>
+          {tableListToText()}
+        </pre>
+      </div>
     </main>
   );
 }

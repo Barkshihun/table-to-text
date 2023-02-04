@@ -1,19 +1,5 @@
 @import "./utils";
 
-.output-container__output {
-  @extend %border;
-  @extend %shadow;
-  font-size: 25px;
-  background-color: white;
-  padding: 20px;
-  overflow-x: auto;
-  height: max-content;
-  width: max-content;
-  max-width: 100%;
-  @include mobile {
-    font-size: 13px;
-  }
-}
 .output-container {
   display: flex;
   flex-direction: column;
@@ -25,6 +11,24 @@
   padding-bottom: 30px;
   @include mobile {
     padding: 0 10px;
+    padding-bottom: 10px;
+  }
+}
+.output-container__pre-container {
+  width: max-content;
+  max-width: 100%;
+}
+.output-container__pre {
+  @extend %border;
+  @extend %shadow;
+  background-color: white;
+  overflow-x: auto;
+  height: max-content;
+  font-size: 25px;
+  padding: 20px;
+  @include mobile {
+    font-size: 13px;
+    padding: 10px;
   }
 }
 .btn-container--textarea-left {
@@ -46,4 +50,10 @@
   line-height: 1;
   width: 45%;
   padding: 10px 0;
+  @include middle {
+    padding: 7px 0;
+  }
+  @include mobile {
+    padding: 5px 0;
+  }
 }

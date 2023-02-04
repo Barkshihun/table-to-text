@@ -7,6 +7,10 @@
   margin: 20px 0px;
   padding: 0px 2%;
   box-sizing: border-box;
+  @include middle {
+    width: 50%;
+    margin: 10px 0px;
+  }
   @include mobile {
     width: 50%;
     margin: 10px 0px;

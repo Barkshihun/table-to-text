@@ -36,4 +36,7 @@ $mobile-font-size: 13px;
 }
 %shadow {
   box-shadow: 0px 0px 10px 1px rgba(38, 38, 38, 0.5);
+  @include mobile {
+    box-shadow: 0px 0px 5px 1px rgba(38, 38, 38, 0.5);
+  }
 }
