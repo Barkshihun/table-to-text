@@ -68,6 +68,7 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
       let startIndex = 0;
       const tableList: string[][] = [[]];
       let rawDataTableListRow = 0;
+      let cols = 1;
       for (let i = 0; i < csvTextData.length; i++) {
         switch (csvTextData[i]) {
           case '"':
@@ -92,6 +93,9 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
               tableList[rawDataTableListRow].push(text);
               tableList.push([]);
               startIndex = i + 1;
+              if (tableList[rawDataTableListRow].length > cols) {
+                cols = tableList[rawDataTableListRow].length;
+              }
               rawDataTableListRow++;
             }
             break;
@@ -108,7 +112,6 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
         tableList.pop();
       }
       const rows = tableList.length;
-      const cols = tableList[0].length;
       dispatch(setTableList({ cols, rows, tableList }));
       if (csvFile.name[0] !== ".") {
         const fileName = csvFile.name.slice(0, -4);
