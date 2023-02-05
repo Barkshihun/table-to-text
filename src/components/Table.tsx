@@ -55,7 +55,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
   const onResetContents = () => {
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
-        contentEditablePresRef.current[row][col].innerText = "";
+        contentEditablePresRef.current[row][col].innerHTML = "<p><br/></p>";
       }
     }
   };
@@ -243,6 +243,33 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
         return;
     }
   };
+  const onInput = (event: React.ChangeEvent<HTMLPreElement>) => {
+    if (event.target.innerText === "") {
+      event.target.innerHTML = "<p><br/></p>";
+    }
+  };
+  const onPaste = (event: React.ClipboardEvent<HTMLPreElement>) => {
+    event.preventDefault();
+    const clipboardText = event.clipboardData.getData("text/plain").replace(/\r/g, "");
+    const clipboardTextLength = clipboardText.length;
+    const selection = getSelection() as Selection;
+    selection.deleteFromDocument();
+    let target = event.target as HTMLParagraphElement;
+    if (target.nodeName === "BR") {
+      target = target.parentNode as HTMLParagraphElement;
+      target.innerHTML = clipboardText;
+      const textNode = target.childNodes[0];
+      selection.setBaseAndExtent(textNode, clipboardTextLength, textNode, clipboardTextLength);
+      return;
+    }
+    const textNode = target.childNodes[0];
+    const textContent = textNode.textContent as string;
+    const focusOffset = selection.focusOffset;
+    const outputText = textContent.slice(0, focusOffset) + clipboardText + textContent.slice(focusOffset);
+    textNode.textContent = outputText;
+    const outputFocusOffset = focusOffset + clipboardTextLength;
+    selection.setBaseAndExtent(textNode, outputFocusOffset, textNode, outputFocusOffset);
+  };
   // 이벤트 끝
 
   const setTableContents = () => {
@@ -261,15 +288,22 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
                 ref={(elem: HTMLPreElement) => {
                   if (elem) {
                     if (tableList[row]) {
-                      elem.innerText = tableList[row][col] ? tableList[row][col] : "";
+                      elem.innerHTML = `<p>${tableList[row][col] ? tableList[row][col] : "<br/>"}</p>`;
                     }
                     contentEditablePresRef.current[row][col] = elem;
                   }
                 }}
                 onKeyDown={onCheckShortcut}
+                onInput={onInput}
+                onPaste={onPaste}
                 data-row={row}
                 data-col={col}
-              />
+                suppressContentEditableWarning={true}
+              >
+                <p>
+                  <br />
+                </p>
+              </pre>
             </div>
           </td>
         );

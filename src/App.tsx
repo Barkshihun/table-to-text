@@ -23,12 +23,26 @@ function App() {
   const dispatch = useDispatch();
   const contentEditablePresRef = useRef<HTMLPreElement[][]>([]);
 
+  const transFormPreToText = (pre: HTMLPreElement) => {
+    let text = "";
+    const length = pre.childNodes.length;
+    if (length === 1) {
+      text = pre.childNodes[0].textContent as string;
+    } else {
+      for (let i = 0; i < length - 1; i++) {
+        const tempText = pre.childNodes[i].textContent as string;
+        text += tempText + "\n";
+      }
+      text += pre.childNodes[length - 1].textContent as string;
+    }
+    return text;
+  };
   const transformToOriginTableList = (contentEditablePres: HTMLPreElement[][]) => {
     let originTableList: string[][] = new Array(rows);
     for (let row = 0; row < rows; row++) {
       originTableList[row] = new Array(cols);
       for (let col = 0; col < cols; col++) {
-        originTableList[row][col] = contentEditablePres[row][col].innerText;
+        originTableList[row][col] = transFormPreToText(contentEditablePres[row][col]);
       }
     }
     return originTableList;
@@ -42,7 +56,7 @@ function App() {
       tableListForTransform[tableListRow] = new Array(cols);
       let verticalLongestRowLength = 1;
       for (let col = 0; col < cols; col++) {
-        const text = contentEditablePres[contentEditablePresRow][col].innerText;
+        const text = transFormPreToText(contentEditablePres[contentEditablePresRow][col]);
         const verticalRowLength = text.split("\n").length;
         if (verticalRowLength > verticalLongestRowLength) {
           verticalLongestRowLength = verticalRowLength;
@@ -52,7 +66,7 @@ function App() {
         tableListForTransform.splice(tableListRow + i, 0, new Array());
       }
       for (let col = 0; col < cols; col++) {
-        const text: string | string[] = contentEditablePres[contentEditablePresRow][col].innerText.split("\n");
+        const text: string | string[] = transFormPreToText(contentEditablePres[contentEditablePresRow][col]).split("\n");
         for (let i = 0; i < text.length; i++) {
           tableListForTransform[tableListRow + i][col] = text[i];
         }
