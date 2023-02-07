@@ -152,7 +152,6 @@ function Output() {
     selection.setBaseAndExtent(textNode, outputFocusOffset, textNode, outputFocusOffset);
   };
 
-  console.count("Output렌더링");
   return (
     <main className={"output-container"}>
       <div className={"sub-btn-container"}>

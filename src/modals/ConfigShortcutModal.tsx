@@ -213,7 +213,6 @@ function ConfigShortcutModal() {
     };
   }, []);
 
-  console.count("모달렌더");
   return (
     <div
       className="modal"

@@ -332,7 +332,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
       isAutoFocusRef.current = false;
     }
   }, [isShowEditRowOrColModal]);
-  console.count("Table렌더링");
+
   return (
     <>
       {isShowEditRowOrColModal && <EditRowOrColModal contentEditablePresRef={contentEditablePresRef} />}
