@@ -1,15 +1,15 @@
-import { useRef } from "react";
+import { useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import Swal from "sweetalert2";
 
-let globalSpace: " " | "\u3000" = " ";
+let prevSpace: " " | "\u3000" = " ";
 function Output() {
   const cols = useSelector((state: RootState) => state.table.colsForTransform);
   const rows = useSelector((state: RootState) => state.table.rowsForTransform);
   const tableList = useSelector((state: RootState) => state.table.tableListForTransform);
   const preRef = useRef<HTMLPreElement>(null);
-  const changeSpaceBtnRef = useRef<HTMLInputElement>(null);
+  const [space, setSpace] = useState(prevSpace);
 
   // 정규표현식 시작
   // +20로 계산  +2
@@ -21,7 +21,6 @@ function Output() {
   const regElse = new RegExp(`[^ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ぁ-ゔ|ァ-ヴー|々〆〤|一-龥|a-z|A-Z|${thickChars.join("|")}]`, "g");
   // 정규표현식 끝
 
-  const spaceInTable = globalSpace === " " ? `${globalSpace.repeat(2)}` : `${globalSpace.repeat(1)}`;
   const computeLength = (str: string) => {
     let textLength = 0;
     if (!str) {
@@ -65,22 +64,23 @@ function Output() {
       const textLength = computeLength(text);
       if (textLength < longestTextPerColList[col]) {
         let gap = longestTextPerColList[col] - computeLength(text);
-        if (globalSpace === "\u3000") {
+        if (space === "\u3000") {
           gap = Math.round(gap / 2);
         }
-        text = `${text}${globalSpace.repeat(gap)}`;
+        text = `${text}${space.repeat(gap)}`;
       }
     } else {
-      if (globalSpace === "\u3000") {
-        text = `${globalSpace.repeat(Math.round(longestTextPerColList[col] / 2))}`;
+      if (space === "\u3000") {
+        text = `${space.repeat(Math.round(longestTextPerColList[col] / 2))}`;
       } else {
-        text = `${globalSpace.repeat(longestTextPerColList[col])}`;
+        text = `${space.repeat(longestTextPerColList[col])}`;
       }
     }
     return text;
   };
   const tableListToText = () => {
     let textList: string[] = [];
+    const spaceInTable = space === " " ? `${space.repeat(2)}` : `${space.repeat(1)}`;
     const endOfRowIndex = rows - 1;
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
@@ -99,18 +99,16 @@ function Output() {
     return textList.join("");
   };
   const onChangeSpaceClick = () => {
-    const findSpaces = new RegExp(`${globalSpace}`, "g");
-    const pre = preRef.current as HTMLPreElement;
-    const changeSpaceBtn = changeSpaceBtnRef.current as HTMLInputElement;
-    if (globalSpace === " ") {
-      pre.innerText = pre.innerText.replace(findSpaces, "\u3000");
-      changeSpaceBtn.value = "전각 띄어쓰기\nU+3000\n|\u3000|";
-      globalSpace = "\u3000";
-    } else {
-      pre.innerText = pre.innerText.replace(findSpaces, " ");
-      changeSpaceBtn.value = "반각 띄어쓰기\nU+0020\n| |";
-      globalSpace = " ";
-    }
+    setSpace((currentSpace) => {
+      switch (currentSpace) {
+        case " ":
+          prevSpace = "\u3000";
+          return "\u3000";
+        case "\u3000":
+          prevSpace = " ";
+          return " ";
+      }
+    });
   };
   const onCopy = () => {
     const text = preRef.current?.innerText as string;
@@ -159,8 +157,7 @@ function Output() {
         <input
           className="btn btn--emphasize sub-btn-container__btn sub-btn-container__btn--output"
           type={"button"}
-          ref={changeSpaceBtnRef}
-          value={globalSpace === " " ? "반각 띄어쓰기\nU+0020\n| |" : "전각 띄어쓰기\nU+3000\n|\u3000|"}
+          value={space === " " ? "반각 띄어쓰기\nU+0020\n| |" : "전각 띄어쓰기\nU+3000\n|\u3000|"}
           onClick={onChangeSpaceClick}
         />
       </div>
