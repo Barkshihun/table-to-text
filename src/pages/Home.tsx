@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { setZero, setTableList } from "../store/tableSlice";
 import { showDownloadModal, setDownloadModalText } from "../store/componentRenderSlice";
+import { transFormPreToText } from "../utils";
 import DownloadModal from "../modals/DownloadModal";
 import TransformingModal from "../modals/TransformingModal";
 import Table from "../components/Table";
@@ -127,7 +128,7 @@ function Home({ contentEditablePresRef }: { contentEditablePresRef: React.Mutabl
     for (let row = 0; row < rows; row++) {
       let rowCsvData = "";
       for (let col = 0; col < cols; col++) {
-        const text = contentEditablePres[row][col].innerText;
+        const text = transFormPreToText(contentEditablePres[row][col]);
         if (text.includes('"')) {
           rowCsvData += `"${text.replace(/"/g, '""')}"`;
         } else if (text.includes(",") || text.includes("\n")) {

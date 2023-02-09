@@ -7,6 +7,7 @@ import { showEditRowOrColModal, setDisplayTableSizeModal } from "../store/compon
 import { ActionName, ShortcutsObj } from "../types/shortcutTypes";
 import { ITEM_NAME, defaultShortcutsObj } from "../shortcutConsts";
 import { RootState } from "../store/store";
+import { transFormPreToText } from "../utils";
 import TableSizeModal from "../modals/TableSizeModal";
 import EditRowOrColModal from "../modals/EditRowOrColModal";
 
@@ -60,13 +61,14 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
     }
   };
   const focusCaretAtEnd = (elem: HTMLPreElement, isCollapsed = true) => {
-    if (!elem.innerText) {
+    const paragraphNode = elem.childNodes[0];
+    const textNode = paragraphNode.childNodes[0];
+    if (!textNode) {
       elem.focus();
       return;
     }
     const selection = getSelection() as Selection;
     selection.removeAllRanges();
-    const textNode = elem.childNodes[0];
     const textContent = textNode.textContent as string;
     switch (isCollapsed) {
       case true:
@@ -90,10 +92,10 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
         focusElem = contentEditablePresRef.current[row][col + 1];
       }
       if (isProcess) {
-        const innerText = focusElem.innerText;
+        const preText = transFormPreToText(focusElem);
         focusElem.focus();
         setTimeout(() => {
-          focusElem.innerText = innerText;
+          focusElem.innerHTML = `<p>${preText ? preText : "<br>"}</p>`;
           focusCaretAtEnd(focusElem, false);
         }, SET_TIMEOUT_TIME);
       } else {
@@ -112,10 +114,10 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
         focusElem = contentEditablePresRef.current[row][col - 1];
       }
       if (isProcess) {
-        const innerText = focusElem.innerText;
+        const preText = transFormPreToText(focusElem);
         focusElem.focus();
         setTimeout(() => {
-          focusElem.innerText = innerText;
+          focusElem.innerHTML = `<p>${preText ? preText : "<br>"}</p>`;
           focusCaretAtEnd(focusElem, false);
         }, SET_TIMEOUT_TIME);
       } else {
@@ -149,10 +151,10 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
       }
       const focusElem = contentEditablePresRef.current[focusRow][focusCol] as HTMLPreElement;
       if (isProcess) {
-        const innerText = focusElem.innerText;
+        const preText = transFormPreToText(focusElem);
         focusElem.focus();
         setTimeout(() => {
-          focusElem.innerText = innerText;
+          focusElem.innerHTML = `<p>${preText ? preText : "<br>"}</p>`;
           focusCaretAtEnd(focusElem);
         }, SET_TIMEOUT_TIME);
       } else {
@@ -165,9 +167,10 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
       const focusOffset = selection.focusOffset;
       if (isProcess) {
         const elem = contentEditablePresRef.current[row][col] as HTMLPreElement;
-        const innerText = elem.innerText;
-        elem.innerText = innerText;
-        if (innerText) {
+        const paragraphNode = elem.childNodes[0];
+        const preText = transFormPreToText(elem);
+        elem.innerHTML = `<p>${preText ? preText : "<br>"}</p>`;
+        if (paragraphNode.childNodes[0].nodeName === "BR") {
           elem.blur();
         } else {
           selection.removeAllRanges();
@@ -245,7 +248,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
   };
   const onInput = (event: React.ChangeEvent<HTMLPreElement>) => {
     if (event.target.innerText === "") {
-      event.target.innerHTML = "<p><br/></p>";
+      event.target.innerHTML = "<p><br></p>";
     }
   };
   const onPaste = (event: React.ClipboardEvent<HTMLPreElement>) => {
@@ -288,7 +291,7 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
                 ref={(elem: HTMLPreElement) => {
                   if (elem) {
                     if (tableList[row]) {
-                      elem.innerHTML = `<p>${tableList[row][col] ? tableList[row][col] : "<br/>"}</p>`;
+                      elem.innerHTML = `<p>${tableList[row][col] ? tableList[row][col] : "<br>"}</p>`;
                     }
                     contentEditablePresRef.current[row][col] = elem;
                   }
@@ -321,14 +324,22 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
     if (!isShowEditRowOrColModal && isAutoFocusRef.current) {
       const col = focusCell.col;
       const row = focusCell.row;
-      const contentEditablePreTextNode = contentEditablePresRef.current[row][col].childNodes[0];
-      if (contentEditablePreTextNode) {
-        const selection = getSelection();
-        selection?.removeAllRanges();
-        selection?.setBaseAndExtent(contentEditablePreTextNode, focusCell.anchorOffset, contentEditablePreTextNode, focusCell.focusOffset);
-      } else {
-        contentEditablePresRef.current[row][col].focus();
+      const contentEditablePre = contentEditablePresRef.current[row][col];
+      const paragraphNode = contentEditablePre.childNodes[0] as HTMLParagraphElement;
+      if (!paragraphNode.childNodes[0]) {
+        contentEditablePre.focus();
+        isAutoFocusRef.current = false;
+        return;
       }
+      const textNode = paragraphNode.childNodes[0];
+      if (textNode.nodeName === "BR") {
+        contentEditablePre.focus();
+        isAutoFocusRef.current = false;
+        return;
+      }
+      const selection = getSelection() as Selection;
+      selection.removeAllRanges();
+      selection.setBaseAndExtent(textNode, focusCell.anchorOffset, textNode, focusCell.focusOffset);
       isAutoFocusRef.current = false;
     }
   }, [isShowEditRowOrColModal]);

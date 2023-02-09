@@ -5,6 +5,7 @@ import { hideEditRowOrColModal } from "../store/componentRenderSlice";
 import AddRowOrColCheckBox from "../components/EditRowOrColCheckBox";
 import { RootState } from "../store/store";
 import { setFocusCell, setTableList } from "../store/tableSlice";
+import { transFormPreToText } from "../utils";
 import Swal from "sweetalert2";
 
 function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef: React.MutableRefObject<HTMLPreElement[][]> }) {
@@ -302,7 +303,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
     for (let row = 0; row < rows; row++) {
       tempTableList[row] = new Array(cols);
       for (let col = 0; col < cols; col++) {
-        tempTableList[row][col] = contentEditablePres[row][col].innerText;
+        tempTableList[row][col] = transFormPreToText(contentEditablePres[row][col]);
       }
     }
     return tempTableList;

@@ -5,6 +5,7 @@ import { setTableListForTransform } from "./store/tableSlice";
 import { RootState } from "./store/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faQuestion } from "@fortawesome/free-solid-svg-icons";
+import { transFormPreToText } from "./utils";
 import ConfigShortcutModal from "./modals/ConfigShortcutModal";
 import Output from "./pages/Output";
 import Home from "./pages/Home";
@@ -23,20 +24,6 @@ function App() {
   const dispatch = useDispatch();
   const contentEditablePresRef = useRef<HTMLPreElement[][]>([]);
 
-  const transFormPreToText = (pre: HTMLPreElement) => {
-    let text = "";
-    const length = pre.childNodes.length;
-    if (length === 1) {
-      text = pre.childNodes[0].textContent as string;
-    } else {
-      for (let i = 0; i < length - 1; i++) {
-        const tempText = pre.childNodes[i].textContent as string;
-        text += tempText + "\n";
-      }
-      text += pre.childNodes[length - 1].textContent as string;
-    }
-    return text;
-  };
   const transformToOriginTableList = (contentEditablePres: HTMLPreElement[][]) => {
     let originTableList: string[][] = new Array(rows);
     for (let row = 0; row < rows; row++) {
