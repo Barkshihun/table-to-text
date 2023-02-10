@@ -8,7 +8,7 @@ const transFormPreToText = (pre: HTMLPreElement) => {
       const tempText = pre.childNodes[i].textContent as string;
       text += tempText + "\n";
     }
-    text += pre.childNodes[length - 1].textContent as string;
+    text += pre.childNodes[length - 1].textContent ? pre.childNodes[length - 1].textContent : " ";
   }
   return text;
 };
