@@ -128,9 +128,11 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
         tableList[focusCell.row].splice(focusCell.col, 0, "");
         if (tableList[focusCell.row][lastCol + 1]) {
           dispatch(setTableList({ cols: cols + 1, rows, tableList }));
+          dispatch(setFocusCell({ ...focusCell, anchorParagraphIndex: 0, focusParagraphIndex: 0 }));
         } else {
           tableList[focusCell.row].pop();
           dispatch(setTableList({ cols, rows, tableList }));
+          dispatch(setFocusCell({ ...focusCell, anchorParagraphIndex: 0, focusParagraphIndex: 0 }));
         }
         return;
       case "addMoveToCellLeft":
@@ -146,6 +148,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
         } else {
           tableList[focusCell.row].shift();
           dispatch(setTableList({ cols: cols, rows, tableList }));
+          dispatch(setFocusCell({ ...focusCell, anchorParagraphIndex: 0, focusParagraphIndex: 0 }));
         }
         return;
       case "addMoveToCellUp":
@@ -170,6 +173,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
             tableList[row][focusCell.col] = focusColList[row];
           }
           dispatch(setTableList({ cols, rows, tableList }));
+          dispatch(setFocusCell({ ...focusCell, anchorParagraphIndex: 0, focusParagraphIndex: 0 }));
         }
         return;
       case "addMoveToCellDown":
@@ -188,12 +192,14 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
           tableList.push(new Array(cols));
           tableList[lastRow + 1][focusCell.col] = focusColList[lastRow + 1];
           dispatch(setTableList({ cols, rows: rows + 1, tableList }));
+          dispatch(setFocusCell({ ...focusCell, anchorParagraphIndex: 0, focusParagraphIndex: 0 }));
         } else {
           focusColList.pop();
           for (let row = 0; row < tableList.length; row++) {
             tableList[row][focusCell.col] = focusColList[row];
           }
           dispatch(setTableList({ cols, rows, tableList }));
+          dispatch(setFocusCell({ ...focusCell, anchorParagraphIndex: 0, focusParagraphIndex: 0 }));
         }
         return;
       case "addUpRow":
@@ -204,6 +210,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
       case "addDownRow":
         tableList.splice(focusCell.row + 1, 0, new Array(cols));
         dispatch(setTableList({ cols, rows: rows + 1, tableList }));
+        dispatch(setFocusCell({ ...focusCell, anchorParagraphIndex: 0, focusParagraphIndex: 0 }));
         return;
       case "addLeftCol":
         for (let row = 0; row < tableList.length; row++) {
@@ -217,10 +224,12 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
           tableList[row].splice(focusCell.col + 1, 0, "");
         }
         dispatch(setTableList({ cols: cols + 1, rows, tableList }));
+        dispatch(setFocusCell({ ...focusCell, anchorParagraphIndex: 0, focusParagraphIndex: 0 }));
         return;
       case "removeMoveToCellLeft":
         tableList[focusCell.row].splice(focusCell.col, 1);
         dispatch(setTableList({ cols, rows, tableList }));
+        dispatch(setFocusCell({ ...focusCell, anchorParagraphIndex: 0, focusParagraphIndex: 0 }));
         return;
       case "removeMoveToCellUp":
         for (let row = 0; row < tableList.length; row++) {
@@ -233,6 +242,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
           tableList[row][focusCell.col] = focusColList[row];
         }
         dispatch(setTableList({ cols, rows, tableList }));
+        dispatch(setFocusCell({ ...focusCell, anchorParagraphIndex: 0, focusParagraphIndex: 0 }));
         return;
       case "removeUpRow":
         if (focusCell.row === 0) {
@@ -262,6 +272,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
         }
         tableList.splice(focusCell.row + 1, 1);
         dispatch(setTableList({ cols, rows: rows - 1, tableList }));
+        dispatch(setFocusCell({ ...focusCell, anchorParagraphIndex: 0, focusParagraphIndex: 0 }));
         return;
       case "removeLeftCol":
         if (focusCell.col === 0) {
@@ -295,6 +306,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
           tableList[row].splice(focusCell.col + 1, 1);
         }
         dispatch(setTableList({ cols: cols - 1, rows, tableList }));
+        dispatch(setFocusCell({ ...focusCell, anchorParagraphIndex: 0, focusParagraphIndex: 0 }));
         return;
     }
   };

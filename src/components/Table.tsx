@@ -61,21 +61,20 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
     }
   };
   const focusCaretAtEnd = (elem: HTMLPreElement, isCollapsed = true) => {
-    const paragraphNode = elem.childNodes[0];
-    const textNode = paragraphNode.childNodes[0];
-    if (!textNode) {
-      elem.focus();
-      return;
-    }
+    const childNodesLength = elem.childNodes.length;
+    const lastParagraphNode = elem.childNodes[childNodesLength - 1];
+    const lastTextNode = lastParagraphNode.childNodes[0];
     const selection = getSelection() as Selection;
     selection.removeAllRanges();
-    const textContent = textNode.textContent as string;
+    const lastTextContent = lastTextNode.textContent as string;
     switch (isCollapsed) {
       case true:
-        selection.setBaseAndExtent(textNode, textContent.length, textNode, textContent.length);
+        selection.setBaseAndExtent(lastTextNode, lastTextContent.length, lastTextNode, lastTextContent.length);
         break;
       case false:
-        selection.setBaseAndExtent(textNode, 0, textNode, textContent.length);
+        const firstParagraphNode = elem.childNodes[0];
+        const firstTextNode = firstParagraphNode.childNodes[0];
+        selection.setBaseAndExtent(firstTextNode, 0, lastTextNode, lastTextContent.length);
         break;
     }
   };
@@ -164,10 +163,28 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
     editRowOrCol: (col: number, row: number, isProcess: boolean, mode: "add" | "remove") => {
       const selection = getSelection() as Selection;
       const anchorOffset = selection.anchorOffset;
+      const anchorNode = selection.anchorNode;
       const focusOffset = selection.focusOffset;
+      const focusNode = selection.focusNode;
+      const anchorParentNode = anchorNode?.parentNode as HTMLParagraphElement;
+      const focusParentNode = focusNode?.parentNode as HTMLParagraphElement;
+      const elem = contentEditablePresRef.current[row][col] as HTMLPreElement;
+      let anchorParagraphIndex = 0;
+      let focusParagraphIndex = 0;
+      if (focusParentNode.nodeName !== "PRE") {
+        const childNodes = elem.childNodes;
+        for (let i = 0; i < childNodes.length; i++) {
+          if (childNodes[i] === anchorParentNode) {
+            anchorParagraphIndex = i;
+          }
+          if (childNodes[i] === focusParentNode) {
+            focusParagraphIndex = i;
+            break;
+          }
+        }
+      }
       if (isProcess) {
-        const elem = contentEditablePresRef.current[row][col] as HTMLPreElement;
-        const paragraphNode = elem.childNodes[0];
+        const paragraphNode = elem.childNodes[focusParagraphIndex];
         const preText = transFormPreToText(elem);
         elem.innerHTML = `<p>${preText ? preText : "<br>"}</p>`;
         if (paragraphNode.childNodes[0].nodeName === "BR") {
@@ -177,12 +194,12 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
         }
         setTimeout(() => {
           isAutoFocusRef.current = true;
-          dispatch(setFocusCell({ col, row, anchorOffset, focusOffset }));
+          dispatch(setFocusCell({ col, row, anchorOffset, focusOffset, anchorParagraphIndex, focusParagraphIndex }));
           dispatch(showEditRowOrColModal(mode));
         }, SET_TIMEOUT_TIME);
       } else {
         isAutoFocusRef.current = true;
-        dispatch(setFocusCell({ col, row, anchorOffset, focusOffset }));
+        dispatch(setFocusCell({ col, row, anchorOffset, focusOffset, anchorParagraphIndex, focusParagraphIndex }));
         dispatch(showEditRowOrColModal(mode));
       }
     },
@@ -324,22 +341,26 @@ function Table({ tableContainerRef, contentEditablePresRef }: { tableContainerRe
     if (!isShowEditRowOrColModal && isAutoFocusRef.current) {
       const col = focusCell.col;
       const row = focusCell.row;
+      const focusParagraphIndex = focusCell.focusParagraphIndex;
+      const anchorParagraphIndex = focusCell.anchorParagraphIndex;
       const contentEditablePre = contentEditablePresRef.current[row][col];
-      const paragraphNode = contentEditablePre.childNodes[0] as HTMLParagraphElement;
-      if (!paragraphNode.childNodes[0]) {
+      const focusParagraphNode = contentEditablePre.childNodes[focusParagraphIndex] as HTMLParagraphElement;
+      if (!focusParagraphNode.childNodes[0]) {
         contentEditablePre.focus();
         isAutoFocusRef.current = false;
         return;
       }
-      const textNode = paragraphNode.childNodes[0];
-      if (textNode.nodeName === "BR") {
+      const focusTextNode = focusParagraphNode.childNodes[0];
+      if (focusTextNode.nodeName === "BR") {
         contentEditablePre.focus();
         isAutoFocusRef.current = false;
         return;
       }
       const selection = getSelection() as Selection;
       selection.removeAllRanges();
-      selection.setBaseAndExtent(textNode, focusCell.anchorOffset, textNode, focusCell.focusOffset);
+      const anchorParagraphNode = contentEditablePre.childNodes[anchorParagraphIndex] as HTMLParagraphElement;
+      const anchorTextNode = anchorParagraphNode.childNodes[0];
+      selection.setBaseAndExtent(anchorTextNode, focusCell.anchorOffset, focusTextNode, focusCell.focusOffset);
       isAutoFocusRef.current = false;
     }
   }, [isShowEditRowOrColModal]);
