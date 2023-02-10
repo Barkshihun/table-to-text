@@ -126,7 +126,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
     switch (actionName) {
       case "addMoveToCellRight":
         tableList[focusCell.row].splice(focusCell.col, 0, "");
-        if (tableList[focusCell.row][lastCol + 1]) {
+        if (tableList[focusCell.row][lastCol + 1] || cols === 1) {
           dispatch(setTableList({ cols: cols + 1, rows, tableList }));
           dispatch(setFocusCell({ ...focusCell, anchorParagraphIndex: 0, focusParagraphIndex: 0 }));
         } else {
@@ -137,7 +137,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
         return;
       case "addMoveToCellLeft":
         tableList[focusCell.row].splice(focusCell.col + 1, 0, "");
-        if (tableList[focusCell.row][0]) {
+        if (tableList[focusCell.row][0] || cols === 1) {
           for (let row = 0; row < tableList.length; row++) {
             if (row !== focusCell.row) {
               tableList[row].unshift("");
@@ -160,7 +160,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
           }
           focusColList.push(tableList[row][focusCell.col]);
         }
-        if (tableList[0][focusCell.col]) {
+        if (tableList[0][focusCell.col] || rows === 1) {
           tableList.unshift(new Array(cols));
           for (let row = 0; row < tableList.length; row++) {
             tableList[row][focusCell.col] = focusColList[row];
@@ -185,7 +185,7 @@ function EditRowOrColModal({ contentEditablePresRef }: { contentEditablePresRef:
           }
           focusColList.push(tableList[row][focusCell.col]);
         }
-        if (tableList[lastRow][focusCell.col]) {
+        if (tableList[lastRow][focusCell.col] || rows === 1) {
           for (let row = 0; row < tableList.length; row++) {
             tableList[row][focusCell.col] = focusColList[row];
           }
